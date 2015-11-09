@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<inspection xmlns="http://schemas.xmlsoap.org/ws/2001/10/inspection/">
+    <service>
+        <name>BankService</name>
+        <abstract>The credit card services offered by the bank</abstract>
+        <description referencedNamespace="http://schemas.xmlsoap.org/wsdl/"
+                 location="http://fastmoney.imm.dtu.dk:8080/BankService?wsdl"/>
+    </service>
+</inspection>
