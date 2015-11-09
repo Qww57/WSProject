@@ -3,7 +3,7 @@
   <services>
     <service name="NiceViewService">
       <implementation-class>niceview.NiceViewService</implementation-class>
-      <wsdl-url>file:/C:/Users/Quentin/Documents/GitHub/WebServicesProject/WebServicesProject/NiceView/src/java/NiceView.wsdl</wsdl-url>
+      <wsdl-url>file:/C:/Users/Quentin/Documents/GitHub/WSProject/NiceView/src/java/NiceView.wsdl</wsdl-url>
       <local-wsdl-file>NiceView.wsdl</local-wsdl-file>
       <service-name>NiceViewService</service-name>
       <port-name>NiceViewBindingPort</port-name>

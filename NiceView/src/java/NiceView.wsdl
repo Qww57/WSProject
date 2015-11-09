@@ -123,7 +123,7 @@
     </binding>
     <service name="NiceViewService">
         <port name="NiceViewBindingPort" binding="tns:NiceViewPortTypeBinding">
-            <soap12:address location="http://localhost:${HttpDefaultPort}/service"/>
+            <soap12:address location="http://localhost:8080/service"/>
         </port>
     </service>
     <plnk:partnerLinkType name="NiceView">

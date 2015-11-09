@@ -5,31 +5,32 @@
  */
 package niceview;
 
-
+import dk.dtu.imm.fastmoney.*;
 import dk.dtu.imm.fastmoney.types.*;
-import dk.dtu.imm.fastmoney.CreditCardFaultMessage;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import javax.xml.datatype.XMLGregorianCalendar;
-import static niceview.DataBase.*;
-import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
-import dk.dtu.imm.fastmoney.BankService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jws.WebService;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceRef;
+import javax.xml.ws.soap.SOAPFaultException;
+import static niceview.DataBase.*;
+import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
 
 /**
  *
  * @author Quentin
  */
+
 @WebService(serviceName = "NiceViewService", portName = "NiceViewBindingPort", endpointInterface = "org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewPortType", targetNamespace = "http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView", wsdlLocation = "WEB-INF/wsdl/NiceViewService/NiceView.wsdl")
 @BindingType(value = "http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/")
 public class NiceViewService {
 
-    @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/fastmoney.imm.dtu.dk_8080/BankService.wsdl")
-    
+  @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/fastmoney.imm.dtu.dk_8080/BankService.wsdl")   
     private BankService service;    
     private static List<HotelType> hotelDataBase;
     private static HashMap<HotelType,String> bookingDB;
@@ -108,134 +109,97 @@ public class NiceViewService {
         System.out.println("GETTING - END - result size: " + listOfHotels.getHotelInformations().size());        
         return listOfHotels;
     }
-    
-   /* public void main() throws niceview.BookHotelFault
-    {
-        boolean e = bookHotel(null);
-    }*/
-    
+       
     public boolean bookHotel(BookHotelInputType bookHotelReqest) throws niceview.BookHotelFault {
         System.out.println("BOOKING - START");
-        
-        if(bookHotelReqest != null)
-        {
-            CreditCardInfoType ci = new CreditCardInfoType();
-            CreditCardInfoType.ExpirationDate date = new CreditCardInfoType.ExpirationDate();
-            date.setMonth(2);
-            date.setYear(11);
-            ci.setExpirationDate(date);
-            ci.setName("Tick Joachim");
-            ci.setNumber("50408824");
-            try {
-                validateCreditCard(10, ci, 100000);
-            } catch (CreditCardFaultMessage e) {
-                niceview.BookHotelFault exception = new niceview.BookHotelFault("msg", e.getFaultInfo().getMessage());
-                throw exception;
-            }
-            return true;
-        }
-        else {
-            niceview.BookHotelFault exception = new BookHotelFault("msg", "Empty");
-            throw exception;
-        }
-        
-        /* if(bookHotelReqest != null){
+               
+        if(bookHotelReqest != null){
             // Initialize the list of hotel we are using as a database
             InitializeDataBases();
-            HashMap<String,HotelType> reversedHM = reverse (bookingDB);       
-
+            HashMap<String,HotelType> reversedHM = reverse (bookingDB); 
+            
             // Reverse Hashmap in order to get the boolean CreditCardGuarantee using the booking number
             String bookingNumber = bookHotelReqest.getBookingNumber();
             System.out.println("BOOKING - Got booking number: " + bookingNumber);
-
             HotelType bookedHotel = reversedHM.get(bookingNumber);
             System.out.println("BOOKING - Got booked Hotel: " + bookedHotel);
-
+            
             if (bookedHotel != null){             
                 if (bookedHotel.isCreditCardGuarantee() == true){
                     System.out.println("BOOKING - Credit card guarantee needed to book the Hotel");               
                     CreditCardInfoType creditCardInfo = bookHotelReqest.getCreditCard();            
-
-                    /* AccountType account = new AccountType();
+                    AccountType account = new AccountType();
                     account.setName(creditCardInfo.getName());
                     account.setNumber(creditCardInfo.getNumber()); 
-
-                    CreditCardInfoType ci = new CreditCardInfoType();
-                    CreditCardInfoType.ExpirationDate date = new CreditCardInfoType.ExpirationDate();
-                    date.setMonth(2);
-                    date.setYear(11);
-                    ci.setExpirationDate(date);
-                    ci.setName("Tick Joachim");
-                    ci.setNumber("50408824");
-
-                    //TODO get a real price from the booking // Useless
-                    int price = 1000;
-
-                    // TODO handle exception
+                    System.out.println("Account information: ");
+                    System.out.println(account.getName() + " - " + account.getNumber());
+                    
+                    //TODO Get a real price from the booking 
+                    int price = 1500;
+                    
                     try {
                         System.out.println("BOOKING - Trying to validate the Credit Card");
                         validateCreditCard(group, creditCardInfo, price);
-                        /*try{
+                        try{
                             System.out.println("BOOKING - Valide Credit Card");
                             chargeCreditCard(group, creditCardInfo, price, account);                       
                             availabilityDB.replace(bookedHotel, false);
                             System.out.println("BOOKING - Hotel successfuly booked");
                         }
-                        catch(CreditCardFaultMessage e){
-                            System.out.println("BOOKING - ERROR - Not enough money on the bank account");
-                            BookHotelFault fault = new BookHotelFault("Booking error", e.getFaultInfo().getMessage());
+                        catch(CreditCardFaultMessage e){ // if there is an error while charging the bank account
+                            System.out.println("Message : " + e.getFaultInfo().getMessage());
+                            BookHotelFault fault = new BookHotelFault( e.getFaultInfo().getMessage(), "BookFaultError");
                             throw fault;
-                        }
+                        } 
+                    } catch (CreditCardFaultMessage ex) { // if there is an error while validating the card info
+                        System.out.println("Message : " + ex.getFaultInfo().getMessage());
+                        niceview.BookHotelFault exception = new niceview.BookHotelFault( ex.getFaultInfo().getMessage(),  "BookFaultError");
+                        throw exception;
                     }
-                    catch (CreditCardFaultMessage e){
-                        System.out.println("BOOKING - ERROR - No valid card information"); 
-                        BookHotelFault fault = new BookHotelFault("BookHotelFault", e.getFaultInfo().getMessage());
-                        throw fault;
-                    }
-                }
-                else{
+                } else{ // if no credit card was required
                     System.out.println("BOOKING - No credit card guarantee needed to book the Hotel");                                
                     availabilityDB.replace(bookedHotel, false);               
                     System.out.println("BOOKING - Hotel successfuly booked");
                }        
-            }           
-            else { // if no matching hotel was found   
+            } else { // if no matching hotel was found   
                 System.out.println("BOOKING - ERROR - No hotel found for the current booking number");  
-                BookHotelFault fault = new BookHotelFault("BookHotelFault", "FaultInfo");
+                BookHotelFault fault = new BookHotelFault("The booking number you provided was not linked to any hotel", "BookHotelFault");
                 throw fault;
             }   
             System.out.println("BOOKING - END");
             return true;
         } 
         else { // If no input
-            System.out.println("BOOKING - Null input");
-            BookHotelFault fault = new BookHotelFault("BookHotelFault", "Null entry");
-            throw fault;
-        }*/
+            niceview.BookHotelFault exception = new BookHotelFault("Empty", "BookHotelFault");
+            throw exception;
+        } 
     }
 
     public void cancelHotel(java.lang.String cancelHotelRequest) throws CancelHotelFault {
         System.out.println("CANCELING - START");
- 
-        String bookingNumber = cancelHotelRequest;
         
-        // Initialize the list of hotel we are using as a database
-        InitializeDataBases();
-        
-        // Putting the availability of the hotel to true
-        HashMap<String,HotelType> reversedHM = reverse (bookingDB);
-        //if(reversedHM.get(bookingNumber) != null){
-            HotelType bookedHotel = reversedHM.get(bookingNumber);
-            availabilityDB.replace(bookedHotel, true);           
-            System.out.println("CANCELING - SUCCESS - END");
+        if(cancelHotelRequest != null){
+            String bookingNumber = cancelHotelRequest;
+
+            // Initialize the list of hotel we are using as a database
+            InitializeDataBases();
+
+            // Putting the availability of the hotel to true
+            HashMap<String,HotelType> reversedHM = reverse (bookingDB);
             
-        //TODO problem to reinitialize this...
-        //}
-        //else{
-            // TODO customize error (fix problem)
-            //CancelHotelFault error = null;
-            //throw error;
-        //} 
+            if(reversedHM.get(bookingNumber) != null){
+                HotelType bookedHotel = reversedHM.get(bookingNumber);
+                availabilityDB.replace(bookedHotel, true);           
+                System.out.println("CANCELING - SUCCESS - END");
+            } else{
+                System.out.println("BOOKING - ERROR - No hotel found for the current booking number");  
+                CancelHotelFault fault = new CancelHotelFault("The booking number you provided was not linked to any hotel", "CancelHotelFault");
+                throw fault;
+            }
+        } else { // If no input
+            niceview.CancelHotelFault exception = new CancelHotelFault("Empty", "CancelHotelFault");
+            throw exception;
+        } 
     }  
     
     // Web services references
@@ -253,11 +217,5 @@ public class NiceViewService {
         dk.dtu.imm.fastmoney.BankPortType port = service.getBankPort();
         return port.chargeCreditCard(group, creditCardInfo, amount, account);
     }
-
-    private boolean refundCreditCard(int group, dk.dtu.imm.fastmoney.types.CreditCardInfoType creditCardInfo, int amount, AccountType account) throws CreditCardFaultMessage {
-        // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
-        // If the calling of port operations may lead to race condition some synchronization is required.
-        dk.dtu.imm.fastmoney.BankPortType port = service.getBankPort();
-        return port.refundCreditCard(group, creditCardInfo, amount, account);
-    } 
 }
+

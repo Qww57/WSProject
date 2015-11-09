@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.soap.SOAPFaultException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
@@ -96,59 +97,72 @@ public class NiceViewTest {
     
     //@Test
     public void bookHotelTest() throws BookHotelFault, DatatypeConfigurationException{
-        // Booking of an hotel that don't require credit card 
+        // Booking of an hotel that doesn't require credit card 
         BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_4", "Tick Joachim", "50408824", 2, 11);
         boolean result = bookHotel(input);
-        assertEquals(true, result);
-        System.out.println("first test result: " + result);      
+        assertEquals(true, result);     
     }
     
-    @Test
-    public void bookHotelTestWithCreditCard() throws BookHotelFault, DatatypeConfigurationException, BookHotelFault{
-        // Booking of an hotel that require credit card 
-        BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_1", "Tick Joachim", "50408824", 2, 11);
-        boolean result = bookHotel(input);
-        assertEquals(true, result);
-        System.out.println("first test result: " + result);      
+    @Test //TODO: pb because getting "Account doesn't exist" as error from the bank ws
+    public void bookHotelTestWithCreditCard() throws BookHotelFault, DatatypeConfigurationException{
+        // Booking of an hotel that requires credit card 
+        try{
+            BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_2", "Thor-Jensen Claus", "50408825", 5, 9);
+            boolean result = bookHotel(input);
+            assertEquals(true, result);  
+        } catch(SOAPFaultException e){
+            System.out.println(e.getFault().getFaultString());
+            fail();
+        }
     }
     
      // Booking of an hotel with empty object as input
-    @Test 
+    @Test
     public void bookHotelTestError() throws BookHotelFault{
         try {
             assertTrue(bookHotel(null));
-        } catch (BookHotelFault e) {
-            System.out.println("Exception - msg:" + e.getMessage() + " info: " + e.getFaultInfo());
-            assertEquals("Empty", e.getFaultInfo());
+        } catch (SOAPFaultException e) {
+            assertEquals("Empty", e.getFault().getFaultString());
         } 
     }
     
     // Booking of an hotel with unvalid booking number
-    //@Test 
-    public void bookHotelTestError1() throws DatatypeConfigurationException {    
+    @Test 
+    public void bookHotelTestError1() throws DatatypeConfigurationException, BookHotelFault {    
         BookHotelInputType input = CreateBookHotelInputType("Hello you", "Tick Joachim", "50408824", 2, 11);
         try {
             assertTrue(bookHotel(input));
-        } catch (BookHotelFault e) {
-            assertEquals("FaultInfo",e.getFaultInfo());
+        } catch (SOAPFaultException e) {
+            assertEquals("The booking number you provided was not linked to any hotel", e.getFault().getFaultString());
         } 
     }
     
     // Booking of an hotel with unvalid card information
-    //@Test
+    @Test
     public void bookHotelTestError2() throws BookHotelFault, DatatypeConfigurationException{    
         BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_1", "Tick Joachim", "00000000", 0, 9);
         try {
             assertTrue(bookHotel(input));
-        } catch (BookHotelFault e) {
-            assertEquals("The card information is not valid",e.getFaultInfo());
+        } catch (SOAPFaultException e) {
+            assertEquals("Month must be between 1 and 12",e.getFault().getFaultString());
+        }       
+    }
+    
+    // Booking of an hotel with not enough money on the bank account (price of the hotel is 1500 and account limit is 1000)
+    @Test
+    public void bookHotelTestError3() throws BookHotelFault, DatatypeConfigurationException{    
+        BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_1", "Tobiasen Inge", "50408823", 9, 10);
+        try {
+            assertTrue(bookHotel(input));
+        } catch (SOAPFaultException e) {
+            assertEquals("The account has not enough money",e.getFault().getFaultString());
         }       
     }
     
     /*
     * There are two hotel in Paris, so we try to book one and then to make a get request to see if the booking worked
     */
-    //@Test 
+    @Test 
     public void bookHotelScenarioTest() throws BookHotelFault, DatatypeConfigurationException, CancelHotelFault{
         // Booking of an hotel in Paris
         BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_4", "Tick Joachim", "50408824", 2, 11);
@@ -174,9 +188,30 @@ public class NiceViewTest {
     }
     
     /// TESTS FOR THE CANCEL FUNCTION
-
-    // Does not need any CardGuarantee, so I don't initialize it
-    //@Test 
+    
+    // Canceling of an hotel with no input
+    @Test
+    public void cancelHotelTestError() throws CancelHotelFault, DatatypeConfigurationException{    
+        try {
+            cancelHotel(null);
+        } catch (SOAPFaultException e) {
+            assertEquals("Empty",e.getFault().getFaultString());
+        }       
+    }
+    
+    // Canceling of an hotel with a wrong booking number
+    @Test
+    public void cancelHotelTestError1() throws CancelHotelFault, DatatypeConfigurationException{    
+        String input = "hello you";
+        try {
+            cancelHotel(input);
+        } catch (SOAPFaultException e) {
+            assertEquals("The booking number you provided was not linked to any hotel",e.getFault().getFaultString());
+        }       
+    }
+    
+    // We book one of the two hotel in Paris and then cancel it
+    @Test 
     public void cancelingHotelScenarioTest() throws BookHotelFault, DatatypeConfigurationException, CancelHotelFault{
         
         // There are two hotels available in Paris, we book one of them   
