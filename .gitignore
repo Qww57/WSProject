@@ -5,7 +5,7 @@
 /LameDuckClient/build/
 /LameDuckClient/dist/
 /LameDuckClient/src/META-INF/
-/LameDuckClient/xml-resources
+/LameDuckClient/xml-resources/
 /LameDuckClient/nbproject/jax-ws.xml
 /LameDuckClient/nbproject/jaxws-build.xml
 /LameDuckClient/nbproject/private
@@ -17,7 +17,7 @@
 /NiceViewClient/dist/
 /NiceViewClient/build/
 /NiceViewClient/src/META-INF/
-/NiceViewClient/xml-resources
+/NiceViewClient/xml-resources/
 /NiceViewClient/nbproject/jax-ws.xml
 /NiceViewClient/nbproject/jaxws-build.xml
 /NiceViewClient/nbproject/private
