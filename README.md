@@ -9,3 +9,5 @@ Client project needs more work:
 - open the client project,
 - deploy the web service the client is linked to,
 - create a new web service client in the client Project. You have to add the wsdl url link from the WS you have just been deploying
+- clean and build the client
+- if needed, import the packages suggested by openESB
