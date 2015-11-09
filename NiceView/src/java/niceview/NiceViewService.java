@@ -129,8 +129,8 @@ public class NiceViewService {
                     System.out.println("BOOKING - Credit card guarantee needed to book the Hotel");               
                     CreditCardInfoType creditCardInfo = bookHotelReqest.getCreditCard();            
                     AccountType account = new AccountType();
-                    account.setName(creditCardInfo.getName());
-                    account.setNumber(creditCardInfo.getNumber()); 
+                    account.setName("NiceView");
+                    account.setNumber("50308815"); 
                     System.out.println("Account information: ");
                     System.out.println(account.getName() + " - " + account.getNumber());
                     

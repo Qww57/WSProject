@@ -27,8 +27,8 @@ public class NiceViewTest {
     @Test
     public void getHotelsOneAnswer() throws DatatypeConfigurationException {
         System.out.println("getHotelsOneAnswer - START"); 
-        String expected = "Hotel Madrid";    
-        GetHotelInputType input = CreateGetHotelInputType("Madrid");
+        String expected = "London Hotel";    
+        GetHotelInputType input = CreateGetHotelInputType("London");
                 
         GetHotelsOutputType result = getHotels(input);
         if (result.getHotelInformations().size() != 1){
@@ -48,7 +48,7 @@ public class NiceViewTest {
     public void priceComputationCheck() throws DatatypeConfigurationException{
         System.out.println("priceComputationCheck - START");             
         int expected = 4000;      
-        GetHotelInputType input = CreateGetHotelInputType("Madrid");        
+        GetHotelInputType input = CreateGetHotelInputType("London");        
         GetHotelsOutputType result = getHotels(input);
         if (result.getHotelInformations().isEmpty()){
             System.out.println("Empty result");
