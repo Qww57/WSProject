@@ -4,10 +4,14 @@
  * and open the template in the editor.
  */
 
+import dk.dtu.imm.fastmoney.types.CreditCardInfoType;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.ws.soap.SOAPFaultException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.*;
@@ -59,20 +63,76 @@ public class LameDuckClientTest {
         expectedFlightList.getFlightInformations().add(firstFlight);
         
         //check some fields separatelly
-        System.out.println("Comparing size of list: ");
+        System.out.println("Comparing size of list");
         assertEquals(outputFlightList.getFlightInformations().size(), expectedFlightList.getFlightInformations().size());
         System.out.println("Comparing Booking Number ");
         assertEquals(outputFlightList.getFlightInformations().get(0).getBookingNumber(), expectedFlightList.getFlightInformations().get(0).getBookingNumber());
-        System.out.println("Comparing Start Date and Time (Gregorian Calendar: ");
+        System.out.println("Comparing Start Date and Time (Gregorian Calendar)");
         assertEquals(outputFlightList.getFlightInformations().get(0).getFlight().getStartDateTime(), expectedFlightList.getFlightInformations().get(0).getFlight().getStartDateTime());
         //more fields can be compared
     }
     
     @Test
-    public void LameDuckBookFlightTest() throws DatatypeConfigurationException {
-        
+    public void bookFlightTestWithCreditCard() throws  BookFlightFault, DatatypeConfigurationException {
+        try {
+            // Booking of flight that requires credit card
+            BookFlightInputType input = CreateBookFlightInputType("19457", "Anne Strandberg", "50408816", 5, 9);
+            boolean result = bookFlight(input);     
+            assertEquals(true, result);
+        } catch (BookFlightFault e) {
+            System.out.println("Booking of flight that requires credit card has not passed");
+            System.out.println(e.getMessage());
+            fail();
+        }
     }
     
+    // Booking of an flight with unvalid booking number
+    @Test 
+     public void bookFlightTestError1() throws DatatypeConfigurationException, BookFlightFault {    
+        BookFlightInputType input = CreateBookFlightInputType("hey you", "Anne Strandberg", "50408816", 5, 9);
+        try {
+            assertTrue(bookFlight(input));
+        }
+        catch (BookFlightFault ex) {
+            System.out.println("Booking of a flight with invalid booking number has passed");
+            assertEquals("The booking number you provided was not linked to any flight",ex.getMessage());
+        } 
+    }
+     // Booking of an hotel with unvalid card information
+     @Test
+    public void bookFlightTestError2() throws BookFlightFault, DatatypeConfigurationException{    
+        BookFlightInputType input = CreateBookFlightInputType("19457", "Anne Strandberg", "00000000", 0, 9);
+        try {
+            assertTrue(bookFlight(input));
+        } catch (BookFlightFault e) {
+            System.out.println("Booking of a flight with invalid card information has passed");
+            assertEquals("Month must be between 1 and 12",e.getMessage()); 
+        }
+    }
+    
+    // Booking of flight with not enough money on the bank account (price of flight is 5000)
+    @Test
+    public void bookFlightTestError3() throws BookFlightFault, DatatypeConfigurationException{    
+        BookFlightInputType input = CreateBookFlightInputType("19457", "Bech Camilla", "50408822", 7, 9);
+        try {
+            assertTrue(bookFlight(input));
+        } catch (BookFlightFault e) {
+            System.out.println("Booking of a flight with insufficient money has passed");
+            assertEquals("The account has not enough money",e.getMessage());
+        }       
+    }
+    
+    @Test
+    public void cancelFlightTestError1() throws DatatypeConfigurationException{    
+        CancelFlightInputType input = CreateCancelFlightInputType("19457", "Tick Joachim", "50408824", 2, 11, 5000);
+        try {
+            cancelFlight(input);
+        } catch (CancelFlightFault e) {
+            
+            assertEquals("An error occured while refunding flight",e.getMessage());
+        }       
+    }
+
     //XML Gregorian Date and Time Setter
     private XMLGregorianCalendar SetGregorianDateTime(Integer hours, Integer minutes, Integer day, Integer month, Integer year) throws DatatypeConfigurationException {
         GregorianCalendar gc = new GregorianCalendar(year, month, day);
@@ -86,7 +146,16 @@ public class LameDuckClientTest {
         
         return gregorianDate;
     }
-
+private CreditCardInfoType CreateCreditCard(String name, String number, int month, int year){
+        CreditCardInfoType creditCard = new CreditCardInfoType();
+        creditCard.setName(name);
+        creditCard.setNumber(number);
+        CreditCardInfoType.ExpirationDate date = new CreditCardInfoType.ExpirationDate();
+        date.setMonth(month);
+        date.setYear(year);
+        creditCard.setExpirationDate(date);
+        return creditCard;
+    }
     private static GetFlightsOutputType getFlights(GetFlightsInputType getFlightsInput) {
         LameDuckService service = new LameDuckService();
         LameDuckPortType port = service.getLameDuckBindingPort();
@@ -98,4 +167,29 @@ public class LameDuckClientTest {
         LameDuckPortType port = service.getLameDuckBindingPort();
         return port.bookFlight(bookFlightInput);
     }
+
+    private static boolean cancelFlight(org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.CancelFlightInputType cancelFlightInput) throws CancelFlightFault {
+        org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.LameDuckService service = new org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.LameDuckService();
+        org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.LameDuckPortType port = service.getLameDuckBindingPort();
+        return port.cancelFlight(cancelFlightInput);
+    }
+
+    private BookFlightInputType CreateBookFlightInputType(String bookingNumber, String name, String cardNumber, int month, int year) throws DatatypeConfigurationException{
+        BookFlightInputType input = new BookFlightInputType();
+        input.setBookingNumber(bookingNumber);
+        CreditCardInfoType creditCard = CreateCreditCard(name, cardNumber, month, year);
+        input.setCreditCard(creditCard);
+        return input;
+    }
+    
+    private CancelFlightInputType CreateCancelFlightInputType(String bookingNumber, String name, String cardNumber, int month, int year, int price) throws DatatypeConfigurationException{
+        CancelFlightInputType input = new CancelFlightInputType();
+        input.setBookingNumber(bookingNumber);
+        CreditCardInfoType creditCard = CreateCreditCard(name, cardNumber, month, year);
+        input.setCreditCard(creditCard);
+        input.setPrice(price);
+        return input;
+    }
+
+    
 }
