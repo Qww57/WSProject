@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="TravelGoodWSDL" targetNamespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns1="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" xmlns:ns0="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <types>
+        <xsd:schema targetNamespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL">
+            <!-- Import the xsd schema-->
+            <xsd:import namespace="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" schemaLocation="NiceView.xsd"/>
+            <xsd:complexType name="HotelRequestType">
+                <xsd:sequence>
+                    <xsd:element name="HotelsList" type="ns1:GetHotelInputType" minOccurs="0" maxOccurs="unbounded"></xsd:element> 
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="FlightRequestType">
+                <xsd:sequence>
+                    <xsd:element name="DeparturePlace" type="xsd:string"></xsd:element>
+                    <xsd:element name="ArrivalPlace" type="xsd:string"></xsd:element>
+                    <xsd:element name="Date" type="xsd:date"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="GetInputType">
+                <xsd:sequence>
+                    <xsd:element name="FlightRequests" type="tns:FlightRequestType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                    <xsd:element name="HotelRequests" type="tns:HotelRequestType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="GetOutputType">
+                <xsd:sequence>
+                    <xsd:element name="HotelsList" type="ns1:GetHotelsOutputType" minOccurs="0" maxOccurs="unbounded"></xsd:element>                  
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="GetOutput" type="tns:GetOutputType"></xsd:element>
+            <xsd:element name="GetInput" type="tns:GetInputType"></xsd:element>
+        </xsd:schema>
+    </types>
+    <message name="GetFlightsAndHotelsRequest">
+        <part name="part1" element="tns:GetInput"/>
+    </message>
+    <message name="GetFlightsAndHotelsResponse">
+        <part name="part1" element="tns:GetOutput"/>
+    </message>
+    <portType name="TravelGoodWSDLPortType">
+        <operation name="GetFlightsAndHotels">
+            <input name="input1" message="tns:GetFlightsAndHotelsRequest"/>
+            <output name="output1" message="tns:GetFlightsAndHotelsResponse"/>
+        </operation>
+    </portType>
+    <binding name="TravelGoodWSDLPortTypeBinding" type="tns:TravelGoodWSDLPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="GetFlightsAndHotels">
+            <soap:operation/>
+            <input name="input1">
+                <soap:body use="literal"/>
+            </input>
+            <output name="output1">
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="TravelGoodWSDLService">
+        <port name="TravelGoodWSDLPortTypeBindingPort" binding="tns:TravelGoodWSDLPortTypeBinding">
+            <soap:address location="http://localhost:${HttpDefaultPort}/service"/>
+        </port>
+    </service>
+    <plnk:partnerLinkType name="TravelGoodWSDL">
+        <!-- A partner link type is automatically generated when a new port type is added. Partner link types are used by BPEL processes. 
+In a BPEL process, a partner link represents the interaction between the BPEL process and a partner service. Each partner link is associated with a partner link type.
+A partner link type characterizes the conversational relationship between two services. The partner link type can have one or two roles.-->
+        <plnk:role name="TravelGoodWSDLPortTypeRole" portType="tns:TravelGoodWSDLPortType"/>
+    </plnk:partnerLinkType>
+</definitions>

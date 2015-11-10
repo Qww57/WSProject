@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:ns="http://types.fastmoney.imm.dtu.dk" 
+           xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" 
+           version="1.0" 
+           targetNamespace="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView">	
+    <xs:import namespace="http://types.fastmoney.imm.dtu.dk" schemaLocation="http://localhost:8080/NiceView/NiceViewService?xsd=1"/>
+    <xs:complexType name="GetHotelsOutputType">
+            <xs:sequence>
+                    <xs:element name="HotelInformations" type="tns:HotelInformationType" minOccurs="0" maxOccurs="unbounded"></xs:element>
+            </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="HotelType">
+            <xs:sequence>
+                    <xs:element name="Name" type="xs:string"></xs:element>
+                    <xs:element name="Address" type="xs:string"></xs:element>
+                    <xs:element name="CreditCardGuarantee" type="xs:boolean"></xs:element>
+            </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="HotelInformationType">
+            <xs:sequence>
+                    <xs:element name="Hotel" type="tns:HotelType"></xs:element>
+                    <xs:element name="BookingNumber" type="xs:string"></xs:element>
+                    <xs:element name="Price" type="xs:int"></xs:element>
+                    <xs:element name="ReservationService" type="xs:string"></xs:element>
+            </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="GetHotelInputType">
+            <xs:sequence>
+                    <xs:element name="City" type="xs:string"></xs:element>
+                    <xs:element name="ArrivalDate" type="xs:date"></xs:element>
+                    <xs:element name="DepartureDate" type="xs:date"></xs:element>
+            </xs:sequence>
+    </xs:complexType>
+    <xs:element name="GetHotelInput" type="tns:GetHotelInputType"></xs:element>
+    <xs:element name="GetHotelsOutput" type="tns:GetHotelsOutputType"></xs:element>
+    <xs:complexType name="BookHotelInputType">
+            <xs:sequence>
+                    <xs:element name="BookingNumber" type="xs:string"></xs:element>
+                    <xs:element name="CreditCard" type="ns:creditCardInfoType"></xs:element>
+            </xs:sequence>
+    </xs:complexType>
+    <xs:element name="BookHotelInput" type="tns:BookHotelInputType"></xs:element>
+    <xs:element name="BookHotelOutput" type="xs:boolean"></xs:element>
+    <xs:element name="FaultMessage" type="xs:string"></xs:element>
+    <xs:element name="CancelHotelInput" type="xs:string"></xs:element>
+</xs:schema>
+

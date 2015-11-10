@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.1-b419 (branches/2.3.1.x-7937; 2014-08-04T08:11:03+0000) JAXWS-RI/2.2.10-b140803.1500 JAXWS-API/2.2.11 JAXB-RI/2.2.10-b140802.1033 JAXB-API/2.2.12-b140109.1041 svn-revision#unknown. --><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://fastmoney.imm.dtu.dk" xmlns:ns3="http://types.fastmoney.imm.dtu.dk" xmlns:ns2="http://types.fastmoney.imm.dtu.dk" xmlns:ns0="http://fastmoney.imm.dtu.dk" name="LameDuck" targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
+    <types>
+        <xsd:schema xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
+            <xsd:import namespace="http://types.fastmoney.imm.dtu.dk" schemaLocation="http://localhost:8080/LameDuck/LameDuckService?xsd=1"/>
+            <xsd:complexType name="FlightType">
+                <xsd:sequence>
+                    <xsd:element name="Start" type="xsd:string"/>
+                    <xsd:element name="Destination" type="xsd:string"/>
+                    <xsd:element name="StartDateTime" type="xsd:dateTime"/>
+                    <xsd:element name="DestinationDateTime" type="xsd:dateTime"/>
+                    <xsd:element name="Carrier" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="FlightInformationType">
+                <xsd:sequence>
+                    <xsd:element name="BookingNumber" type="tns:BookingNumber"/>
+                    <xsd:element name="Price" type="xsd:int"/>
+                    <xsd:element name="AirlineReservationService" type="xsd:string"/>
+                    <xsd:element name="Flight" type="tns:FlightType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="getFlightsOutputType">
+                <xsd:sequence>
+                    <xsd:element name="FlightInformations" type="tns:FlightInformationType" maxOccurs="unbounded" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="Flight" type="tns:FlightType"/>
+            <xsd:element name="getFlightsOutput" type="tns:getFlightsOutputType"/>
+            <xsd:simpleType name="BookingNumber">
+                <xsd:restriction base="xsd:string"/>
+            </xsd:simpleType>
+            <xsd:complexType name="BookFlightInputType">
+                <xsd:sequence>
+                    <xsd:element name="BookingNumber" type="tns:BookingNumber"/>
+                    <xsd:element name="CreditCard" type="ns3:creditCardInfoType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="BookFlightInput" type="tns:BookFlightInputType"/>
+            <xsd:element name="BookFlightOutput" type="xsd:boolean"/>
+            <xsd:element name="FaultMessage" type="xsd:string"/>
+            <xsd:complexType name="CancelFlightInputType">
+                <xsd:sequence>
+                    <xsd:element name="BookingNumber" type="tns:BookingNumber"/>
+                    <xsd:element name="Price" type="xsd:int"/>
+                    <xsd:element name="CreditCard" type="ns3:creditCardInfoType"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="CancelFlightInput" type="tns:CancelFlightInputType"/>
+            <xsd:complexType name="getFlightsInputType">
+                <xsd:sequence>
+                    <xsd:element name="start" type="xsd:string"/>
+                    <xsd:element name="destination" type="xsd:string"/>
+                    <xsd:element name="date" type="xsd:date"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getFlightsInput" type="tns:getFlightsInputType"/>
+            <xsd:element name="CancelFlightOutput" type="xsd:boolean"/>
+        </xsd:schema>
+    </types>
+    <message name="getFlightsRequest">
+        <part name="getFlightsInput" element="tns:getFlightsInput"/>
+    </message>
+    <message name="getFlightsResponse">
+        <part name="getFlightsOutput" element="tns:getFlightsOutput"/>
+    </message>
+    <message name="bookFlightRequest">
+        <part name="bookFlightInput" element="tns:BookFlightInput"/>
+    </message>
+    <message name="bookFlightResponse">
+        <part name="bookFlightOutput" element="tns:BookFlightOutput"/>
+    </message>
+    <message name="bookFlightFault">
+        <part name="message" element="tns:FaultMessage"/>
+    </message>
+    <message name="cancelFlightRequest">
+        <part name="cancelFlightInput" element="tns:CancelFlightInput"/>
+    </message>
+    <message name="cancelFlightResponse">
+        <part name="cancelFlightOutput" element="tns:CancelFlightOutput"/>
+    </message>
+    <message name="cancelFlightFault">
+        <part name="fault" element="tns:FaultMessage"/>
+    </message>
+    <portType name="LameDuckPortType">
+        <operation name="getFlights">
+            <input name="input1" message="tns:getFlightsRequest"/>
+            <output name="output1" message="tns:getFlightsResponse"/>
+        </operation>
+        <operation name="bookFlight">
+            <input name="input2" message="tns:bookFlightRequest"/>
+            <output name="output2" message="tns:bookFlightResponse"/>
+            <fault name="fault" message="tns:bookFlightFault"/>
+        </operation>
+        <operation name="cancelFlight">
+            <input name="input3" message="tns:cancelFlightRequest"/>
+            <output name="output3" message="tns:cancelFlightResponse"/>
+            <fault name="fault1" message="tns:cancelFlightFault"/>
+        </operation>
+    </portType>
+    <binding name="LameDuckPortTypeBinding" type="tns:LameDuckPortType">
+        <soap12:binding style="document" transport="http://www.w3.org/2003/05/soap/bindings/HTTP/"/>
+        <operation name="getFlights">
+            <soap12:operation/>
+            <input name="input1">
+                <soap12:body use="literal"/>
+            </input>
+            <output name="output1">
+                <soap12:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="bookFlight">
+            <soap12:operation/>
+            <input name="input2">
+                <soap12:body use="literal"/>
+            </input>
+            <output name="output2">
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault">
+                <soap12:fault name="fault" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="cancelFlight">
+            <soap12:operation/>
+            <input name="input3">
+                <soap12:body use="literal"/>
+            </input>
+            <output name="output3">
+                <soap12:body use="literal"/>
+            </output>
+            <fault name="fault1">
+                <soap12:fault name="fault1" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+    <service name="LameDuckService">
+        <port name="LameDuckBindingPort" binding="tns:LameDuckPortTypeBinding">
+            <soap12:address location="http://localhost:8080/LameDuck/LameDuckService"/>
+        </port>
+    </service>
+    <plnk:partnerLinkType name="LameDuck">
+        <!-- A partner link type is automatically generated when a new port type is added. Partner link types are used by BPEL processes. 
+In a BPEL process, a partner link represents the interaction between the BPEL process and a partner service. Each partner link is associated with a partner link type.
+A partner link type characterizes the conversational relationship between two services. The partner link type can have one or two roles.-->
+        <plnk:role name="LameDuckPortTypeRole" portType="tns:LameDuckPortType"/>
+    </plnk:partnerLinkType>
+</definitions>
