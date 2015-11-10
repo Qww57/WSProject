@@ -1,6 +1,6 @@
-<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.1-b419 (branches/2.3.1.x-7937; 2014-08-04T08:11:03+0000) JAXWS-RI/2.2.10-b140803.1500 JAXWS-API/2.2.11 JAXB-RI/2.2.10-b140802.1033 JAXB-API/2.2.12-b140109.1041 svn-revision#unknown. --><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://fastmoney.imm.dtu.dk" xmlns:ns3="http://types.fastmoney.imm.dtu.dk" xmlns:ns2="http://types.fastmoney.imm.dtu.dk" xmlns:ns0="http://fastmoney.imm.dtu.dk" name="LameDuck" targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.1-b419 (branches/2.3.1.x-7937; 2014-08-04T08:11:03+0000) JAXWS-RI/2.2.10-b140803.1500 JAXWS-API/2.2.11 JAXB-RI/2.2.10-b140802.1033 JAXB-API/2.2.12-b140109.1041 svn-revision#unknown. --><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" name="LameDuck" targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
     <types>
-        <xsd:schema xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
+        <xsd:schema xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:ns="http://types.fastmoney.imm.dtu.dk" targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
             <xsd:import namespace="http://types.fastmoney.imm.dtu.dk" schemaLocation="http://localhost:8080/LameDuck/LameDuckService?xsd=1"/>
             <xsd:complexType name="FlightType">
                 <xsd:sequence>
@@ -32,7 +32,7 @@
             <xsd:complexType name="BookFlightInputType">
                 <xsd:sequence>
                     <xsd:element name="BookingNumber" type="tns:BookingNumber"/>
-                    <xsd:element name="CreditCard" type="ns3:creditCardInfoType"/>
+                    <xsd:element name="CreditCard" type="ns:creditCardInfoType"/>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:element name="BookFlightInput" type="tns:BookFlightInputType"/>
@@ -42,7 +42,7 @@
                 <xsd:sequence>
                     <xsd:element name="BookingNumber" type="tns:BookingNumber"/>
                     <xsd:element name="Price" type="xsd:int"/>
-                    <xsd:element name="CreditCard" type="ns3:creditCardInfoType"/>
+                    <xsd:element name="CreditCard" type="ns:creditCardInfoType"/>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:element name="CancelFlightInput" type="tns:CancelFlightInputType"/>

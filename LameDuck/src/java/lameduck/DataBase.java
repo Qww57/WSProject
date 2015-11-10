@@ -67,7 +67,7 @@ public class DataBase {
     static public HashMap<FlightType, String> InitializeBookingHashtable(List<FlightType> listFlight){
         HashMap<FlightType, String> bookingHashtable = new  HashMap<FlightType, String>();
         for(int i=0; i < listFlight.size(); i++){
-            String bookingNumber = "booking_Flight_" + Integer.toString(i);
+            String bookingNumber = Integer.toString(19457 + i);
             bookingHashtable.put(listFlight.get(i), bookingNumber);
         }
         return bookingHashtable;

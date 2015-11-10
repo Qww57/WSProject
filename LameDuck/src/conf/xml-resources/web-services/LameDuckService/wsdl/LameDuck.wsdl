@@ -2,9 +2,9 @@
 <definitions name="LameDuck" targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck"
     xmlns="http://schemas.xmlsoap.org/wsdl/"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://fastmoney.imm.dtu.dk" xmlns:ns3="http://types.fastmoney.imm.dtu.dk" xmlns:ns2="http://types.fastmoney.imm.dtu.dk" xmlns:ns0="http://fastmoney.imm.dtu.dk">
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/">
     <types>
-        <xsd:schema targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
+        <xsd:schema targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:ns="http://types.fastmoney.imm.dtu.dk">
             <xsd:import namespace="http://types.fastmoney.imm.dtu.dk" schemaLocation="BankServiceTypes.xsd"/>
             <xsd:complexType name="FlightType">
                 <xsd:sequence>
@@ -36,7 +36,7 @@
             <xsd:complexType name="BookFlightInputType">
                 <xsd:sequence>
                     <xsd:element name="BookingNumber" type="tns:BookingNumber"></xsd:element>
-                    <xsd:element name="CreditCard" type="ns3:creditCardInfoType"></xsd:element>
+                    <xsd:element name="CreditCard" type="ns:creditCardInfoType"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:element name="BookFlightInput" type="tns:BookFlightInputType"></xsd:element>
@@ -46,7 +46,7 @@
                 <xsd:sequence>
                     <xsd:element name="BookingNumber" type="tns:BookingNumber"></xsd:element>
                     <xsd:element name="Price" type="xsd:int"></xsd:element>
-                    <xsd:element name="CreditCard" type="ns3:creditCardInfoType"></xsd:element>
+                    <xsd:element name="CreditCard" type="ns:creditCardInfoType"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:element name="CancelFlightInput" type="tns:CancelFlightInputType"></xsd:element>

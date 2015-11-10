@@ -11,8 +11,6 @@ import dk.dtu.imm.fastmoney.types.AccountType;
 import dk.dtu.imm.fastmoney.types.CreditCardInfoType;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jws.WebService;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.ws.BindingType;
@@ -60,7 +58,8 @@ public class LameDuckService {
 
     public GetFlightsOutputType getFlights(GetFlightsInputType getFlightsInput) throws DatatypeConfigurationException {
         //initialise list of all flights
-        List<FlightType> listOfFlights = initializeFlightList();
+        InitializeDataBases();
+        
         //create variables
         String start = getFlightsInput.getStart().toLowerCase();
         String destination = getFlightsInput.getDestination().toLowerCase();
@@ -71,21 +70,22 @@ public class LameDuckService {
         //Create list to be returned
         GetFlightsOutputType response = new GetFlightsOutputType();
         //iterate through flights
-        for (int i = 0; i < listOfFlights.size(); i++) {
-            String this_start = listOfFlights.get(i).getStart().toLowerCase();
-            String this_destination = listOfFlights.get(i).getDestination().toLowerCase();
-            Integer this_day = listOfFlights.get(i).getDestinationDateTime().getDay();
-            Integer this_month = listOfFlights.get(i).getDestinationDateTime().getMonth();
-            Integer this_year = listOfFlights.get(i).getDestinationDateTime().getYear();
+        for (int i = 0; i < flightDataBase.size(); i++) {
+            FlightType flight = flightDataBase.get(i);
+            String this_start = flightDataBase.get(i).getStart().toLowerCase();
+            String this_destination = flightDataBase.get(i).getDestination().toLowerCase();
+            Integer this_day = flightDataBase.get(i).getDestinationDateTime().getDay();
+            Integer this_month = flightDataBase.get(i).getDestinationDateTime().getMonth();
+            Integer this_year = flightDataBase.get(i).getDestinationDateTime().getYear();
             if ((start.equals(this_start)) && (destination.equals(this_destination)) && (day.equals(this_day)) && (month.equals(this_month)) && (year.equals(this_year))) {
                 FlightInformationType this_flight = new FlightInformationType();
-                String bookingNumber = Integer.toString(i + 19457);
+                String bookingNumber = bookingDB.get(flight);
                 this_flight.setBookingNumber(bookingNumber);
                 Integer price = 5000;
                 this_flight.setPrice(price);
                 String AirlineReservationService = "LameDuck";
                 this_flight.setAirlineReservationService(AirlineReservationService);
-                FlightType this_flight_this = listOfFlights.get(i);
+                FlightType this_flight_this = flightDataBase.get(i);
                 this_flight.setFlight(this_flight_this);
                 response.getFlightInformations().add(this_flight);
             }
@@ -123,7 +123,7 @@ public class LameDuckService {
                     int price = 1500;
 
                     try {
-                        System.out.println("BOOKING - Valide Credit Card");
+                        System.out.println("BOOKING - Valid Credit Card");
                         chargeCreditCard(group, creditCardInfo, price, account);
                         availabilityDB.replace(bookedFlight, false);
                         System.out.println("BOOKING - Flight successfuly booked");
@@ -157,26 +157,13 @@ public class LameDuckService {
 
         if (cancelFlightInput != null) {
             try {
-                String bookingNumber = cancelFlightInput.getBookingNumber();
-
-                // Initialize the list of flights we are using as a database
-                InitializeDataBases();
-
-                // Putting the availability of the hotel to true
-                HashMap<String, FlightType> reversedHM = reverse(bookingDB);
-
-                if (reversedHM.get(bookingNumber) != null) {
-                    FlightType bookedFlight = reversedHM.get(bookingNumber);
-                    availabilityDB.replace(bookedFlight, true);
-                    System.out.println("CANCELING - SUCCESS - END");
-                } else {
-                    System.out.println("BOOKING - ERROR - No flight found for the current booking number");
-                    CancelFlightFault fault = new CancelFlightFault("The booking number you provided was not linked to any flight", "CancelFlightFault");
-                    throw fault;
-                }
-            } catch (DatatypeConfigurationException ex) {
-                System.out.println("BOOKING - ERROR - Error initializing list of flights");
-                CancelFlightFault fault = new CancelFlightFault("Error initializing list of flights", "CancelFlightFault");
+                AccountType account = new AccountType();
+                account.setName("LameDuck");
+                account.setNumber("50208812");
+                refundCreditCard(group, cancelFlightInput.getCreditCard(), 2500, account);
+            } catch (CreditCardFaultMessage ex) {
+                System.out.println("BOOKING - ERROR - There was an error refunding the flight");  
+                CancelFlightFault fault = new CancelFlightFault("An error occured while refunding flight", "CancelFlightFault");
                 throw fault;
             }
         } else { // If no input
@@ -185,11 +172,11 @@ public class LameDuckService {
         }
     }
 
-    private boolean validateCreditCard(int group, dk.dtu.imm.fastmoney.types.CreditCardInfoType creditCardInfo, int amount) throws CreditCardFaultMessage {
+    private boolean refundCreditCard(int group, dk.dtu.imm.fastmoney.types.CreditCardInfoType creditCardInfo, int amount, dk.dtu.imm.fastmoney.types.AccountType account) throws CreditCardFaultMessage {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.
         dk.dtu.imm.fastmoney.BankPortType port = service_1.getBankPort();
-        return port.validateCreditCard(group, creditCardInfo, amount);
+        return port.refundCreditCard(group, creditCardInfo, amount, account);
     }
 
     private boolean chargeCreditCard(int group, dk.dtu.imm.fastmoney.types.CreditCardInfoType creditCardInfo, int amount, dk.dtu.imm.fastmoney.types.AccountType account) throws CreditCardFaultMessage {

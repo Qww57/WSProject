@@ -25,7 +25,7 @@ public class LameDuckClientTest {
     // The methods must be annotated with annotation @Test. For example:
     //
     @Test
-    public void LameDuckTest() throws DatatypeConfigurationException {
+    public void LameDuckGetFlightTest() throws DatatypeConfigurationException {
         //input info
         String start = "Copenhagen";
         String destination = "London";
@@ -66,6 +66,11 @@ public class LameDuckClientTest {
         System.out.println("Comparing Start Date and Time (Gregorian Calendar: ");
         assertEquals(outputFlightList.getFlightInformations().get(0).getFlight().getStartDateTime(), expectedFlightList.getFlightInformations().get(0).getFlight().getStartDateTime());
         //more fields can be compared
+    }
+    
+    @Test
+    public void LameDuckBookFlightTest() throws DatatypeConfigurationException {
+        
     }
     
     //XML Gregorian Date and Time Setter
