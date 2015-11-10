@@ -9,13 +9,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.datatype.DatatypeConfigurationException;
 import org.netbeans.j2ee.wsdl.niceview.java.niceview.HotelType;
+
 
 /**
  *
  * @author Quentin
  */
 public class DataBase {
+    
     
     // constructor used to create an Hotel        
     static private HotelType CreateHotel(String name, String address, boolean creditCardGuarantee){
