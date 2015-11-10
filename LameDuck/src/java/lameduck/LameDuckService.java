@@ -157,7 +157,7 @@ public class LameDuckService {
                 refundCreditCard(group, cancelFlightInput.getCreditCard(), 2500, account);
                 System.out.println("we canceled");
             } catch (CreditCardFaultMessage ex) {
-                System.out.println("BOOKING - ERROR - There was an error refunding the flight");  
+                System.out.println("ERROR - There was an error refunding the flight");  
                 CancelFlightFault fault = new CancelFlightFault("An error occured while refunding flight", "CancelFlightFault");
                 throw fault;
             }

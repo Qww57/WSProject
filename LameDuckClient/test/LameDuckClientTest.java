@@ -51,7 +51,7 @@ public class LameDuckClientTest {
         GetFlightsOutputType expectedFlightList = new GetFlightsOutputType();
         FlightInformationType firstFlight = new FlightInformationType();
         firstFlight.setBookingNumber("19457");
-        firstFlight.setPrice(120);
+        firstFlight.setPrice(5000);
         firstFlight.setAirlineReservationService("LameDuck");
         FlightType expectedFlight = new FlightType();
         expectedFlight.setStart("Copenhagen");
@@ -72,11 +72,22 @@ public class LameDuckClientTest {
         //more fields can be compared
     }
     
+    // Booking of an flight with empty object as input
+    @Test
+    public void bookFlightTestError() throws BookFlightFault{
+        try {
+            assertTrue(bookFlight(null));
+        } catch (BookFlightFault e) {
+            System.out.println("Booking of flight with empty input has not passed");
+            assertEquals("Empty", e.getMessage());
+        } 
+    }
+    
     @Test
     public void bookFlightTestWithCreditCard() throws  BookFlightFault, DatatypeConfigurationException {
         try {
             // Booking of flight that requires credit card
-            BookFlightInputType input = CreateBookFlightInputType("19457", "Anne Strandberg", "50408816", 5, 9);
+            BookFlightInputType input = CreateBookFlightInputType("19457", "Tick Joachim", "50408824", 2, 11);
             boolean result = bookFlight(input);     
             assertEquals(true, result);
         } catch (BookFlightFault e) {
@@ -89,23 +100,23 @@ public class LameDuckClientTest {
     // Booking of an flight with unvalid booking number
     @Test 
      public void bookFlightTestError1() throws DatatypeConfigurationException, BookFlightFault {    
-        BookFlightInputType input = CreateBookFlightInputType("hey you", "Anne Strandberg", "50408816", 5, 9);
+        BookFlightInputType input = CreateBookFlightInputType("19457", "Tick Joachim", "50408824", 2, 11);
         try {
             assertTrue(bookFlight(input));
         }
         catch (BookFlightFault ex) {
-            System.out.println("Booking of a flight with invalid booking number has passed");
+            System.out.println("Booking of a flight with invalid booking number has not passed");
             assertEquals("The booking number you provided was not linked to any flight",ex.getMessage());
         } 
     }
      // Booking of an hotel with unvalid card information
      @Test
     public void bookFlightTestError2() throws BookFlightFault, DatatypeConfigurationException{    
-        BookFlightInputType input = CreateBookFlightInputType("19457", "Anne Strandberg", "00000000", 0, 9);
+        BookFlightInputType input = CreateBookFlightInputType("19457", "Tick Joachim", "50408824", 2, 11);
         try {
             assertTrue(bookFlight(input));
         } catch (BookFlightFault e) {
-            System.out.println("Booking of a flight with invalid card information has passed");
+            System.out.println("Booking of a flight with invalid card information has not passed");
             assertEquals("Month must be between 1 and 12",e.getMessage()); 
         }
     }
@@ -113,22 +124,22 @@ public class LameDuckClientTest {
     // Booking of flight with not enough money on the bank account (price of flight is 5000)
     @Test
     public void bookFlightTestError3() throws BookFlightFault, DatatypeConfigurationException{    
-        BookFlightInputType input = CreateBookFlightInputType("19457", "Bech Camilla", "50408822", 7, 9);
+        BookFlightInputType input = CreateBookFlightInputType("19457", "Tick Joachim", "50408824", 2, 11);
         try {
             assertTrue(bookFlight(input));
         } catch (BookFlightFault e) {
-            System.out.println("Booking of a flight with insufficient money has passed");
+            System.out.println("Booking of a flight with insufficient money has not passed");
             assertEquals("The account has not enough money",e.getMessage());
         }       
     }
     
     @Test
     public void cancelFlightTestError1() throws DatatypeConfigurationException{    
-        CancelFlightInputType input = CreateCancelFlightInputType("19457", "Tick Joachim", "50408824", 2, 11, 5000);
+        CancelFlightInputType input = CreateCancelFlightInputType("19457", "Tick Joachim", "5040824", 2, 11, 5000);
         try {
             cancelFlight(input);
         } catch (CancelFlightFault e) {
-            
+            System.out.println("Cancelling has not passed");
             assertEquals("An error occured while refunding flight",e.getMessage());
         }       
     }
