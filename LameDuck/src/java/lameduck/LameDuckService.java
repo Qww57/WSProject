@@ -123,7 +123,7 @@ public class LameDuckService {
                     int price = 5000;
 
                     try {
-                        System.out.println("BOOKING - Valid Credit Card");
+                        System.out.println("BOOKING - Charge Credit Card");
                         chargeCreditCard(group, creditCardInfo, price, account);
                         availabilityDB.replace(bookedFlight, false);
                         System.out.println("BOOKING - Flight successfuly booked");
@@ -145,9 +145,9 @@ public class LameDuckService {
         }
     }
 
-    public void cancelFlight(CancelFlightInputType cancelFlightInput) throws CancelFlightFault {
+    public void cancelFlight(CancelFlightInputType cancelFlightInput) throws CancelFlightFault, DatatypeConfigurationException {
         System.out.println("CANCELING - START");
-
+        
         if (cancelFlightInput != null) {
             try {
                 System.out.println("it's not null");
@@ -155,18 +155,20 @@ public class LameDuckService {
                 account.setName("LameDuck");
                 account.setNumber("50208812");
                 refundCreditCard(group, cancelFlightInput.getCreditCard(), 2500, account);
-                System.out.println("we canceled");
+                System.out.println("we canceled successfully");
+                
             } catch (CreditCardFaultMessage ex) {
                 System.out.println("ERROR - There was an error refunding the flight");  
-                CancelFlightFault fault = new CancelFlightFault("An error occured while refunding flight", "CancelFlightFault");
+                CancelFlightFault fault = new CancelFlightFault("ERROR", "CancelFlightFault");
                 throw fault;
             }
         } else { // If no input
+            System.out.println("ERROR - Input was Empty");
             CancelFlightFault exception = new CancelFlightFault("Empty", "CancelFlightFault");
             throw exception;
         }
+       
     }
-
     private boolean refundCreditCard(int group, dk.dtu.imm.fastmoney.types.CreditCardInfoType creditCardInfo, int amount, dk.dtu.imm.fastmoney.types.AccountType account) throws CreditCardFaultMessage {
         // Note that the injected javax.xml.ws.Service reference as well as port objects are not thread safe.
         // If the calling of port operations may lead to race condition some synchronization is required.

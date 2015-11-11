@@ -78,7 +78,7 @@ public class LameDuckClientTest {
         try {
             assertTrue(bookFlight(null));
         } catch (BookFlightFault e) {
-            System.out.println("Booking of flight with empty input has not passed");
+            System.out.println("Booking of flight with empty input is not accepted");
             assertEquals("Empty", e.getMessage());
         } 
     }
@@ -91,7 +91,7 @@ public class LameDuckClientTest {
             boolean result = bookFlight(input);     
             assertEquals(true, result);
         } catch (BookFlightFault e) {
-            System.out.println("Booking of flight that requires credit card has not passed");
+            System.out.println("Booking of flight that requires credit card is not accepted");
             System.out.println(e.getMessage());
             fail();
         }
@@ -100,50 +100,64 @@ public class LameDuckClientTest {
     // Booking of an flight with unvalid booking number
     @Test 
      public void bookFlightTestError1() throws DatatypeConfigurationException, BookFlightFault {    
-        BookFlightInputType input = CreateBookFlightInputType("19457", "Tick Joachim", "50408824", 2, 11);
+        BookFlightInputType input = CreateBookFlightInputType("invalid", "Tick Joachim", "50408824", 2, 11);
         try {
             assertTrue(bookFlight(input));
         }
         catch (BookFlightFault ex) {
-            System.out.println("Booking of a flight with invalid booking number has not passed");
+            System.out.println("Booking of a flight with invalid booking number is not accepted");
             assertEquals("The booking number you provided was not linked to any flight",ex.getMessage());
         } 
     }
      // Booking of an hotel with unvalid card information
      @Test
     public void bookFlightTestError2() throws BookFlightFault, DatatypeConfigurationException{    
-        BookFlightInputType input = CreateBookFlightInputType("19457", "Tick Joachim", "50408824", 2, 11);
+        BookFlightInputType input = CreateBookFlightInputType("19457", "Tick Joachim", "50408724", 2, 11);
         try {
             assertTrue(bookFlight(input));
         } catch (BookFlightFault e) {
-            System.out.println("Booking of a flight with invalid card information has not passed");
-            assertEquals("Month must be between 1 and 12",e.getMessage()); 
+            System.out.println("Booking of a flight with invalid card information is not accepted");
+            assertEquals("Credit card does not exist",e.getMessage()); 
         }
     }
     
     // Booking of flight with not enough money on the bank account (price of flight is 5000)
     @Test
     public void bookFlightTestError3() throws BookFlightFault, DatatypeConfigurationException{    
-        BookFlightInputType input = CreateBookFlightInputType("19457", "Tick Joachim", "50408824", 2, 11);
+        BookFlightInputType input = CreateBookFlightInputType("19457", "Bech Camilla", "50408822", 7, 9);
         try {
             assertTrue(bookFlight(input));
         } catch (BookFlightFault e) {
-            System.out.println("Booking of a flight with insufficient money has not passed");
+            System.out.println("Booking of a flight with insufficient money is not accepted");
             assertEquals("The account has not enough money",e.getMessage());
         }       
     }
     
+    // in case refund information was not correct
     @Test
-    public void cancelFlightTestError1() throws DatatypeConfigurationException{    
-        CancelFlightInputType input = CreateCancelFlightInputType("19457", "Tick Joachim", "5040824", 2, 11, 5000);
-        try {
-            cancelFlight(input);
-        } catch (CancelFlightFault e) {
-            System.out.println("Cancelling has not passed");
-            assertEquals("An error occured while refunding flight",e.getMessage());
-        }       
-    }
+    public void cancelFlightTest1() throws DatatypeConfigurationException{    
+       CancelFlightInputType input = CreateCancelFlightInputType("19457", "Tick Joachim", "50407824", 2, 11, 5000);
+              try {
+                System.out.println("Cancelling in progress");
+                cancelFlight(input);
+            } catch (CancelFlightFault e) {
+                System.out.println("Cancelling with wrong info is not accepted");
+                assertEquals("ERROR",e.getMessage());
+            }
+        }
 
+    
+    @Test //in case if input is empty
+    public void cancelFlightNull() throws DatatypeConfigurationException{    
+        try {
+                System.out.println("Cancelling in progress");
+                cancelFlight(null);
+            } catch (CancelFlightFault e) {
+                System.out.println("Cancelling with empty field is not accepted");
+                assertEquals("Empty",e.getMessage());
+            }
+      }
+    
     //XML Gregorian Date and Time Setter
     private XMLGregorianCalendar SetGregorianDateTime(Integer hours, Integer minutes, Integer day, Integer month, Integer year) throws DatatypeConfigurationException {
         GregorianCalendar gc = new GregorianCalendar(year, month, day);
