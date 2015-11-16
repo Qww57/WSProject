@@ -82,7 +82,7 @@
         <operation name="cancelHotel">
             <input name="input3" message="tns:cancelHotelRequest"/>
             <output name="output3" message="tns:cancelHotelResponse"/>
-            <fault name="fault1" message="tns:cancelHotelFault"/>
+            <fault name="fault3" message="tns:cancelHotelFault"/>
         </operation>
     </portType>
     <binding name="NiceViewPortTypeBinding" type="tns:NiceViewPortType">
@@ -116,8 +116,8 @@
             <output name="output3">
                 <soap12:body use="literal"/>
             </output>
-            <fault name="fault1">
-                <soap12:fault name="fault1" use="literal"/>
+            <fault name="fault3">
+                <soap12:fault name="fault3" use="literal"/>
             </fault>
         </operation>
     </binding>

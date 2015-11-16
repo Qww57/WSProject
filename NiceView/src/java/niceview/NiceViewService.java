@@ -110,7 +110,7 @@ public class NiceViewService {
         return listOfHotels;
     }
        
-    public boolean bookHotel(BookHotelInputType bookHotelReqest) throws niceview.BookHotelFault {
+    public boolean bookHotel(BookHotelInputType bookHotelReqest) throws BookHotelFault {
         System.out.println("BOOKING - START");
                
         if(bookHotelReqest != null){
@@ -153,8 +153,8 @@ public class NiceViewService {
                         } 
                     } catch (CreditCardFaultMessage ex) { // if there is an error while validating the card info
                         System.out.println("Message : " + ex.getFaultInfo().getMessage());
-                        niceview.BookHotelFault exception = new niceview.BookHotelFault( ex.getFaultInfo().getMessage(),  "BookFaultError");
-                        throw exception;
+                        BookHotelFault fault = new BookHotelFault( ex.getFaultInfo().getMessage(),  "BookFaultError");
+                        throw fault;
                     }
                 } else{ // if no credit card was required
                     System.out.println("BOOKING - No credit card guarantee needed to book the Hotel");                                
@@ -170,8 +170,8 @@ public class NiceViewService {
             return true;
         } 
         else { // If no input
-            niceview.BookHotelFault exception = new BookHotelFault("Empty", "BookHotelFault");
-            throw exception;
+            BookHotelFault fault = new BookHotelFault("Empty", "BookHotelFault");
+            throw fault;
         } 
     }
 
