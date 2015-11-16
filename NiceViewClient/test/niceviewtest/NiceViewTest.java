@@ -94,7 +94,7 @@ public class NiceViewTest {
     
     /// TESTS FOR THE BOOK FUNCTION
     
-    //@Test
+    @Test
     public void bookHotelTest() throws BookHotelFault, DatatypeConfigurationException{
         // Booking of an hotel that doesn't require credit card 
         BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_4", "Tick Joachim", "50408824", 2, 11);
@@ -120,19 +120,9 @@ public class NiceViewTest {
     public void bookHotelTestError() throws BookHotelFault{
         try {
             assertTrue(bookHotel(null));
-<<<<<<< HEAD
         } catch (BookHotelFault e) {
             assertEquals("Empty", e.getMessage());
-=======
-        } catch (SOAPFaultException e) {
-            System.out.println("SOAPFaultException");
-            assertEquals("Empty", e.getFault().getFaultString());
->>>>>>> origin/master
         } 
-        /* catch (BookHotelFault f){
-            System.out.println("BookHotelFault");
-            assertEquals("Empty", f.getMessage());
-        }*/
     }
     
     // Booking of an hotel with unvalid booking number
