@@ -11,13 +11,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jws.WebService;
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceRef;
-import javax.xml.ws.soap.SOAPFaultException;
 import static niceview.DataBase.*;
 import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
 
@@ -37,7 +35,7 @@ public class NiceViewService {
     private static HashMap<HotelType, Boolean> availabilityDB;
     private static int group = 1; // The number of our project group
     
-    private void InitializeDataBases(){
+    private void InitializeDataBases()throws DatatypeConfigurationException {
         //System.out.println("Initializing Databases");
         if(hotelDataBase == null){
             hotelDataBase = InitializeHotelList();
@@ -50,7 +48,7 @@ public class NiceViewService {
         }
     }
       
-    public GetHotelsOutputType getHotels(GetHotelInputType hotelsRequest){              
+    public GetHotelsOutputType getHotels(GetHotelInputType hotelsRequest)throws DatatypeConfigurationException {              
         System.out.println("GETTING - START " + hotelsRequest.getCity());      
         
         GetHotelsOutputType listOfHotels = new GetHotelsOutputType();
@@ -110,7 +108,7 @@ public class NiceViewService {
         return listOfHotels;
     }
        
-    public boolean bookHotel(BookHotelInputType bookHotelReqest) throws niceview.BookHotelFault {
+    public boolean bookHotel(BookHotelInputType bookHotelReqest) throws BookHotelFault, DatatypeConfigurationException {
         System.out.println("BOOKING - START");
                
         if(bookHotelReqest != null){
@@ -148,12 +146,12 @@ public class NiceViewService {
                         }
                         catch(CreditCardFaultMessage e){ // if there is an error while charging the bank account
                             System.out.println("Message : " + e.getFaultInfo().getMessage());
-                            BookHotelFault fault = new BookHotelFault( e.getFaultInfo().getMessage(), "BookFaultError");
+                            BookHotelFault fault = new BookHotelFault( e.getFaultInfo().getMessage(), "BookHotelFault");
                             throw fault;
                         } 
                     } catch (CreditCardFaultMessage ex) { // if there is an error while validating the card info
                         System.out.println("Message : " + ex.getFaultInfo().getMessage());
-                        niceview.BookHotelFault exception = new niceview.BookHotelFault( ex.getFaultInfo().getMessage(),  "BookFaultError");
+                        BookHotelFault exception = new BookHotelFault( ex.getFaultInfo().getMessage(), "BookHotelFault");
                         throw exception;
                     }
                 } else{ // if no credit card was required
@@ -170,15 +168,16 @@ public class NiceViewService {
             return true;
         } 
         else { // If no input
-            niceview.BookHotelFault exception = new BookHotelFault("Empty", "BookHotelFault");
+            BookHotelFault exception = new BookHotelFault("Empty", "BookHotelFault");
             throw exception;
         } 
     }
 
-    public void cancelHotel(java.lang.String cancelHotelRequest) throws CancelHotelFault {
+    public void cancelHotel(java.lang.String cancelHotelRequest) throws CancelHotelFault, DatatypeConfigurationException {
         System.out.println("CANCELING - START");
         
         if(cancelHotelRequest != null){
+         
             String bookingNumber = cancelHotelRequest;
 
             // Initialize the list of hotel we are using as a database
@@ -188,16 +187,19 @@ public class NiceViewService {
             HashMap<String,HotelType> reversedHM = reverse (bookingDB);
             
             if(reversedHM.get(bookingNumber) != null){
+              
+                   
                 HotelType bookedHotel = reversedHM.get(bookingNumber);
                 availabilityDB.replace(bookedHotel, true);           
                 System.out.println("CANCELING - SUCCESS - END");
-            } else{
-                System.out.println("BOOKING - ERROR - No hotel found for the current booking number");  
-                CancelHotelFault fault = new CancelHotelFault("The booking number you provided was not linked to any hotel", "CancelHotelFault");
+                
+            } else {
+                System.out.println("ERROR - There was an error canceling the hotel");  
+                CancelHotelFault fault = new CancelHotelFault("ERROR", "CancelHotelFault");
                 throw fault;
             }
         } else { // If no input
-            niceview.CancelHotelFault exception = new CancelHotelFault("Empty", "CancelHotelFault");
+            CancelHotelFault exception = new CancelHotelFault("Empty", "CancelHotelFault");
             throw exception;
         } 
     }  

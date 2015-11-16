@@ -59,7 +59,7 @@
     <message name="bookHotelResponse">
         <part name="bookHotelResponse" element="tns:BookHotelOutput"/>
     </message>
-    <message name="BookHotelFault">
+    <message name="bookHotelFault">
         <part name="message" element="tns:FaultMessage"/>
     </message>
     <message name="cancelHotelRequest">
@@ -77,7 +77,7 @@
         <operation name="bookHotel">
             <input name="input2" message="tns:bookHotelRequest"/>
             <output name="output2" message="tns:bookHotelResponse"/>
-            <fault name="fault1" message="tns:BookHotelFault"/>
+            <fault name="fault" message="tns:bookHotelFault"/>
         </operation>
         <operation name="cancelHotel">
             <input name="input3" message="tns:cancelHotelRequest"/>
@@ -104,8 +104,8 @@
             <output name="output2">
                 <soap12:body use="literal"/>
             </output>
-            <fault name="fault1">
-                <soap12:fault name="fault1" use="literal"/>
+            <fault name="fault">
+                <soap12:fault name="fault" use="literal"/>
             </fault>
         </operation>
         <operation name="cancelHotel">

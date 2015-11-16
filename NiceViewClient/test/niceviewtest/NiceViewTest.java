@@ -11,7 +11,6 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.ws.soap.SOAPFaultException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
@@ -110,8 +109,8 @@ public class NiceViewTest {
             BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_2", "Thor-Jensen Claus", "50408825", 5, 9);
             boolean result = bookHotel(input);
             assertEquals(true, result);  
-        } catch(SOAPFaultException e){
-            System.out.println(e.getFault().getFaultString());
+        } catch(BookHotelFault e){
+            System.out.println(e.getMessage());
             fail();
         }
     }
@@ -121,8 +120,8 @@ public class NiceViewTest {
     public void bookHotelTestError() throws BookHotelFault{
         try {
             assertTrue(bookHotel(null));
-        } catch (SOAPFaultException e) {
-            assertEquals("Empty", e.getFault().getFaultString());
+        } catch (BookHotelFault e) {
+            assertEquals("Empty", e.getMessage());
         } 
     }
     
@@ -132,8 +131,8 @@ public class NiceViewTest {
         BookHotelInputType input = CreateBookHotelInputType("Hello you", "Tick Joachim", "50408824", 2, 11);
         try {
             assertTrue(bookHotel(input));
-        } catch (SOAPFaultException e) {
-            assertEquals("The booking number you provided was not linked to any hotel", e.getFault().getFaultString());
+        } catch (BookHotelFault e) {
+            assertEquals("The booking number you provided was not linked to any hotel", e.getMessage());
         } 
     }
     
@@ -143,8 +142,8 @@ public class NiceViewTest {
         BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_1", "Tick Joachim", "00000000", 0, 9);
         try {
             assertTrue(bookHotel(input));
-        } catch (SOAPFaultException e) {
-            assertEquals("Month must be between 1 and 12",e.getFault().getFaultString());
+        } catch (BookHotelFault e) {
+            assertEquals("Month must be between 1 and 12",e.getMessage());
         }       
     }
     
@@ -154,8 +153,8 @@ public class NiceViewTest {
         BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_1", "Tobiasen Inge", "50408823", 9, 10);
         try {
             assertTrue(bookHotel(input));
-        } catch (SOAPFaultException e) {
-            assertEquals("The account has not enough money",e.getFault().getFaultString());
+        } catch (BookHotelFault e) {
+            assertEquals("The account has not enough money",e.getMessage());
         }       
     }
     
@@ -194,8 +193,8 @@ public class NiceViewTest {
     public void cancelHotelTestError() throws CancelHotelFault, DatatypeConfigurationException{    
         try {
             cancelHotel(null);
-        } catch (SOAPFaultException e) {
-            assertEquals("Empty",e.getFault().getFaultString());
+        } catch (CancelHotelFault e) {
+            assertEquals("Empty",e.getMessage());
         }       
     }
     
@@ -205,8 +204,8 @@ public class NiceViewTest {
         String input = "hello you";
         try {
             cancelHotel(input);
-        } catch (SOAPFaultException e) {
-            assertEquals("The booking number you provided was not linked to any hotel",e.getFault().getFaultString());
+        } catch (CancelHotelFault e) {
+            assertEquals("ERROR",e.getMessage());
         }       
     }
     
