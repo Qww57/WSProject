@@ -51,7 +51,7 @@ public class NiceViewService {
     }
       
     public GetHotelsOutputType getHotels(GetHotelInputType hotelsRequest){              
-        System.out.println("GETTING - START");      
+        System.out.println("GETTING - START " + hotelsRequest.getCity());      
         
         GetHotelsOutputType listOfHotels = new GetHotelsOutputType();
         
@@ -65,17 +65,17 @@ public class NiceViewService {
         
         for(int i = 0; i < hotelDataBase.size(); i++)
         {
-            System.out.println("GETTING - Searching loop: " + i);          
+            //System.out.println("GETTING - Searching loop: " + i);          
             HotelType wantedHotel = hotelDataBase.get(i);
             String address = wantedHotel.getAddress();
-            System.out.println("GETTING - Searching loop: " + i + " Address: "+ address);  
+            //System.out.println("GETTING - Searching loop: " + i + " Address: "+ address);  
             Boolean availableHotel = availabilityDB.get(wantedHotel);
-            System.out.println("GETTING - Searching loop: " + i + " availabilityDB: "+ availableHotel);  
+            //System.out.println("GETTING - Searching loop: " + i + " availabilityDB: "+ availableHotel);  
             
             // Check if there is an hotel is the city and if the hotel is available
             if (address.equals(city) && availabilityDB.get(hotelDataBase.get(i)).equals(true))
             { 
-                System.out.println("GETTING - Match found: " + i);
+                //System.out.println("GETTING - Match found: " + i);
                       
                 // Creating and initializing a new HotelInformationType object
                 HotelInformationType hotelInfo = new HotelInformationType();
@@ -92,7 +92,7 @@ public class NiceViewService {
                         .getTime();               
                 long diff = d2.getTime()- d1.getTime();             
                 diff = diff / (1000*60*60*24);               
-                System.out.println("Number of nights - GetHotels: " + diff);
+                //System.out.println("Number of nights - GetHotels: " + diff);
                 
                 // Setting the price
                 int nightPrice = 400;  // We assumed that a night in all hotels costs the same price
@@ -100,13 +100,13 @@ public class NiceViewService {
                 hotelInfo.setPrice(globalPrice);
                                 
                 // Add the hotel to the list of results
-                System.out.println("Match info - GetHotels: " + hotelInfo);              
+                //System.out.println("Match info - GetHotels: " + hotelInfo);              
                 listOfHotels.getHotelInformations().add(hotelInfo);                
-                System.out.println("List of hotels info - GetHotels: " + listOfHotels.getHotelInformations().size());
+                //System.out.println("List of hotels info - GetHotels: " + listOfHotels.getHotelInformations().size());
             }
         }
        
-        System.out.println("GETTING - END - result size: " + listOfHotels.getHotelInformations().size());        
+        System.out.println("GETTING - END  - " + hotelsRequest.getCity().toString() + " - result size: " + listOfHotels.getHotelInformations().size());        
         return listOfHotels;
     }
        

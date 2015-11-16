@@ -33,32 +33,52 @@ public class TravelGoodClientTest {
         input.getHotelRequests().add(hotelRequest);
         
         GetOutputType output = getFlightsAndHotels(input);
+        
+        System.out.println("ouput: "+ output.getHotelsList().size());
+        System.out.println("ouput 0: "+ output.getHotelsList().get(0).getHotelInformations().size());
+        //System.out.println("ouput 1: "+ output.getHotelsList().get(1).getHotelInformations().size());
         String expected = "Milan Hotel"; 
-        String result = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getName();       
+        String result = output.getHotelsList().get(0).getHotelInformations().get(1).getHotel().getName();       
         assertEquals(expected, result);
     }
     
-    //@Test
+    @Test
     public void Hello2() throws DatatypeConfigurationException{
+        System.out.println("Test starts");
         GetInputType input = new GetInputType();
         HotelRequestType hotelRequest = new HotelRequestType();
-        
+            
         GetHotelInputType hotel = CreateGetHotelInputType("Milan");
         GetHotelInputType hotel2 = CreateGetHotelInputType("London");
+        GetHotelInputType hotel3 = CreateGetHotelInputType("Paris");
         hotelRequest.getHotelsList().add(hotel);
         hotelRequest.getHotelsList().add(hotel2);
+        hotelRequest.getHotelsList().add(hotel3);
         input.getHotelRequests().add(hotelRequest); 
         
+        // Make the request
         GetOutputType output = getFlightsAndHotels(input);
+               
         String expected1 = "Milan Hotel";
         String expected2 = "London Hotel"; 
-        String result1 = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getName();
-        assertEquals(expected1, result1);  
         System.out.println("GetHotelsList size: " + output.getHotelsList().size());
-        System.out.println("GetHotelsInformations.get(0) size: " + output.getHotelsList().get(0).getHotelInformations().size());
-        System.out.println("GetHotelsInformations.get(1) size: " + output.getHotelsList().get(1).getHotelInformations().size());
-        String result2 = output.getHotelsList().get(1).getHotelInformations().get(0).getHotel().getName();       
+        System.out.println("GetHotelsInformations.get(0) size: " + output.getHotelsList().get(1).getHotelInformations().size());
+        
+        String result1 = output.getHotelsList().get(1).getHotelInformations().get(0).getHotel().getName();
+        System.out.println(result1);
+         
+        assertEquals(expected1, result1);  
+              
+        System.out.println(output.getHotelsList().get(1).getHotelInformations().get(0).getHotel().getName());
+        System.out.println(output.getHotelsList().get(2).getHotelInformations().get(0).getHotel().getName());
+        System.out.println(output.getHotelsList().get(3).getHotelInformations().get(0).getHotel().getName());  
+        System.out.println(output.getHotelsList().get(3).getHotelInformations().get(1).getHotel().getName());  
+        System.out.println("GetHotelsInformations.get(1) size: " + output.getHotelsList().get(0).getHotelInformations().size());
+        String result2 = output.getHotelsList().get(2).getHotelInformations().get(0).getHotel().getName();       
         assertEquals(expected2, result2); 
+        
+        int result3 = output.getHotelsList().get(3).getHotelInformations().size(); 
+        assertEquals(2, result3); 
     }
     
     private GetHotelInputType CreateGetHotelInputType(String city) throws DatatypeConfigurationException{
