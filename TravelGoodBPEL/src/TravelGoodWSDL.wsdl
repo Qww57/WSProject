@@ -2,11 +2,18 @@
 <definitions name="TravelGoodWSDL" targetNamespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"
     xmlns="http://schemas.xmlsoap.org/wsdl/"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns1="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" xmlns:ns0="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+    xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" 
+    xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" 
+    xmlns:ns1="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" 
+    xmlns:ns0="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
     <types>
-        <xsd:schema targetNamespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL">
+        <xsd:schema targetNamespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" 
+                    xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL">
             <!-- Import the xsd schema-->
             <xsd:import namespace="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" schemaLocation="NiceView.xsd"/>
+            <xsd:import namespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" schemaLocation="LameDuck.xsd"/>
             <xsd:complexType name="HotelRequestType">
                 <xsd:sequence>
                     <xsd:element name="HotelsList" type="ns1:GetHotelInputType" minOccurs="0" maxOccurs="unbounded"></xsd:element> 

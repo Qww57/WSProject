@@ -120,9 +120,19 @@ public class NiceViewTest {
     public void bookHotelTestError() throws BookHotelFault{
         try {
             assertTrue(bookHotel(null));
+<<<<<<< HEAD
         } catch (BookHotelFault e) {
             assertEquals("Empty", e.getMessage());
+=======
+        } catch (SOAPFaultException e) {
+            System.out.println("SOAPFaultException");
+            assertEquals("Empty", e.getFault().getFaultString());
+>>>>>>> origin/master
         } 
+        /* catch (BookHotelFault f){
+            System.out.println("BookHotelFault");
+            assertEquals("Empty", f.getMessage());
+        }*/
     }
     
     // Booking of an hotel with unvalid booking number

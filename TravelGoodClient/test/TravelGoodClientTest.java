@@ -35,10 +35,10 @@ public class TravelGoodClientTest {
         GetOutputType output = getFlightsAndHotels(input);
         
         System.out.println("ouput: "+ output.getHotelsList().size());
-        System.out.println("ouput 0: "+ output.getHotelsList().get(0).getHotelInformations().size());
+        System.out.println("ouput 0: "+ output.getHotelsList().get(1).getHotelInformations().size());
         //System.out.println("ouput 1: "+ output.getHotelsList().get(1).getHotelInformations().size());
         String expected = "Milan Hotel"; 
-        String result = output.getHotelsList().get(0).getHotelInformations().get(1).getHotel().getName();       
+        String result = output.getHotelsList().get(1).getHotelInformations().get(0).getHotel().getName();       
         assertEquals(expected, result);
     }
     
