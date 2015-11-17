@@ -37,8 +37,6 @@
                 <sxed:predicate path="$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]" source="from"/>
             </sxed:editor>
         </variable>
-        <variable name="GetHotelsOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" messageType="tns:getHotelsResponse"/>
-        <variable name="GetHotelsIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" messageType="tns:getHotelsRequest"/>
     </variables>
     <sequence>
         <receive name="Receive1" createInstance="yes" partnerLink="PartnerLink3" operation="GetFlightsAndHotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" portType="tns:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsIn"/>
@@ -57,6 +55,10 @@
                 <startCounterValue>1</startCounterValue>
                     <finalCounterValue>count($GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList)</finalCounterValue>
                     <scope name="Scope1">
+                        <variables>
+                            <variable name="GetHotelsOut" messageType="ns0:getHotelsResponse"/>
+                            <variable name="GetHotelsIn" messageType="ns0:getHotelsRequest"/>
+                        </variables>
                         <sequence name="Sequence1">
                                 <assign name="Assign1">
                                         <copy>
@@ -92,12 +94,8 @@
                                                     <to>$GetHotelsIn.hotelsRequest/DepartureDate</to>
                                             </copy>
                                     </assign>
-                                    <invoke name="Invoke1" partnerLink="NiceView" operation="getHotels" portType="ns0:NiceViewPortType" inputVariable="GetHotelsIn" outputVariable="GetHotelsOut"/>
-                                    <assign name="Assign2">
-                                        <copy>
-                                                <from>1 + $GetHotelCount</from>
-                                                    <to variable="GetHotelCount"/>
-                                            </copy>
+                            <invoke name="Invoke3" partnerLink="NiceView" operation="getHotels" portType="ns0:NiceViewPortType" inputVariable="GetHotelsIn" outputVariable="GetHotelsOut"/>
+                            <assign name="Assign2">
                                             <copy>
                                                 <from>$GetHotelsOut.hotels/HotelInformations</from>
                                                     <to>$GetFlightsAndHotelsOut.part1/HotelsList[$GetHotelCount]/HotelInformations
@@ -106,8 +104,14 @@
                                                             </sxed:editor>
                                                     </to>
                                             </copy>
-                                    </assign>
-                            </sequence>
+                            </assign>
+                            <assign name="Assign7">
+                                <copy>
+                                    <from>$GetHotelCount + 1</from>
+                                    <to variable="GetHotelCount"/>
+                                </copy>
+                            </assign>
+                        </sequence>
                     </scope>
             </forEach>
             <forEach name="ForEach2" parallel="no" counterName="ForEach2Counter">
@@ -115,7 +119,7 @@
                 <finalCounterValue>count($GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList)</finalCounterValue>
                 <scope name="Scope2">
                     <variables>
-                        <variable name="GetFlightsOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:getFlightsResponse"></variable>
+                        <variable name="GetFlightsOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:getFlightsResponse"/>
                         <variable name="GetFlightsIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:getFlightsRequest"/>
                     </variables>
                     <sequence name="Sequence2">
@@ -148,16 +152,18 @@
                         <invoke name="Invoke2" partnerLink="LameDuck" operation="getFlights" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" portType="tns:LameDuckPortType" inputVariable="GetFlightsIn" outputVariable="GetFlightsOut"/>
                         <assign name="Assign5">
                             <copy>
-                                <from>$GetFlightCounter + 1</from>
-                                <to variable="GetFlightCounter"/>
-                            </copy>
-                            <copy>
                                 <from>$GetFlightsOut.getFlightsOutput/FlightInformations</from>
                                 <to>$GetFlightsAndHotelsOut.part1/FlightsList[$GetFlightCounter]/FlightInformations
                                     <sxed:editor>
                                         <sxed:predicate path="$GetFlightsAndHotelsOut.part1/FlightsList[$GetFlightCounter]" source="to"/>
                                     </sxed:editor>
                                 </to>
+                            </copy>
+                        </assign>
+                        <assign name="Assign6">
+                            <copy>
+                                <from>$GetFlightCounter + 1</from>
+                                <to variable="GetFlightCounter"/>
                             </copy>
                         </assign>
                     </sequence>
