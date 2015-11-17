@@ -16,20 +16,8 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Daniel
  */
-@Path("travelgood")
-public class TravelGoodResource {
+@Path("itinerary")
+public class ItineraryResource {
     
-    private static String name = "TravelGood";
     
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getTravelGoodName() {
-        return name;
-    }
-    
-    @PUT
-    @Consumes(MediaType.TEXT_PLAIN)
-    public void setTravelGoodName(String name) {
-        this.name = name;
-    }
 }
