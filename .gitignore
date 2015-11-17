@@ -39,3 +39,15 @@
 /TravelGoodClient/nbproject/jax-ws.xml
 /TravelGoodClient/nbproject/jaxws-build.xml
 /TravelGoodClient/nbproject/private
+
+/TravelGoodRest/build/
+/TravelGoodRest/dist/
+/TravelGoodRest/nbproject/private/
+
+/TravelGoodRestClient/dist/
+/TravelGoodRestClient/build/
+/TravelGoodRestClient/src/META-INF/
+/TravelGoodRestClient/xml-resources/
+/TravelGoodRestClient/nbproject/jax-ws.xml
+/TravelGoodRestClient/nbproject/jaxws-build.xml
+/TravelGoodRestClient/nbproject/private
