@@ -58,6 +58,8 @@ public class LameDuckService {
 
     public GetFlightsOutputType getFlights(GetFlightsInputType getFlightsInput) throws DatatypeConfigurationException {
         //initialise list of all flights
+        System.out.println("GETTING FLIGHT - START " + getFlightsInput.getStart());
+        
         InitializeDataBases();
         
         //create variables
@@ -90,7 +92,9 @@ public class LameDuckService {
                 response.getFlightInformations().add(this_flight);
             }
         }
-
+        
+         System.out.println("GETTING FLIGHT - END " + getFlightsInput.getStart());
+        
         return response;
     }
 

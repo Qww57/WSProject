@@ -23,6 +23,8 @@ public class TravelGoodClientTest {
     public TravelGoodClientTest() {
     }
     
+    
+    
     @Test
     public void hello() throws DatatypeConfigurationException {
         GetInputType input = new GetInputType();
@@ -31,6 +33,8 @@ public class TravelGoodClientTest {
         GetHotelInputType hotel = CreateGetHotelInputType("Milan");
         hotelRequest.getHotelsList().add(hotel);
         input.getHotelRequests().add(hotelRequest);
+        
+        GetFlightsInputType inputF  = new GetFlightsInputType();
         
         GetOutputType output = getFlightsAndHotels(input);
         
@@ -62,7 +66,7 @@ public class TravelGoodClientTest {
         String expected1 = "Milan Hotel";
         String expected2 = "London Hotel"; 
         System.out.println("GetHotelsList size: " + output.getHotelsList().size());
-        System.out.println("GetHotelsInformations.get(0) size: " + output.getHotelsList().get(1).getHotelInformations().size());
+        System.out.println("GetHotelsInformations.get() size: " + output.getHotelsList().get(1).getHotelInformations().size());
         
         String result1 = output.getHotelsList().get(1).getHotelInformations().get(0).getHotel().getName();
         System.out.println(result1);
@@ -81,6 +85,42 @@ public class TravelGoodClientTest {
         assertEquals(2, result3); 
     }
     
+     @Test
+    public void TestGetFlightLoop() throws DatatypeConfigurationException{
+        System.out.println("Test starts");
+        GetInputType input = new GetInputType();
+        FlightRequestType flightRequest = new FlightRequestType();
+            
+        GetFlightsInputType flight = CreateGetFlightsInputType("Copenhagen", "London");
+        //GetFlightsInputType flight2 = CreateGetFlightsInputType("London", "New York");
+        //GetFlightsInputType hotel3 = CreateGetFlightsInputType("Copenhagen", "Kuala Lumpur");
+        
+        System.out.println("Inputs created");
+        flightRequest.getFlightsList().add(flight);
+        //flightRequest.getFlightsList().add(flight2);
+        input.getFlightRequests().add(flightRequest); 
+        System.out.println("Inputs created bis");
+          
+        // Make the request
+        GetOutputType output = getFlightsAndHotels(input);
+        System.out.println("Request done");
+          
+        String expected1 = "Copenhagen";
+        //String expected2 = "London"; 
+        System.out.println("getFlightsList size: " + output.getFlightsList().size());
+        System.out.println("getFlightsList.get() size: " + output.getFlightsList().get(1).getFlightInformations().size());
+        
+        String result1 = output.getFlightsList().get(1).getFlightInformations().get(0).getFlight().getStart();
+        System.out.println(result1);
+         
+        assertEquals(expected1, result1);  
+              
+        //System.out.println(output.getFlightsList().get(1).getFlightInformations().get(0).getFlight().getStart());
+        //System.out.println(output.getFlightsList().get(2).getFlightInformations().get(0).getFlight().getStart());
+        //String result2 = output.getFlightsList().get(2).getFlightInformations().get(0).getFlight().getStart();     
+        //assertEquals(expected2, result2); 
+    }
+    
     private GetHotelInputType CreateGetHotelInputType(String city) throws DatatypeConfigurationException{
         GetHotelInputType input = new GetHotelInputType();
         input.setCity(city);
@@ -93,6 +133,19 @@ public class TravelGoodClientTest {
         GregorianCalendar _departureDate = new GregorianCalendar(2016, 11, 14);
         XMLGregorianCalendar departureDate = df.newXMLGregorianCalendar(_departureDate);      
         input.setDepartureDate(departureDate);
+        
+        return input;
+    }
+    
+    private GetFlightsInputType CreateGetFlightsInputType(String start, String destination) throws DatatypeConfigurationException{
+        GetFlightsInputType input = new GetFlightsInputType();
+        input.setDestination(destination);
+        input.setStart(start);
+        
+        DatatypeFactory df = DatatypeFactory.newInstance();
+        GregorianCalendar _departureDate = new GregorianCalendar(2016, 11, 14);
+        XMLGregorianCalendar departureDate = df.newXMLGregorianCalendar(_departureDate);      
+        input.setDate(departureDate);
         
         return input;
     }
