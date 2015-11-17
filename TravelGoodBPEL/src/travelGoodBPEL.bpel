@@ -50,52 +50,51 @@
                 <to variable="GetFlightCounter"/>
             </copy>
         </assign>
-        <flow name="Flow1">
-            <forEach name="ForEach1" parallel="no" counterName="ForEach1Counter">
-                <startCounterValue>1</startCounterValue>
-                    <finalCounterValue>count($GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList)</finalCounterValue>
-                    <scope name="Scope1">
-                        <variables>
+        <forEach name="ForEach1" parallel="no" counterName="ForEach1Counter">
+            <startCounterValue>1</startCounterValue>
+                <finalCounterValue>count($GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList)</finalCounterValue>
+                <scope name="Scope1">
+                    <variables>
                             <variable name="GetHotelsOut" messageType="ns0:getHotelsResponse"/>
-                            <variable name="GetHotelsIn" messageType="ns0:getHotelsRequest"/>
+                                <variable name="GetHotelsIn" messageType="ns0:getHotelsRequest"/>
                         </variables>
                         <sequence name="Sequence1">
-                                <assign name="Assign1">
+                            <assign name="Assign1">
+                                    <copy>
+                                            <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]
+                                <sxed:editor>
+                                                            <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
+                                                        </sxed:editor>
+                                                </from>
+                                                <to variable="GetHotelsIn" part="hotelsRequest"/>
+                                        </copy>
                                         <copy>
-                                                <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]
+                                            <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/City
                                 <sxed:editor>
-                                                                <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
-                                                            </sxed:editor>
-                                                    </from>
-                                                    <to variable="GetHotelsIn" part="hotelsRequest"/>
-                                            </copy>
-                                            <copy>
-                                                <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/City
+                                                            <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
+                                                        </sxed:editor>
+                                                </from>
+                                                <to>$GetHotelsIn.hotelsRequest/City</to>
+                                        </copy>
+                                        <copy>
+                                            <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/ArrivalDate
                                 <sxed:editor>
-                                                                <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
-                                                            </sxed:editor>
-                                                    </from>
-                                                    <to>$GetHotelsIn.hotelsRequest/City</to>
-                                            </copy>
-                                            <copy>
-                                                <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/ArrivalDate
+                                                            <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
+                                                        </sxed:editor>
+                                                </from>
+                                                <to>$GetHotelsIn.hotelsRequest/ArrivalDate</to>
+                                        </copy>
+                                        <copy>
+                                            <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/DepartureDate
                                 <sxed:editor>
-                                                                <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
-                                                            </sxed:editor>
-                                                    </from>
-                                                    <to>$GetHotelsIn.hotelsRequest/ArrivalDate</to>
-                                            </copy>
-                                            <copy>
-                                                <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/DepartureDate
-                                <sxed:editor>
-                                                                <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
-                                                            </sxed:editor>
-                                                    </from>
-                                                    <to>$GetHotelsIn.hotelsRequest/DepartureDate</to>
-                                            </copy>
-                                    </assign>
-                            <invoke name="Invoke3" partnerLink="NiceView" operation="getHotels" portType="ns0:NiceViewPortType" inputVariable="GetHotelsIn" outputVariable="GetHotelsOut"/>
-                            <assign name="Assign2">
+                                                            <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
+                                                        </sxed:editor>
+                                                </from>
+                                                <to>$GetHotelsIn.hotelsRequest/DepartureDate</to>
+                                        </copy>
+                                </assign>
+                                <invoke name="Invoke3" partnerLink="NiceView" operation="getHotels" portType="ns0:NiceViewPortType" inputVariable="GetHotelsIn" outputVariable="GetHotelsOut"/>
+                                <assign name="Assign2">
                                             <copy>
                                                 <from>$GetHotelsOut.hotels/HotelInformations</from>
                                                     <to>$GetFlightsAndHotelsOut.part1/HotelsList[$GetHotelCount]/HotelInformations
@@ -105,24 +104,24 @@
                                                     </to>
                                             </copy>
                             </assign>
-                            <assign name="Assign7">
+                                <assign name="Assign7">
                                 <copy>
                                     <from>$GetHotelCount + 1</from>
                                     <to variable="GetHotelCount"/>
                                 </copy>
                             </assign>
                         </sequence>
-                    </scope>
-            </forEach>
-            <forEach name="ForEach2" parallel="no" counterName="ForEach2Counter">
-                <startCounterValue>1</startCounterValue>
+                </scope>
+        </forEach>
+        <forEach name="ForEach2" parallel="no" counterName="ForEach2Counter" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
+            <startCounterValue>1</startCounterValue>
                 <finalCounterValue>count($GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList)</finalCounterValue>
                 <scope name="Scope2">
                     <variables>
                         <variable name="GetFlightsOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:getFlightsResponse"/>
                         <variable name="GetFlightsIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:getFlightsRequest"/>
                     </variables>
-                    <sequence name="Sequence2">
+                        <sequence name="Sequence2">
                         <assign name="Assign4">
                             <copy>
                                 <from>$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]/start
@@ -168,8 +167,7 @@
                         </assign>
                     </sequence>
                 </scope>
-            </forEach>
-        </flow>
+        </forEach>
         <reply name="Reply1" partnerLink="PartnerLink3" operation="GetFlightsAndHotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" portType="tns:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsOut"/>
     </sequence>
 </process>
