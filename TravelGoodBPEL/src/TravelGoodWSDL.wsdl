@@ -93,6 +93,14 @@
                 <soap:body use="literal"/>
             </output>
         </operation>
+        <operation name="PlanFlightsAndHotels">
+            <input name="input2">
+                <soap:body use="literal"/>
+            </input>
+            <output name="output2">
+                <soap:body use="literal"/>
+            </output>
+        </operation>
     </binding>
     <service name="TravelGoodWSDLService">
         <port name="TravelGoodWSDLPortTypeBindingPort" binding="tns:TravelGoodWSDLPortTypeBinding">

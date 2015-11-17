@@ -44,6 +44,29 @@ public class TravelGoodClientTest {
         String expected = "Milan Hotel"; 
         String result = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getName();       
         assertEquals(expected, result);
+        
+        //stuff about planning
+        String bookingNumber1 = output.getHotelsList().get(0).getHotelInformations().get(0).getBookingNumber();
+        System.out.println(bookingNumber1);
+        PlanInputType inputBookingNumberList = new PlanInputType();
+        
+        inputBookingNumberList.getHotelsBookingNumber().add(bookingNumber1);
+        System.out.println("operation to be called");
+        PlanOutputType outputItinerary = planFlightsAndHotels(inputBookingNumberList);
+        System.out.println("operation performed correctly");
+        
+        String expectedBookingNumber = "booking_Hotel_3";
+        String expectedStatus = "unconfired";
+        
+        String resultBookingNumber = outputItinerary.getHotelsPlanInformation().get(0).getBookingNumber();
+        System.out.println("Resulting booking number: " + resultBookingNumber);
+        String resultStatus = outputItinerary.getHotelsPlanInformation().get(0).getStatus();
+        System.out.println("Resulting status: " + resultStatus);
+        
+        assertEquals(expectedBookingNumber, resultBookingNumber);
+        assertEquals(expectedStatus, resultStatus);
+        
+        
     }
     
     @Test
@@ -219,5 +242,11 @@ public class TravelGoodClientTest {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
         return port.getFlightsAndHotels(part1);
+    }
+
+    private static PlanOutputType planFlightsAndHotels(org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.PlanInputType part1) {
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
+        return port.planFlightsAndHotels(part1);
     }
 }
