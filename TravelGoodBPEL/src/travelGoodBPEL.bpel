@@ -60,8 +60,15 @@
             </sxed:editor>
         </variable>
     </variables>
+    <correlationSets>
+        <correlationSet name="ItineraryCorrelation" properties="ns1:ID"/>
+    </correlationSets>
     <sequence>
-        <receive name="Receive1" createInstance="yes" partnerLink="PartnerLink3" operation="GetFlightsAndHotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" portType="tns:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsIn"/>
+        <receive name="Receive1" createInstance="yes" partnerLink="PartnerLink3" operation="GetFlightsAndHotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" portType="tns:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsIn">
+            <correlations>
+                <correlation set="ItineraryCorrelation" initiate="yes"/>
+            </correlations>
+        </receive>
         <assign name="Assign3">
             <copy>
                 <from>1</from>
@@ -191,17 +198,11 @@
                 </scope>
         </forEach>
         <reply name="Reply1" partnerLink="PartnerLink3" operation="GetFlightsAndHotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" portType="tns:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsOut"/>
-        <assign name="itineraryCounterReset">
-            <copy>
-                <from>1</from>
-                <to variable="itineraryListHotelCounter"/>
-            </copy>
-            <copy>
-                <from>1</from>
-                <to variable="itineraryListFlightCounter"/>
-            </copy>
-        </assign>
-        <receive name="Receive2" partnerLink="PartnerLink3" operation="PlanFlightsAndHotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" portType="tns:TravelGoodWSDLPortType" createInstance="no" variable="PlanFlightsAndHotelsIn"/>
+        <receive name="Receive2" partnerLink="PartnerLink3" operation="PlanFlightsAndHotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" portType="tns:TravelGoodWSDLPortType" createInstance="no" variable="PlanFlightsAndHotelsIn">
+            <correlations>
+                <correlation set="ItineraryCorrelation" initiate="no"/>
+            </correlations>
+        </receive>
         <assign name="planCounterReset">
             <copy>
                 <from>1</from>
