@@ -20,6 +20,8 @@
         <partnerLink name="NiceView" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" partnerLinkType="tns:NiceView" partnerRole="NiceViewPortTypeRole"/>
     </partnerLinks>
     <variables>
+        <variable name="CreateItineraryOut" messageType="ns1:createItineraryResponse"/>
+        <variable name="CreateItineraryIn" messageType="ns1:createItineraryRequest"/>
         <variable name="restartItinerary" type="xs:boolean"/>
         <variable name="itineraryListHotelCounter" type="xs:int"/>
         <variable name="itineraryListFlightCounter" type="xs:int"/>
@@ -61,12 +63,32 @@
         </variable>
     </variables>
     <correlationSets>
+        <correlationSet name="CorrelationSet" properties="ns1:ID"/>
+        <correlationSet name="CorrelationSet3" properties="ns1:ID"/>
+        <correlationSet name="CorrelationSet2" properties="ns1:ID"/>
+        <correlationSet name="CorrelationSet1" properties="ns1:ID"/>
         <correlationSet name="ItineraryCorrelation" properties="ns1:ID"/>
     </correlationSets>
     <sequence>
-        <receive name="Receive1" createInstance="yes" partnerLink="PartnerLink3" operation="GetFlightsAndHotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" portType="tns:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsIn">
+        <receive name="Receive3" createInstance="yes" partnerLink="PartnerLink3" operation="createItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CreateItineraryIn">
             <correlations>
                 <correlation set="ItineraryCorrelation" initiate="yes"/>
+            </correlations>
+        </receive>
+        <assign name="Assign8">
+            <copy>
+                <from variable="CreateItineraryIn" part="part1"/>
+                <to>$CreateItineraryOut.part1/ItineraryID</to>
+            </copy>
+            <copy>
+                <from>true()</from>
+                <to>$CreateItineraryOut.part1/ItineraryCreatedBoolean</to>
+            </copy>
+        </assign>
+        <reply name="Reply3" partnerLink="PartnerLink3" operation="createItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CreateItineraryOut"/>
+        <receive name="Receive1" createInstance="no" partnerLink="PartnerLink3" operation="GetFlightsAndHotels" xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" portType="tns:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsIn">
+            <correlations>
+                <correlation set="ItineraryCorrelation" initiate="no"/>
             </correlations>
         </receive>
         <assign name="Assign3">

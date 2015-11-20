@@ -57,24 +57,41 @@
             </xsd:complexType>
             <xsd:element name="PlanInput" type="tns:PlanInputType"></xsd:element>
             <xsd:element name="PlanOutput" type="tns:PlanOutputType"></xsd:element>
-            <xsd:simpleType name="ItineraryID">
+            <xsd:complexType name="ItineraryCreatedBooleanType">
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:boolean"/>
+                </xsd:simpleContent>
+            </xsd:complexType>
+            <xsd:complexType name="itineraryResponseType">
+                <xsd:sequence>
+                    <xsd:element name="ItineraryCreatedBoolean" type="tns:ItineraryCreatedBooleanType" maxOccurs="1"></xsd:element>
+                    <xsd:element name="ItineraryID" type="tns:ItineraryIDType"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="ItineraryIDType">
                 <xsd:restriction base="xsd:int"/>
             </xsd:simpleType>
         </xsd:schema>
     </types>
     <message name="GetFlightsAndHotelsRequest">
         <part name="part1" type="tns:GetInputType"/>
-        <part name="part2" type="tns:ItineraryID"/>
+        <part name="part2" type="tns:ItineraryIDType"/>
     </message>
     <message name="GetFlightsAndHotelsResponse">
         <part name="part1" type="tns:GetOutputType"/>
     </message>
     <message name="PlanFlightsAndHotelsRequest">
         <part name="part1" type="tns:PlanInputType"/>
-        <part name="part2" type="tns:ItineraryID"/>
+        <part name="part2" type="tns:ItineraryIDType"/>
     </message>
     <message name="PlanFlightsAndHotelsResponse">
         <part name="part1" type="tns:PlanOutputType"/>
+    </message>
+    <message name="createItineraryRequest">
+        <part name="part1" type="tns:ItineraryIDType"/>
+    </message>
+    <message name="createItineraryResponse">
+        <part name="part1" type="tns:itineraryResponseType"/>
     </message>
     <portType name="TravelGoodWSDLPortType">
         <operation name="GetFlightsAndHotels">
@@ -84,6 +101,10 @@
         <operation name="PlanFlightsAndHotels">
             <input name="input2" message="tns:PlanFlightsAndHotelsRequest"/>
             <output name="output2" message="tns:PlanFlightsAndHotelsResponse"/>
+        </operation>
+        <operation name="createItinerary">
+            <input name="input3" message="tns:createItineraryRequest"/>
+            <output name="output3" message="tns:createItineraryResponse"/>
         </operation>
     </portType>
     <binding name="TravelGoodWSDLPortTypeBinding" type="tns:TravelGoodWSDLPortType">
@@ -106,6 +127,15 @@
                 <soap:body use="literal"/>
             </output>
         </operation>
+        <operation name="createItinerary">
+            <soap:operation/>
+            <input name="input3">
+                <soap:body use="literal"/>
+            </input>
+            <output name="output3">
+                <soap:body use="literal"/>
+            </output>
+        </operation>
     </binding>
     <service name="TravelGoodWSDLService">
         <port name="TravelGoodWSDLPortTypeBindingPort" binding="tns:TravelGoodWSDLPortTypeBinding">
@@ -118,7 +148,8 @@ In a BPEL process, a partner link represents the interaction between the BPEL pr
 A partner link type characterizes the conversational relationship between two services. The partner link type can have one or two roles.-->
         <plnk:role name="TravelGoodWSDLPortTypeRole" portType="tns:TravelGoodWSDLPortType"/>
     </plnk:partnerLinkType>
-    <vprop:property name="ID" type="tns:ItineraryID"/>
+    <vprop:property name="ID" type="tns:ItineraryIDType"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:GetFlightsAndHotelsRequest" part="part2"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:PlanFlightsAndHotelsRequest" part="part2"/>
+    <vprop:propertyAlias propertyName="tns:ID" messageType="tns:createItineraryRequest" part="part1"/>
 </definitions>
