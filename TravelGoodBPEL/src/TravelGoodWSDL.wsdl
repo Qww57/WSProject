@@ -57,19 +57,17 @@
             </xsd:complexType>
             <xsd:element name="PlanInput" type="tns:PlanInputType"></xsd:element>
             <xsd:element name="PlanOutput" type="tns:PlanOutputType"></xsd:element>
-            <xsd:complexType name="ItineraryCreatedBooleanType">
-                <xsd:simpleContent>
-                    <xsd:extension base="xsd:boolean"/>
-                </xsd:simpleContent>
-            </xsd:complexType>
             <xsd:complexType name="itineraryResponseType">
                 <xsd:sequence>
-                    <xsd:element name="ItineraryCreatedBoolean" type="tns:ItineraryCreatedBooleanType" maxOccurs="1"></xsd:element>
                     <xsd:element name="ItineraryID" type="tns:ItineraryIDType"></xsd:element>
+                    <xsd:element name="itineraryCreated" type="tns:itineraryCreatedType"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:simpleType name="ItineraryIDType">
                 <xsd:restriction base="xsd:int"/>
+            </xsd:simpleType>
+            <xsd:simpleType name="itineraryCreatedType">
+                <xsd:restriction base="xsd:boolean"/>
             </xsd:simpleType>
         </xsd:schema>
     </types>
@@ -112,28 +110,28 @@
         <operation name="GetFlightsAndHotels">
             <soap:operation/>
             <input name="input1">
-                <soap:body use="literal"/>
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </input>
             <output name="output1">
-                <soap:body use="literal"/>
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </output>
         </operation>
         <operation name="PlanFlightsAndHotels">
             <soap:operation/>
             <input name="input2">
-                <soap:body use="literal"/>
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </input>
             <output name="output2">
-                <soap:body use="literal"/>
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </output>
         </operation>
         <operation name="createItinerary">
             <soap:operation/>
             <input name="input3">
-                <soap:body use="literal"/>
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </input>
             <output name="output3">
-                <soap:body use="literal"/>
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </output>
         </operation>
     </binding>

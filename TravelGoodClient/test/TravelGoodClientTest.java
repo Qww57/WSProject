@@ -27,17 +27,17 @@ public class TravelGoodClientTest {
     public void testCreateItinerary(){
         System.out.println("Test Start");
         
-        int myIntID = 1200;
+        int myIntID = 1208;
         ItineraryResponseType itineraryCreation = createItinerary(myIntID);
         
         System.out.println("Itinerary Created");
-        ItineraryCreatedBooleanType receivedItineraryCreated = itineraryCreation.getItineraryCreatedBoolean();
+        Boolean receivedItineraryCreated = itineraryCreation.isItineraryCreated();
         int receivedItinID = itineraryCreation.getItineraryID();
         
         assertEquals(myIntID, receivedItinID);     
     }
     
-    //@Test
+    @Test
     public void oneHotel() throws DatatypeConfigurationException {
         System.out.println("Test starts");
         GetInputType input = new GetInputType();
@@ -55,8 +55,8 @@ public class TravelGoodClientTest {
         
         ItineraryResponseType itineraryCreation = createItinerary(myItinID);
         Boolean expectedItineraryCreated = true;
-        ItineraryCreatedBooleanType receivedItineraryCreated = itineraryCreation.getItineraryCreatedBoolean();
-        Integer expectedItinID = 1442;
+        Boolean receivedItineraryCreated = itineraryCreation.isItineraryCreated();
+        Integer expectedItinID = myItinID;
         Integer receivedItinID = itineraryCreation.getItineraryID();
         assertEquals(receivedItinID, expectedItinID);
         System.out.println("Itinerary Created!!");
@@ -69,6 +69,10 @@ public class TravelGoodClientTest {
         String expected = "Milan Hotel"; 
         String result = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getName();       
         assertEquals(expected, result);
+        System.out.println("Finished!!");
+        
+        GetOutputType output2 = getFlightsAndHotels(input, myItinID);
+        System.out.println("It did it again!!!");
         
         //stuff about planning
         //String bookingNumber1 = output.getHotelsList().get(0).getHotelInformations().get(0).getBookingNumber();
@@ -77,7 +81,7 @@ public class TravelGoodClientTest {
         
         //inputBookingNumberList.getHotelsBookingNumber().add(bookingNumber1);
         //System.out.println("operation to be called");
-        //PlanOutputType outputItinerary = planFlightsAndHotels(inputBookingNumberList);
+        //PlanOutputType outputItinerary = planFlightsAndHotels(inputBookingNumberList, myItinID);
         //System.out.println("operation performed correctly");
         
         //String expectedBookingNumber = "booking_Hotel_3";
