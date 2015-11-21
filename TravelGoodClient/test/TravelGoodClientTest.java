@@ -23,9 +23,21 @@ public class TravelGoodClientTest {
     public TravelGoodClientTest() {
     }
     
+    @Test 
+    public void testCreateItinerary(){
+        System.out.println("Test Start");
+        
+        int myIntID = 1200;
+        ItineraryResponseType itineraryCreation = createItinerary(myIntID);
+        
+        System.out.println("Itinerary Created");
+        ItineraryCreatedBooleanType receivedItineraryCreated = itineraryCreation.getItineraryCreatedBoolean();
+        int receivedItinID = itineraryCreation.getItineraryID();
+        
+        assertEquals(myIntID, receivedItinID);     
+    }
     
-    
-    @Test
+    //@Test
     public void oneHotel() throws DatatypeConfigurationException {
         System.out.println("Test starts");
         GetInputType input = new GetInputType();
@@ -82,7 +94,7 @@ public class TravelGoodClientTest {
         
     }
     
-    @Test
+    //@Test
     public void threeHotels() throws DatatypeConfigurationException{
         System.out.println("Test starts");
         GetInputType input = new GetInputType();
@@ -122,7 +134,7 @@ public class TravelGoodClientTest {
         assertEquals(2, result3); 
     }
     
-    @Test
+   // @Test
     public void threeFlights() throws DatatypeConfigurationException{
         System.out.println("Test starts");
         GetInputType input = new GetInputType();
@@ -164,7 +176,7 @@ public class TravelGoodClientTest {
         assertEquals(expected3, result3);
     }
     
-    @Test
+    //@Test
     public void flightsAndHotels() throws DatatypeConfigurationException{
         
         System.out.println("Test starts");
@@ -274,8 +286,4 @@ public class TravelGoodClientTest {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
         return port.createItinerary(part1);
     }
-
-
-    
-
 }

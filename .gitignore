@@ -51,3 +51,7 @@
 /TravelGoodRestClient/nbproject/jax-ws.xml
 /TravelGoodRestClient/nbproject/jaxws-build.xml
 /TravelGoodRestClient/nbproject/private
+/TESTBPEL/nbproject/private/
+TESTBPEL/src/TESTBPEL.bpel
+TESTBPEL/src/testWSDL.wsdl
+TESTBPEL/nbproject/project.properties
