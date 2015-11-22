@@ -6,13 +6,14 @@
     xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" 
     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" 
     xmlns:ns1="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" 
-    xmlns:ns0="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    xmlns:ns0="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://types.fastmoney.imm.dtu.dk">
     <types>
         <xsd:schema targetNamespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" 
                     xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL">
             <!-- Import the xsd schema-->
             <xsd:import namespace="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" schemaLocation="LameDuckAndNiceView.xsd"/>
             <!-- <xsd:import namespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" schemaLocation="LameDuck.xsd"/> -->
+            <xsd:import namespace="http://types.fastmoney.imm.dtu.dk" schemaLocation="http://localhost:8080/LameDuck/LameDuckService?xsd=1"/>
             <xsd:complexType name="HotelRequestType">
                 <xsd:sequence>
                     <xsd:element name="HotelsList" type="ns1:GetHotelInputType" minOccurs="0" maxOccurs="unbounded"></xsd:element> 
@@ -43,20 +44,20 @@
                     <xsd:element name="FlightsBookingNumber" type="xsd:string" minOccurs="0" maxOccurs="unbounded"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
-            <xsd:complexType name="PlanOutputType">
+            <xsd:complexType name="ItineraryListType">
                 <xsd:sequence>
-                    <xsd:element name="HotelsPlanInformation" type="tns:PlanInformation" maxOccurs="unbounded" minOccurs="0"></xsd:element>
-                    <xsd:element name="FlightsPlanInformation" type="tns:PlanInformation" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+                    <xsd:element name="HotelsItineraryInformation" type="tns:ItineraryInformation" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+                    <xsd:element name="FlightsItineraryInformation" type="tns:ItineraryInformation" maxOccurs="unbounded" minOccurs="0"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
-            <xsd:complexType name="PlanInformation">
+            <xsd:complexType name="ItineraryInformation">
                 <xsd:sequence>
                     <xsd:element name="BookingNumber" type="xsd:string"></xsd:element>
                     <xsd:element name="Status" type="xsd:string"></xsd:element>
                 </xsd:sequence>
             </xsd:complexType>
             <xsd:element name="PlanInput" type="tns:PlanInputType"></xsd:element>
-            <xsd:element name="PlanOutput" type="tns:PlanOutputType"></xsd:element>
+            <xsd:element name="PlanOutput" type="tns:ItineraryListType"></xsd:element>
             <xsd:complexType name="itineraryResponseType">
                 <xsd:sequence>
                     <xsd:element name="ItineraryID" type="tns:ItineraryIDType"></xsd:element>
@@ -69,9 +70,17 @@
             <xsd:simpleType name="itineraryCreatedType">
                 <xsd:restriction base="xsd:boolean"/>
             </xsd:simpleType>
-            <xsd:simpleType name="ItineraryCancelledType">
+            <xsd:simpleType name="PlanningCancelledType">
                 <xsd:restriction base="xsd:boolean"/>
             </xsd:simpleType>
+            <xsd:simpleType name="FlightPriceType">
+                <xsd:restriction base="xsd:int"/>
+            </xsd:simpleType>
+            <xsd:complexType name="FlightPriceListType">
+                <xsd:sequence>
+                    <xsd:element name="FlightPrice" type="tns:FlightPriceType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
         </xsd:schema>
     </types>
     <message name="GetFlightsAndHotelsRequest">
@@ -86,7 +95,7 @@
         <part name="part2" type="tns:ItineraryIDType"/>
     </message>
     <message name="PlanFlightsAndHotelsResponse">
-        <part name="part1" type="tns:PlanOutputType"/>
+        <part name="part1" type="tns:ItineraryListType"/>
     </message>
     <message name="createItineraryRequest">
         <part name="part1" type="tns:ItineraryIDType"/>
@@ -94,11 +103,26 @@
     <message name="createItineraryResponse">
         <part name="part1" type="tns:itineraryResponseType"/>
     </message>
-    <message name="cancelItineraryRequest">
+    <message name="cancelPlanningRequest">
         <part name="part1" type="tns:ItineraryIDType"/>
     </message>
+    <message name="cancelPlanningResponse">
+        <part name="part1" type="tns:PlanningCancelledType"/>
+    </message>
+    <message name="BookItineraryRequest">
+        <part name="part1" type="tns:ItineraryIDType"/>
+        <part name="part2" type="ns2:creditCardInfoType"/>
+    </message>
+    <message name="BookItineraryResponse">
+        <part name="part1" type="tns:ItineraryListType"/>
+    </message>
+    <message name="cancelItineraryRequest">
+        <part name="part1" type="tns:ItineraryIDType"/>
+        <part name="part2" type="ns2:creditCardInfoType"/>
+        <part name="part3" type="tns:FlightPriceListType"/>
+    </message>
     <message name="cancelItineraryResponse">
-        <part name="part1" type="tns:ItineraryCancelledType"/>
+        <part name="part1" type="tns:ItineraryListType"/>
     </message>
     <portType name="TravelGoodWSDLPortType">
         <operation name="GetFlightsAndHotels">
@@ -113,9 +137,17 @@
             <input name="input3" message="tns:createItineraryRequest"/>
             <output name="output3" message="tns:createItineraryResponse"/>
         </operation>
+        <operation name="cancelPlanning">
+            <input name="input4" message="tns:cancelPlanningRequest"/>
+            <output name="output4" message="tns:cancelPlanningResponse"/>
+        </operation>
+        <operation name="BookItinerary">
+            <input name="input5" message="tns:BookItineraryRequest"/>
+            <output name="output5" message="tns:BookItineraryResponse"/>
+        </operation>
         <operation name="cancelItinerary">
-            <input name="input4" message="tns:cancelItineraryRequest"/>
-            <output name="output4" message="tns:cancelItineraryResponse"/>
+            <input name="input6" message="tns:cancelItineraryRequest"/>
+            <output name="output6" message="tns:cancelItineraryResponse"/>
         </operation>
     </portType>
     <binding name="TravelGoodWSDLPortTypeBinding" type="tns:TravelGoodWSDLPortType">
@@ -147,12 +179,30 @@
                 <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </output>
         </operation>
-        <operation name="cancelItinerary">
+        <operation name="cancelPlanning">
             <soap:operation/>
             <input name="input4">
                 <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </input>
             <output name="output4">
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
+            </output>
+        </operation>
+        <operation name="BookItinerary">
+            <soap:operation/>
+            <input name="input5">
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
+            </input>
+            <output name="output5">
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
+            </output>
+        </operation>
+        <operation name="cancelItinerary">
+            <soap:operation/>
+            <input name="input6">
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
+            </input>
+            <output name="output6">
                 <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </output>
         </operation>
@@ -172,5 +222,7 @@ A partner link type characterizes the conversational relationship between two se
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:GetFlightsAndHotelsRequest" part="part2"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:PlanFlightsAndHotelsRequest" part="part2"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:createItineraryRequest" part="part1"/>
+    <vprop:propertyAlias propertyName="tns:ID" messageType="tns:cancelPlanningRequest" part="part1"/>
+    <vprop:propertyAlias propertyName="tns:ID" messageType="tns:BookItineraryRequest" part="part1"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:cancelItineraryRequest" part="part1"/>
 </definitions>

@@ -5,21 +5,22 @@
     <system systemId="http://10.16.166.236:9080/TravelGood-sun-http-binding/TravelGoodBPEL/NiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/10.16.166.236_9080/TravelGood-sun-http-binding/TravelGoodBPEL/NiceView.xsd"/>
 <<<<<<< Updated upstream
     <system systemId="http://PC-Quentin:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuck.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/PC-Quentin_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuck.xsd"/>
-    <system systemId="http://localhost:8080/LameDuck/LameDuckService?xsd=1" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_8080/LameDuck/LameDuckService.xsd_1.xsd"/>
     <system systemId="http://PC-Quentin:9080/TravelGood-sun-http-binding/TravelGoodBPEL/NiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/PC-Quentin_9080/TravelGood-sun-http-binding/TravelGoodBPEL/NiceView.xsd"/>
 =======
     <system systemId="http://PC-Quentin:9080/TravelGood-sun-http-binding/TravelGoodBPEL/NiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/PC-Quentin_9080/TravelGood-sun-http-binding/TravelGoodBPEL/NiceView.xsd"/>
     <system systemId="http://10.16.179.209:9080/TravelGood-sun-http-binding/TravelGoodBPEL/NiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/10.16.179.209_9080/TravelGood-sun-http-binding/TravelGoodBPEL/NiceView.xsd"/>
 >>>>>>> Stashed changes
     
-    <system systemId="http://localhost:8080/LameDuck/LameDuckService?xsd=1" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_8080/LameDuck/LameDuckService.xsd_1.xsd"/>
+    
     <system systemId="http://10.16.169.29:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/10.16.169.29_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://localhost:9080/service?wsdl" uri="xml-resources/web-service-references/service/wsdl/localhost_9080/service.wsdl"/>
     <system systemId="http://10.16.170.3:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/service/wsdl/10.16.170.3_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://PC-Quentin:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/PC-Quentin_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
+    <system systemId="http://localhost:8080/LameDuck/LameDuckService?xsd=1" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_8080/LameDuck/LameDuckService.xsd_1.xsd"/>
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
     <system systemId="http://daniels-mbp-2:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/daniels-mbp-2_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
+    <system systemId="http://localhost:8080/LameDuck/LameDuckService?xsd=1" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_8080/LameDuck/LameDuckService.xsd_1.xsd"/>
     <system systemId="http://localhost:8080/NiceView/NiceViewService?xsd=1" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_8080/NiceView/NiceViewService.xsd_1.xsd"/>
 </catalog>

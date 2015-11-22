@@ -9,7 +9,7 @@
     xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
     xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
     xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
-    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" xmlns:ns1="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL">
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" xmlns:ns1="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions">
     <import namespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" location="http://localhost:8080/LameDuck/LameDuckService?wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" location="http://localhost:8080/NiceView/NiceViewService?wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://types.fastmoney.imm.dtu.dk" location="http://localhost:8080/NiceView/NiceViewService?xsd=1" importType="http://www.w3.org/2001/XMLSchema"/>
@@ -20,20 +20,34 @@
         <partnerLink name="NiceView" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" partnerLinkType="tns:NiceView" partnerRole="NiceViewPortTypeRole"/>
     </partnerLinks>
     <variables>
-         <variable name="CancelItineraryOut" messageType="ns1:cancelItineraryResponse"/>
-         <variable name="CancelItineraryIn" messageType="ns1:cancelItineraryRequest"/>
-         <variable name="finishProcess" type="xs:boolean"/>
+         <variable name="CancelItineraryIn" messageType="ns1:cancelItineraryRequest">
+              <sxed:editor>
+                   <sxed:predicate path="$CancelItineraryIn.part3/FlightPrice[$CancelFlightCounter]" source="from"/>
+              </sxed:editor>
+         </variable>
+         <variable name="BookItineraryIn" messageType="ns1:BookItineraryRequest"/>
+         <variable name="processFinished" type="xs:boolean"/>
+         <variable name="CancelPlanningOut" messageType="ns1:cancelPlanningResponse"/>
+         <variable name="CancelPlanningIn" messageType="ns1:cancelPlanningRequest"/>
+         <variable name="itineraryFinished" type="xs:boolean"/>
         <variable name="CreateItineraryOut" messageType="ns1:createItineraryResponse"/>
         <variable name="CreateItineraryIn" messageType="ns1:createItineraryRequest"/>
-        <variable name="restartItinerary" type="xs:boolean"/>
         <variable name="itineraryListHotelCounter" type="xs:int"/>
         <variable name="itineraryListFlightCounter" type="xs:int"/>
-        <variable name="itineraryList" type="ns1:PlanOutputType">
+        <variable name="itineraryList" type="ns1:ItineraryListType">
             <sxed:editor>
                 <sxed:predicate path="$itineraryList/HotelsPlanInformation[$itineraryListHotelCounter]" source="to"/>
                 <sxed:predicate path="$itineraryList/FlightsPlanInformation[$itineraryListFlightCounter]" source="to"/>
                 <sxed:predicate path="$itineraryList/HotelsPlanInformation[$planHotelsCounter]" source="from"/>
                 <sxed:predicate path="$itineraryList/FlightsPlanInformation[$planFlightCounter]" source="from"/>
+                 <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$bookHotelsCounter]" source="from"/>
+                 <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$bookHotelsCounter]" source="to"/>
+                 <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$bookFlightsCounter]" source="from"/>
+                 <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$bookFlightsCounter]" source="to"/>
+                 <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$CancelHotelCounter]" source="from"/>
+                 <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$CancelHotelCounter]" source="to"/>
+                 <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="from"/>
+                 <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="to"/>
             </sxed:editor>
         </variable>
         <variable name="planHotelsCounter" type="xs:int"/>
@@ -100,380 +114,703 @@
                    <to variable="itineraryListFlightCounter"/>
               </copy>
          </assign>
-         <repeatUntil name="RepeatUntil1">
-            <pick name="Pick1" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
-                <onMessage partnerLink="PartnerLink3" operation="GetFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsIn">
-                        <correlations>
-                                <correlation set="ItineraryCorrelation" initiate="no"/>
-                            </correlations>
-                            <sequence name="getFlightsAndHotelsLogic">
-                                <assign name="getCountersInit">
-                                        <copy>
-                                                <from>1</from>
-                                                    <to variable="GetHotelCount"/>
-                                            </copy>
-                                            <copy>
-                                                <from>1</from>
-                                                    <to variable="GetFlightCounter"/>
-                                            </copy>
-                                    </assign>
-                                    <forEach name="getHotelsLoop" parallel="no" counterName="ForEach1Counter">
-                                        <startCounterValue>1</startCounterValue>
-                                            <finalCounterValue>count($GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList)</finalCounterValue>
-                                            <scope name="Scope1">
-                                                <variables>
-                                                        <variable name="GetHotelsOut" messageType="ns0:getHotelsResponse"/>
-                                                            <variable name="GetHotelsIn" messageType="ns0:getHotelsRequest"/>
-                                                    </variables>
-                                                    <sequence name="Sequence1">
-                                                        <assign name="Assign1">
+         <repeatUntil name="RepeatUntilFinished">
+              <sequence name="Sequence10">
+                   <repeatUntil name="RepeatUntilBooked" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
+                        <pick name="PickOperation" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
+                             <onMessage partnerLink="PartnerLink3" operation="GetFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsIn">
+                                       <correlations>
+                                                 <correlation set="ItineraryCorrelation" initiate="no"/>
+                                            </correlations>
+                                            <sequence name="getFlightsAndHotelsLogic">
+                                                 <assign name="getCountersInit">
+                                                           <copy>
+                                                                     <from>1</from>
+                                                                          <to variable="GetHotelCount"/>
+                                                                </copy>
                                                                 <copy>
-                                                                        <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]
+                                                                     <from>1</from>
+                                                                          <to variable="GetFlightCounter"/>
+                                                                </copy>
+                                                      </assign>
+                                                      <forEach name="getHotelsLoop" parallel="no" counterName="ForEach1Counter">
+                                                           <startCounterValue>1</startCounterValue>
+                                                                <finalCounterValue>count($GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList)</finalCounterValue>
+                                                                <scope name="Scope1">
+                                                                     <variables>
+                                                                               <variable name="GetHotelsOut" messageType="ns0:getHotelsResponse"/>
+                                                                                    <variable name="GetHotelsIn" messageType="ns0:getHotelsRequest"/>
+                                                                          </variables>
+                                                                          <sequence name="Sequence1">
+                                                                               <assign name="Assign1">
+                                                                                         <copy>
+                                                                                                   <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]
                                 <sxed:editor>
-                                                                                        <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
-                                                                                    </sxed:editor>
-                                                                            </from>
-                                                                            <to variable="GetHotelsIn" part="hotelsRequest"/>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/City
+                                                                                                                       <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
+                                                                                                                  </sxed:editor>
+                                                                                                        </from>
+                                                                                                        <to variable="GetHotelsIn" part="hotelsRequest"/>
+                                                                                              </copy>
+                                                                                              <copy>
+                                                                                                   <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/City
                                 <sxed:editor>
-                                                                                        <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
-                                                                                    </sxed:editor>
-                                                                            </from>
-                                                                            <to>$GetHotelsIn.hotelsRequest/City</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/ArrivalDate
+                                                                                                                       <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
+                                                                                                                  </sxed:editor>
+                                                                                                        </from>
+                                                                                                        <to>$GetHotelsIn.hotelsRequest/City</to>
+                                                                                              </copy>
+                                                                                              <copy>
+                                                                                                   <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/ArrivalDate
                                 <sxed:editor>
-                                                                                        <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
-                                                                                    </sxed:editor>
-                                                                            </from>
-                                                                            <to>$GetHotelsIn.hotelsRequest/ArrivalDate</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/DepartureDate
+                                                                                                                       <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
+                                                                                                                  </sxed:editor>
+                                                                                                        </from>
+                                                                                                        <to>$GetHotelsIn.hotelsRequest/ArrivalDate</to>
+                                                                                              </copy>
+                                                                                              <copy>
+                                                                                                   <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/DepartureDate
                                 <sxed:editor>
-                                                                                        <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
-                                                                                    </sxed:editor>
-                                                                            </from>
-                                                                            <to>$GetHotelsIn.hotelsRequest/DepartureDate</to>
-                                                                    </copy>
-                                                            </assign>
-                                                            <invoke name="Invoke3" partnerLink="NiceView" operation="getHotels" portType="ns0:NiceViewPortType" inputVariable="GetHotelsIn" outputVariable="GetHotelsOut"/>
-                                                            <assign name="Assign2">
-                                                                <copy>
-                                                                        <from>$GetHotelsOut.hotels/HotelInformations</from>
-                                                                            <to>$GetFlightsAndHotelsOut.part1/HotelsList[$GetHotelCount]/HotelInformations
+                                                                                                                       <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
+                                                                                                                  </sxed:editor>
+                                                                                                        </from>
+                                                                                                        <to>$GetHotelsIn.hotelsRequest/DepartureDate</to>
+                                                                                              </copy>
+                                                                                    </assign>
+                                                                                    <invoke name="Invoke3" partnerLink="NiceView" operation="getHotels" portType="ns0:NiceViewPortType" inputVariable="GetHotelsIn" outputVariable="GetHotelsOut"/>
+                                                                                    <assign name="Assign2">
+                                                                                         <copy>
+                                                                                                   <from>$GetHotelsOut.hotels/HotelInformations</from>
+                                                                                                        <to>$GetFlightsAndHotelsOut.part1/HotelsList[$GetHotelCount]/HotelInformations
                                 <sxed:editor>
-                                                                                        <sxed:predicate path="$GetFlightsAndHotelsOut.part1/HotelsList[$GetHotelCount]" source="to"/>
-                                                                                    </sxed:editor>
-                                                                            </to>
-                                                                    </copy>
-                                                            </assign>
-                                                            <assign name="Assign7">
-                                                                <copy>
-                                                                        <from>$GetHotelCount + 1</from>
-                                                                            <to variable="GetHotelCount"/>
-                                                                    </copy>
-                                                            </assign>
-                                                    </sequence>
-                                            </scope>
-                                    </forEach>
-                                    <forEach name="getFlightsLoop" parallel="no" counterName="ForEach2Counter" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
-                                        <startCounterValue>1</startCounterValue>
-                                            <finalCounterValue>count($GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList)</finalCounterValue>
-                                            <scope name="Scope2">
-                                                <variables>
-                                                        <variable name="GetFlightsOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:getFlightsResponse"/>
-                                                            <variable name="GetFlightsIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:getFlightsRequest"/>
-                                                    </variables>
-                                                    <sequence name="Sequence2">
-                                                        <assign name="Assign4">
-                                                                <copy>
-                                                                        <from>$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]/start
+                                                                                                                       <sxed:predicate path="$GetFlightsAndHotelsOut.part1/HotelsList[$GetHotelCount]" source="to"/>
+                                                                                                                  </sxed:editor>
+                                                                                                        </to>
+                                                                                              </copy>
+                                                                                    </assign>
+                                                                                    <assign name="Assign7">
+                                                                                         <copy>
+                                                                                                   <from>$GetHotelCount + 1</from>
+                                                                                                        <to variable="GetHotelCount"/>
+                                                                                              </copy>
+                                                                                    </assign>
+                                                                          </sequence>
+                                                                </scope>
+                                                      </forEach>
+                                                      <forEach name="getFlightsLoop" parallel="no" counterName="ForEach2Counter" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck">
+                                                           <startCounterValue>1</startCounterValue>
+                                                                <finalCounterValue>count($GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList)</finalCounterValue>
+                                                                <scope name="Scope2">
+                                                                     <variables>
+                                                                               <variable name="GetFlightsOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:getFlightsResponse"/>
+                                                                                    <variable name="GetFlightsIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:getFlightsRequest"/>
+                                                                          </variables>
+                                                                          <sequence name="Sequence2">
+                                                                               <assign name="Assign4">
+                                                                                         <copy>
+                                                                                                   <from>$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]/start
                                     <sxed:editor>
-                                                                                        <sxed:predicate path="$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]" source="from"/>
-                                                                                    </sxed:editor>
-                                                                            </from>
-                                                                            <to>$GetFlightsIn.getFlightsInput/start</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]/destination
+                                                                                                                       <sxed:predicate path="$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]" source="from"/>
+                                                                                                                  </sxed:editor>
+                                                                                                        </from>
+                                                                                                        <to>$GetFlightsIn.getFlightsInput/start</to>
+                                                                                              </copy>
+                                                                                              <copy>
+                                                                                                   <from>$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]/destination
                                     <sxed:editor>
-                                                                                        <sxed:predicate path="$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]" source="from"/>
-                                                                                    </sxed:editor>
-                                                                            </from>
-                                                                            <to>$GetFlightsIn.getFlightsInput/destination</to>
-                                                                    </copy>
-                                                                    <copy>
-                                                                        <from>$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]/date
+                                                                                                                       <sxed:predicate path="$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]" source="from"/>
+                                                                                                                  </sxed:editor>
+                                                                                                        </from>
+                                                                                                        <to>$GetFlightsIn.getFlightsInput/destination</to>
+                                                                                              </copy>
+                                                                                              <copy>
+                                                                                                   <from>$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]/date
                                     <sxed:editor>
-                                                                                        <sxed:predicate path="$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]" source="from"/>
-                                                                                    </sxed:editor>
-                                                                            </from>
-                                                                            <to>$GetFlightsIn.getFlightsInput/date</to>
-                                                                    </copy>
-                                                            </assign>
-                                                            <invoke name="Invoke2" partnerLink="LameDuck" operation="getFlights" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" portType="tns:LameDuckPortType" inputVariable="GetFlightsIn" outputVariable="GetFlightsOut"/>
-                                                            <assign name="Assign5">
+                                                                                                                       <sxed:predicate path="$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]" source="from"/>
+                                                                                                                  </sxed:editor>
+                                                                                                        </from>
+                                                                                                        <to>$GetFlightsIn.getFlightsInput/date</to>
+                                                                                              </copy>
+                                                                                    </assign>
+                                                                                    <invoke name="Invoke2" partnerLink="LameDuck" operation="getFlights" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" portType="tns:LameDuckPortType" inputVariable="GetFlightsIn" outputVariable="GetFlightsOut"/>
+                                                                                    <assign name="Assign5">
+                                                                                         <copy>
+                                                                                                   <from>$GetFlightsOut.getFlightsOutput/FlightInformations</from>
+                                                                                                        <to>$GetFlightsAndHotelsOut.part1/FlightsList[$GetFlightCounter]/FlightInformations
+                                    <sxed:editor>
+                                                                                                                       <sxed:predicate path="$GetFlightsAndHotelsOut.part1/FlightsList[$GetFlightCounter]" source="to"/>
+                                                                                                                  </sxed:editor>
+                                                                                                        </to>
+                                                                                              </copy>
+                                                                                    </assign>
+                                                                                    <assign name="Assign6">
+                                                                                         <copy>
+                                                                                                   <from>$GetFlightCounter + 1</from>
+                                                                                                        <to variable="GetFlightCounter"/>
+                                                                                              </copy>
+                                                                                    </assign>
+                                                                          </sequence>
+                                                                </scope>
+                                                      </forEach>
+                                                      <reply name="getFlightsAndHotelsReply" partnerLink="PartnerLink3" operation="GetFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsOut"/>
+                                                      <assign name="notBookedYet">
+                                                           <copy>
+                                                                     <from>false()</from>
+                                                                          <to variable="itineraryFinished"/>
+                                                                </copy>
                                                                 <copy>
-                                                                        <from>$GetFlightsOut.getFlightsOutput/FlightInformations</from>
-                                                                            <to>$GetFlightsAndHotelsOut.part1/FlightsList[$GetFlightCounter]/FlightInformations
-                                    <sxed:editor>
-                                                                                        <sxed:predicate path="$GetFlightsAndHotelsOut.part1/FlightsList[$GetFlightCounter]" source="to"/>
-                                                                                    </sxed:editor>
-                                                                            </to>
-                                                                    </copy>
-                                                            </assign>
-                                                            <assign name="Assign6">
+                                                                     <from>false()</from>
+                                                                          <to variable="processFinished"/>
+                                                                </copy>
+                                                      </assign>
+                                            </sequence>
+                                  </onMessage>
+                                  <onMessage partnerLink="PartnerLink3" operation="PlanFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="PlanFlightsAndHotelsIn">
+                                       <correlations>
+                                                 <correlation set="ItineraryCorrelation" initiate="no"/>
+                                            </correlations>
+                                            <sequence name="planFlightsAndHotelsLogic">
+                                                 <flow name="ItineraryPlanning">
+                                                           <sequence name="HotelsItinerary">
+                                                                     <if name="IfHotelsItineraryIsEmpty">
+                                                                               <condition>1 = $itineraryListHotelCounter</condition>
+                                                                                    <assign name="ItineraryHotelCountersInit">
+                                                                                         <copy>
+                                                                                                   <from>1</from>
+                                                                                                        <to variable="planHotelsCounter"/>
+                                                                                              </copy>
+                                                                                    </assign>
+                                                                                    <else>
+                                                                                         <assign name="ItineraryHotelCountersReset">
+                                                                                                   <copy>
+                                                                                                             <from>1</from>
+                                                                                                                  <to variable="planHotelsCounter"/>
+                                                                                                        </copy>
+                                                                                                        <copy>
+                                                                                                             <from>1 + count($itineraryList/HotelsItineraryInformation)</from>
+                                                                                                                  <to variable="itineraryListHotelCounter"/>
+                                                                                                        </copy>
+                                                                                              </assign>
+                                                                                    </else>
+                                                                          </if>
+                                                                          <forEach name="addHotelsToItinerary" parallel="no" counterName="ForEach3Counter">
+                                                                               <startCounterValue>1</startCounterValue>
+                                                                                    <finalCounterValue>count($PlanFlightsAndHotelsIn.part1/HotelsBookingNumber)</finalCounterValue>
+                                                                                    <scope name="Scope3">
+                                                                                         <sequence name="Sequence3">
+                                                                                                   <assign name="addHotelsToItinerary">
+                                                                                                             <copy>
+                                                                                                                       <from>$PlanFlightsAndHotelsIn.part1/HotelsBookingNumber[$planHotelsCounter]
+                                            <sxed:editor>
+                                                                                                                                           <sxed:predicate path="$PlanFlightsAndHotelsIn.part1/HotelsBookingNumber[$planHotelsCounter]" source="from"/>
+                                                                                                                                      </sxed:editor>
+                                                                                                                            </from>
+                                                                                                                            <to>$itineraryList/HotelsItineraryInformation[$itineraryListHotelCounter]/BookingNumber</to>
+                                                                                                                  </copy>
+                                                                                                                  <copy>
+                                                                                                                       <from>'unconfirmed'</from>
+                                                                                                                            <to>$itineraryList/HotelsItineraryInformation[$itineraryListHotelCounter]/Status</to>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                                        <assign name="increasePlanHotelCounters">
+                                                                                                             <copy>
+                                                                                                                       <from>$itineraryListHotelCounter + 1</from>
+                                                                                                                            <to variable="itineraryListHotelCounter"/>
+                                                                                                                  </copy>
+                                                                                                                  <copy>
+                                                                                                                       <from>1 + $planHotelsCounter</from>
+                                                                                                                            <to variable="planHotelsCounter"/>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                              </sequence>
+                                                                                    </scope>
+                                                                          </forEach>
+                                                                          <assign name="planHotelsCounterReset">
+                                                                               <copy>
+                                                                                         <from>1</from>
+                                                                                              <to variable="planHotelsCounter"/>
+                                                                                    </copy>
+                                                                          </assign>
+                                                                          <forEach name="itineraryHotelsToOutput" parallel="no" counterName="ForEach5Counter">
+                                                                               <startCounterValue>1</startCounterValue>
+                                                                                    <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
+                                                                                    <scope name="Scope5">
+                                                                                         <sequence name="Sequence5">
+                                                                                                   <assign name="addHotelToPlanOutput">
+                                                                                                             <copy>
+                                                                                                                       <from>$itineraryList/HotelsItineraryInformation[$planHotelsCounter]</from>
+                                                                                                                            <to>$PlanFlightsAndHotelsOut.part1/HotelsItineraryInformation[$planHotelsCounter]</to>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                                        <assign name="incrHotelCounter">
+                                                                                                             <copy>
+                                                                                                                       <from>1 + $planHotelsCounter</from>
+                                                                                                                            <to variable="planHotelsCounter"/>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                              </sequence>
+                                                                                    </scope>
+                                                                          </forEach>
+                                                                </sequence>
+                                                                <sequence name="FlightsItinerary">
+                                                                     <if name="IfFlightsItineraryIsEmpty">
+                                                                               <condition>1 = $itineraryListFlightCounter</condition>
+                                                                                    <assign name="ItineraryFlightsCountersInit">
+                                                                                         <copy>
+                                                                                                   <from>1</from>
+                                                                                                        <to variable="planFlightCounter"/>
+                                                                                              </copy>
+                                                                                    </assign>
+                                                                                    <else>
+                                                                                         <assign name="ItineraryFlightCountersReset">
+                                                                                                   <copy>
+                                                                                                             <from>1</from>
+                                                                                                                  <to variable="planFlightCounter"/>
+                                                                                                        </copy>
+                                                                                                        <copy>
+                                                                                                             <from>1 + count($itineraryList/FlightsItineraryInformation)</from>
+                                                                                                                  <to variable="itineraryListFlightCounter"/>
+                                                                                                        </copy>
+                                                                                              </assign>
+                                                                                    </else>
+                                                                          </if>
+                                                                          <forEach name="addFlightsToItinerary" parallel="no" counterName="ForEach4Counter">
+                                                                               <startCounterValue>1</startCounterValue>
+                                                                                    <finalCounterValue>count($PlanFlightsAndHotelsIn.part1/FlightsBookingNumber)</finalCounterValue>
+                                                                                    <scope name="Scope4">
+                                                                                         <sequence name="Sequence4">
+                                                                                                   <assign name="addFlightsToItinerary">
+                                                                                                             <copy>
+                                                                                                                       <from>$PlanFlightsAndHotelsIn.part1/FlightsBookingNumber[$planFlightCounter]
+                                            <sxed:editor>
+                                                                                                                                           <sxed:predicate path="$PlanFlightsAndHotelsIn.part1/FlightsBookingNumber[$planFlightCounter]" source="from"/>
+                                                                                                                                      </sxed:editor>
+                                                                                                                            </from>
+                                                                                                                            <to>$itineraryList/FlightsItineraryInformation[$itineraryListFlightCounter]/BookingNumber</to>
+                                                                                                                  </copy>
+                                                                                                                  <copy>
+                                                                                                                       <from>'unconfirmed'</from>
+                                                                                                                            <to>$itineraryList/FlightsItineraryInformation[$itineraryListFlightCounter]/Status</to>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                                        <assign name="increasePlanFlightCounters">
+                                                                                                             <copy>
+                                                                                                                       <from>1 + $planFlightCounter</from>
+                                                                                                                            <to variable="planFlightCounter"/>
+                                                                                                                  </copy>
+                                                                                                                  <copy>
+                                                                                                                       <from>1 + $itineraryListFlightCounter</from>
+                                                                                                                            <to variable="itineraryListFlightCounter"/>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                              </sequence>
+                                                                                    </scope>
+                                                                          </forEach>
+                                                                          <assign name="planFlightsCounterReset">
+                                                                               <copy>
+                                                                                         <from>1</from>
+                                                                                              <to variable="planFlightCounter"/>
+                                                                                    </copy>
+                                                                          </assign>
+                                                                          <forEach name="itineraryFlightsToOutput" parallel="no" counterName="ForEach6Counter">
+                                                                               <startCounterValue>1</startCounterValue>
+                                                                                    <finalCounterValue>count($itineraryList/FlightsItineraryInformation)</finalCounterValue>
+                                                                                    <scope name="Scope6">
+                                                                                         <sequence name="Sequence6">
+                                                                                                   <assign name="addFlightToPlanOutput">
+                                                                                                             <copy>
+                                                                                                                       <from>$itineraryList/FlightsItineraryInformation[$planFlightCounter]</from>
+                                                                                                                            <to>$PlanFlightsAndHotelsOut.part1/FlightsItineraryInformation[$planFlightCounter]</to>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                                        <assign name="incrFlightCounter">
+                                                                                                             <copy>
+                                                                                                                       <from>1 + $planFlightCounter</from>
+                                                                                                                            <to variable="planFlightCounter"/>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                              </sequence>
+                                                                                    </scope>
+                                                                          </forEach>
+                                                                </sequence>
+                                                      </flow>
+                                                      <reply name="ReplyPlanFlightsAndHotels" partnerLink="PartnerLink3" operation="PlanFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="PlanFlightsAndHotelsOut"/>
+                                                      <assign name="notBookedYet2">
+                                                           <copy>
+                                                                     <from>false()</from>
+                                                                          <to variable="itineraryFinished"/>
+                                                                </copy>
                                                                 <copy>
-                                                                        <from>$GetFlightCounter + 1</from>
-                                                                            <to variable="GetFlightCounter"/>
-                                                                    </copy>
-                                                            </assign>
-                                                    </sequence>
-                                            </scope>
-                                    </forEach>
-                                    <reply name="getFlightsAndHotelsReply" partnerLink="PartnerLink3" operation="GetFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="GetFlightsAndHotelsOut"/>
-                                <assign name="dontFinishProcess">
-                                    <copy>
-                                        <from>false()</from>
-                                        <to variable="finishProcess"/>
-                                    </copy>
-                                </assign>
-                            </sequence>
-                    </onMessage>
-                    <onMessage partnerLink="PartnerLink3" operation="PlanFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="PlanFlightsAndHotelsIn">
-                        <correlations>
-                                <correlation set="ItineraryCorrelation" initiate="no"/>
-                            </correlations>
-                            <sequence name="planFlightsAndHotelsLogic">
-                                 <flow name="ItineraryPlanning">
-                                      <sequence name="HotelsItinerary">
-                                           <if name="IfHotelsItineraryIsEmpty">
-                                                <condition>1 = $itineraryListHotelCounter</condition>
-                                                     <assign name="ItineraryHotelCountersInit">
-                                                          <copy>
-                                                                    <from>1</from>
-                                                                         <to variable="planHotelsCounter"/>
-                                                               </copy>
-                                                     </assign>
-                                                     <else>
-                                                          <assign name="ItineraryHotelCountersReset">
-                                                                    <copy>
-                                                                              <from>1</from>
-                                                                                   <to variable="planHotelsCounter"/>
-                                                                         </copy>
-                                                                         <copy>
-                                                                              <from>1 + count($itineraryList/HotelsPlanInformation)</from>
-                                                                                   <to variable="itineraryListHotelCounter"/>
-                                                                         </copy>
-                                                               </assign>
-                                                     </else>
-                                           </if>
-                                           <forEach name="addHotelsToItinerary" parallel="no" counterName="ForEach3Counter">
-                                                <startCounterValue>1</startCounterValue>
-                                                     <finalCounterValue>count($PlanFlightsAndHotelsIn.part1/HotelsBookingNumber)</finalCounterValue>
-                                                     <scope name="Scope3">
-                                                     <sequence name="Sequence3">
-                                                               <assign name="addHotelsToItinerary">
-                                                                         <copy>
-                                                                                   <from>$PlanFlightsAndHotelsIn.part1/HotelsBookingNumber[$planHotelsCounter]
+                                                                     <from>false()</from>
+                                                                          <to variable="processFinished"/>
+                                                                </copy>
+                                                      </assign>
+                                            </sequence>
+                                  </onMessage>
+                                  <onMessage partnerLink="PartnerLink3" operation="cancelPlanning" portType="ns1:TravelGoodWSDLPortType" variable="CancelPlanningIn">
+                                       <correlations>
+                                                 <correlation set="ItineraryCorrelation" initiate="no"/>
+                                            </correlations>
+                                            <sequence name="cancelPlanning">
+                                                 <assign name="AssignCancelPlanning">
+                                                           <copy>
+                                                                     <from>true()</from>
+                                                                          <to variable="itineraryFinished"/>
+                                                                </copy>
+                                                                <copy>
+                                                                     <from>true()</from>
+                                                                          <to variable="CancelPlanningOut" part="part1"/>
+                                                                </copy>
+                                                                <copy>
+                                                                     <from>true()</from>
+                                                                          <to variable="processFinished"/>
+                                                                </copy>
+                                                      </assign>
+                                                      <reply name="ReplyCancelPlanning" partnerLink="PartnerLink3" operation="cancelPlanning" portType="ns1:TravelGoodWSDLPortType" variable="CancelPlanningOut"/>
+                                            </sequence>
+                                  </onMessage>
+                                  <onMessage partnerLink="PartnerLink3" operation="BookItinerary" portType="ns1:TravelGoodWSDLPortType" variable="BookItineraryIn">
+                                       <correlations>
+                                                 <correlation set="ItineraryCorrelation" initiate="no"/>
+                                            </correlations>
+                                            <sequence name="bookItinerary">
+                                                 <scope name="ScopeBookItinerary">
+                                                           <variables>
+                                                                     <variable name="bookFlightsCounter" type="xs:int"/>
+                                                                          <variable name="bookHotelsCounter" type="xs:int"/>
+                                                                          <variable name="BookItineraryOut" messageType="ns1:BookItineraryResponse">
+                                                                               <sxed:editor>
+                                                                                         <sxed:predicate path="$BookItineraryOut.part1/HotelsItineraryInformation[$bookHotelsCounter]" source="to"/>
+                                                                                              <sxed:predicate path="$BookItineraryOut.part1/FlightsItineraryInformation[$bookFlightsCounter]" source="to"/>
+                                                                                    </sxed:editor>
+                                                                          </variable>
+                                                                </variables>
+                                                                <sequence name="SequenceBookItinerary">
+                                                                     <assign name="BookingCountersInit">
+                                                                               <copy>
+                                                                                         <from>1</from>
+                                                                                              <to variable="bookFlightsCounter"/>
+                                                                                    </copy>
+                                                                                    <copy>
+                                                                                         <from>1</from>
+                                                                                              <to variable="bookHotelsCounter"/>
+                                                                                    </copy>
+                                                                          </assign>
+                                                                          <forEach name="ForEachHotelBooking" parallel="no" counterName="ForEach1Counter">
+                                                                               <startCounterValue>1</startCounterValue>
+                                                                                    <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
+                                                                                    <scope name="ScopeBookHotels">
+                                                                                         <variables>
+                                                                                                   <variable name="BookHotelOut" messageType="ns0:bookHotelResponse"/>
+                                                                                                        <variable name="BookHotelIn" messageType="ns0:bookHotelRequest"/>
+                                                                                              </variables>
+                                                                                              <sequence name="SequenceBookHotels">
+                                                                                                   <assign name="AssignBookHotelsForNiceView">
+                                                                                                             <copy>
+                                                                                                                       <from variable="BookItineraryIn" part="part2"/>
+                                                                                                                            <to>$BookHotelIn.bookHotelReqest/CreditCard</to>
+                                                                                                                  </copy>
+                                                                                                                  <copy>
+                                                                                                                       <from>$itineraryList/HotelsItineraryInformation[$bookHotelsCounter]/BookingNumber
+                                                                                                                                      <sxed:editor>
+                                                                                                                                           <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$bookHotelsCounter]" source="from"/>
+                                                                                                                                      </sxed:editor>
+                                                                                                                            </from>
+                                                                                                                            <to>$BookHotelIn.bookHotelReqest/BookingNumber</to>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                                        <invoke name="InvokeBookHotel" partnerLink="NiceView" operation="bookHotel" portType="ns0:NiceViewPortType" inputVariable="BookHotelIn" outputVariable="BookHotelOut"/>
+                                                                                                        <if name="IfBookHotelSuccessful">
+                                                                                                             <condition>$BookHotelOut.bookHotelResponse</condition>
+                                                                                                                  <sequence name="Sequence9">
+                                                                                                                       <assign name="BookHotelSuccessful">
+                                                                                                                                 <copy>
+                                                                                                                                           <from>'confirmed'</from>
+                                                                                                                                                <to>$itineraryList/HotelsItineraryInformation[$bookHotelsCounter]/Status
+                                                                                                                                                          <sxed:editor>
+                                                                                                                                                               <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$bookHotelsCounter]" source="to"/>
+                                                                                                                                                          </sxed:editor>
+                                                                                                                                                </to>
+                                                                                                                                      </copy>
+                                                                                                                            </assign>
+                                                                                                                            <assign name="AddHotelToReplyItinerary">
+                                                                                                                                 <copy>
+                                                                                                                                           <from>$itineraryList/HotelsItineraryInformation[$bookHotelsCounter]
+                                                                                                                                                          <sxed:editor>
+                                                                                                                                                               <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$bookHotelsCounter]" source="from"/>
+                                                                                                                                                          </sxed:editor>
+                                                                                                                                                </from>
+                                                                                                                                                <to>$BookItineraryOut.part1/HotelsItineraryInformation[$bookHotelsCounter]
+                                                                                                                                                          <sxed:editor>
+                                                                                                                                                               <sxed:predicate path="$BookItineraryOut.part1/HotelsItineraryInformation[$bookHotelsCounter]" source="to"/>
+                                                                                                                                                          </sxed:editor>
+                                                                                                                                                </to>
+                                                                                                                                      </copy>
+                                                                                                                            </assign>
+                                                                                                                  </sequence>
+                                                                                                        </if>
+                                                                                                        <assign name="IncrementBookHotelCounter">
+                                                                                                             <copy>
+                                                                                                                       <from>1 + $bookHotelsCounter</from>
+                                                                                                                            <to variable="bookHotelsCounter"/>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                              </sequence>
+                                                                                    </scope>
+                                                                          </forEach>
+                                                                          <forEach name="ForEachFlightBooking" parallel="no" counterName="ForEach1Counter">
+                                                                               <startCounterValue>1</startCounterValue>
+                                                                                    <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
+                                                                                    <scope name="ScopeBookFlights">
+                                                                                         <variables>
+                                                                                                   <variable name="BookFlightOut" messageType="tns:bookFlightResponse"/>
+                                                                                                        <variable name="BookFlightIn" messageType="tns:bookFlightRequest"/>
+                                                                                                        <variable name="BookHotelOut" messageType="ns0:bookHotelResponse"/>
+                                                                                                        <variable name="BookHotelIn" messageType="ns0:bookHotelRequest"/>
+                                                                                              </variables>
+                                                                                              <sequence name="SequenceBookFlights">
+                                                                                                   <assign name="AssignBookFlightsForLameDuck">
+                                                                                                             <copy>
+                                                                                                                       <from variable="BookItineraryIn" part="part2"/>
+                                                                                                                            <to>$BookFlightIn.bookFlightInput/CreditCard</to>
+                                                                                                                  </copy>
+                                                                                                                  <copy>
+                                                                                                                       <from>$itineraryList/FlightsItineraryInformation[$bookFlightsCounter]/BookingNumber
+                                                                                                                                      <sxed:editor>
+                                                                                                                                           <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$bookFlightsCounter]" source="from"/>
+                                                                                                                                      </sxed:editor>
+                                                                                                                            </from>
+                                                                                                                            <to>$BookFlightIn.bookFlightInput/BookingNumber</to>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                                        <invoke name="InvokeBookFlight" partnerLink="LameDuck" operation="bookFlight" portType="tns:LameDuckPortType" inputVariable="BookFlightIn" outputVariable="BookFlightOut"/>
+                                                                                                        <if name="IfBookFlightSuccessful">
+                                                                                                             <condition>$BookFlightOut.bookFlightOutput</condition>
+                                                                                                                  <sequence name="Sequence9">
+                                                                                                                       <assign name="BookFlightSuccessful">
+                                                                                                                                 <copy>
+                                                                                                                                           <from>'confirmed'</from>
+                                                                                                                                                <to>$itineraryList/FlightsItineraryInformation[$bookFlightsCounter]/Status
+                                                                                                                                                          <sxed:editor>
+                                                                                                                                                               <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$bookFlightsCounter]" source="to"/>
+                                                                                                                                                          </sxed:editor>
+                                                                                                                                                </to>
+                                                                                                                                      </copy>
+                                                                                                                            </assign>
+                                                                                                                            <assign name="AddFlightToReplyItinerary">
+                                                                                                                                 <copy>
+                                                                                                                                           <from>$itineraryList/FlightsItineraryInformation[$bookFlightsCounter]
+                                                                                                                                                          <sxed:editor>
+                                                                                                                                                               <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$bookFlightsCounter]" source="from"/>
+                                                                                                                                                          </sxed:editor>
+                                                                                                                                                </from>
+                                                                                                                                                <to>$BookItineraryOut.part1/FlightsItineraryInformation[$bookFlightsCounter]
+                                                                                                                                                          <sxed:editor>
+                                                                                                                                                               <sxed:predicate path="$BookItineraryOut.part1/FlightsItineraryInformation[$bookFlightsCounter]" source="to"/>
+                                                                                                                                                          </sxed:editor>
+                                                                                                                                                </to>
+                                                                                                                                      </copy>
+                                                                                                                            </assign>
+                                                                                                                  </sequence>
+                                                                                                        </if>
+                                                                                                        <assign name="IncrementBookFlightCounter">
+                                                                                                             <copy>
+                                                                                                                       <from>1 + $bookFlightsCounter</from>
+                                                                                                                            <to variable="bookFlightsCounter"/>
+                                                                                                                  </copy>
+                                                                                                        </assign>
+                                                                                              </sequence>
+                                                                                    </scope>
+                                                                          </forEach>
+                                                                          <reply name="ReplyBookItinerary" partnerLink="PartnerLink3" operation="BookItinerary" portType="ns1:TravelGoodWSDLPortType" variable="BookItineraryOut"/>
+                                                                          <assign name="AssignBooked">
+                                                                               <copy>
+                                                                                         <from>false()</from>
+                                                                                              <to variable="processFinished"/>
+                                                                                    </copy>
+                                                                                    <copy>
+                                                                                         <from>true()</from>
+                                                                                              <to variable="itineraryFinished"/>
+                                                                                    </copy>
+                                                                          </assign>
+                                                                </sequence>
+                                                      </scope>
+                                            </sequence>
+                                  </onMessage>
+                        </pick>
+                             <condition>true() = $itineraryFinished</condition>
+                   </repeatUntil>
+                   <pick name="PickCancelOrFirstTrip">
+                        <onMessage partnerLink="PartnerLink3" operation="cancelItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CancelItineraryIn">
+                             <correlations>
+                                  <correlation set="ItineraryCorrelation" initiate="no"/>
+                             </correlations>
+                             <scope name="ScopeCancelItinerary">
+                                  <variables>
+                                       <variable name="CancelItineraryOut" messageType="ns1:cancelItineraryResponse">
                                             <sxed:editor>
-                                                                                                       <sxed:predicate path="$PlanFlightsAndHotelsIn.part1/HotelsBookingNumber[$planHotelsCounter]" source="from"/>
-                                                                                                  </sxed:editor>
-                                                                                        </from>
-                                                                                        <to>$itineraryList/HotelsPlanInformation[$itineraryListHotelCounter]/BookingNumber
-                                            <sxed:editor>
-                                                                                                       <sxed:predicate path="$itineraryList/HotelsPlanInformation[$itineraryListHotelCounter]" source="to"/>
-                                                                                                  </sxed:editor>
-                                                                                        </to>
-                                                                              </copy>
-                                                                              <copy>
-                                                                                   <from>'unconfirmed'</from>
-                                                                                        <to>$itineraryList/HotelsPlanInformation[$itineraryListHotelCounter]/Status
-                                            <sxed:editor>
-                                                                                                       <sxed:predicate path="$itineraryList/HotelsPlanInformation[$itineraryListHotelCounter]" source="to"/>
-                                                                                                  </sxed:editor>
-                                                                                        </to>
-                                                                              </copy>
-                                                                    </assign>
-                                                                    <assign name="increasePlanHotelCounters">
-                                                                         <copy>
-                                                                                   <from>$itineraryListHotelCounter + 1</from>
-                                                                                        <to variable="itineraryListHotelCounter"/>
-                                                                              </copy>
-                                                                              <copy>
-                                                                                   <from>1 + $planHotelsCounter</from>
-                                                                                        <to variable="planHotelsCounter"/>
-                                                                              </copy>
-                                                                    </assign>
-                                                          </sequence>
-                                                </scope>
-                                           </forEach>
-                                           <assign name="planHotelsCounterReset">
-                                                <copy>
-                                                          <from>1</from>
-                                                               <to variable="planHotelsCounter"/>
-                                                     </copy>
-                                           </assign>
-                                           <forEach name="itineraryHotelsToOutput" parallel="no" counterName="ForEach5Counter">
-                                                <startCounterValue>1</startCounterValue>
-                                                     <finalCounterValue>count($itineraryList/HotelsPlanInformation)</finalCounterValue>
-                                                     <scope name="Scope5">
-                                                          <sequence name="Sequence5">
-                                                                    <assign name="addHotelToPlanOutput">
-                                                                              <copy>
-                                                                                        <from>$itineraryList/HotelsPlanInformation[$planHotelsCounter]
-                                <sxed:editor>
-                                                                                                            <sxed:predicate path="$itineraryList/HotelsPlanInformation[$planHotelsCounter]" source="from"/>
-                                                                                                       </sxed:editor>
-                                                                                             </from>
-                                                                                             <to>$PlanFlightsAndHotelsOut.part1/HotelsPlanInformation[$planHotelsCounter]
-                                <sxed:editor>
-                                                                                                            <sxed:predicate path="$PlanFlightsAndHotelsOut.part1/HotelsPlanInformation[$planHotelsCounter]" source="to"/>
-                                                                                                       </sxed:editor>
-                                                                                             </to>
-                                                                                   </copy>
-                                                                         </assign>
-                                                                         <assign name="incrHotelCounter">
-                                                                              <copy>
-                                                                                        <from>1 + $planHotelsCounter</from>
-                                                                                             <to variable="planHotelsCounter"/>
-                                                                                   </copy>
-                                                                         </assign>
-                                                               </sequence>
-                                                     </scope>
-                                           </forEach>
-                                      </sequence>
-                                      <sequence name="FlightsItinerary">
-                                           <if name="IfFlightsItineraryIsEmpty">
-                                                <condition>1 = $itineraryListFlightCounter</condition>
-                                                <assign name="ItineraryFlightsCountersInit">
-                                                     <copy>
-                                                          <from>1</from>
-                                                          <to variable="planFlightCounter"/>
-                                                     </copy>
-                                                </assign>
-                                                     <else>
-                                                          <assign name="ItineraryFlightCountersReset">
-                                                               <copy>
-                                                                    <from>1</from>
-                                                                    <to variable="planFlightCounter"/>
-                                                               </copy>
-                                                               <copy>
-                                                                    <from>1 + count($itineraryList/FlightsPlanInformation)</from>
-                                                                    <to variable="itineraryListFlightCounter"/>
-                                                               </copy>
-                                                          </assign>
-                                                     </else>
-                                           </if>
-                                           <forEach name="addFlightsToItinerary" parallel="no" counterName="ForEach4Counter">
-                                                <startCounterValue>1</startCounterValue>
-                                                     <finalCounterValue>count($PlanFlightsAndHotelsIn.part1/FlightsBookingNumber)</finalCounterValue>
-                                                     <scope name="Scope4">
-                                                     <sequence name="Sequence4">
-                                                               <assign name="addFlightsToItinerary">
-                                                                         <copy>
-                                                                                   <from>$PlanFlightsAndHotelsIn.part1/FlightsBookingNumber[$planFlightCounter]
-                                            <sxed:editor>
-                                                                                                       <sxed:predicate path="$PlanFlightsAndHotelsIn.part1/FlightsBookingNumber[$planFlightCounter]" source="from"/>
-                                                                                                  </sxed:editor>
-                                                                                        </from>
-                                                                                        <to>$itineraryList/FlightsPlanInformation[$itineraryListFlightCounter]/BookingNumber
-                                            <sxed:editor>
-                                                                                                       <sxed:predicate path="$itineraryList/FlightsPlanInformation[$itineraryListFlightCounter]" source="to"/>
-                                                                                                  </sxed:editor>
-                                                                                        </to>
-                                                                              </copy>
-                                                                              <copy>
-                                                                                   <from>'unconfirmed'</from>
-                                                                                        <to>$itineraryList/FlightsPlanInformation[$itineraryListFlightCounter]/Status
-                                            <sxed:editor>
-                                                                                                       <sxed:predicate path="$itineraryList/FlightsPlanInformation[$itineraryListFlightCounter]" source="to"/>
-                                                                                                  </sxed:editor>
-                                                                                        </to>
-                                                                              </copy>
-                                                                    </assign>
-                                                                    <assign name="increasePlanFlightCounters">
-                                                                         <copy>
-                                                                                   <from>1 + $planFlightCounter</from>
-                                                                                        <to variable="planFlightCounter"/>
-                                                                              </copy>
-                                                                              <copy>
-                                                                                   <from>1 + $itineraryListFlightCounter</from>
-                                                                                        <to variable="itineraryListFlightCounter"/>
-                                                                              </copy>
-                                                                    </assign>
-                                                          </sequence>
-                                                </scope>
-                                           </forEach>
-                                           <assign name="planFlightsCounterReset">
-                                                     <copy>
-                                                          <from>1</from>
-                                                               <to variable="planFlightCounter"/>
-                                                     </copy>
-                                           </assign>
-                                           <forEach name="itineraryFlightsToOutput" parallel="no" counterName="ForEach6Counter">
-                                                <startCounterValue>1</startCounterValue>
-                                                     <finalCounterValue>count($itineraryList/FlightsPlanInformation)</finalCounterValue>
-                                                     <scope name="Scope6">
-                                                          <sequence name="Sequence6">
-                                                                    <assign name="addFlightToPlanOutput">
-                                                                              <copy>
-                                                                                        <from>$itineraryList/FlightsPlanInformation[$planFlightCounter]
-                                            <sxed:editor>
-                                                                                                            <sxed:predicate path="$itineraryList/FlightsPlanInformation[$planFlightCounter]" source="from"/>
-                                                                                                       </sxed:editor>
-                                                                                             </from>
-                                                                                             <to>$PlanFlightsAndHotelsOut.part1/FlightsPlanInformation[$planFlightCounter]
-                                            <sxed:editor>
-                                                                                                            <sxed:predicate path="$PlanFlightsAndHotelsOut.part1/FlightsPlanInformation[$planFlightCounter]" source="to"/>
-                                                                                                       </sxed:editor>
-                                                                                             </to>
-                                                                                   </copy>
-                                                                         </assign>
-                                                                         <assign name="incrFlightCounter">
-                                                                              <copy>
-                                                                                        <from>1 + $planFlightCounter</from>
-                                                                                             <to variable="planFlightCounter"/>
-                                                                                   </copy>
-                                                                         </assign>
-                                                               </sequence>
-                                                     </scope>
-                                           </forEach>
-                                      </sequence>
-                                 </flow>
-                                    <reply name="ReplyPlanFlightsAndHotels" partnerLink="PartnerLink3" operation="PlanFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="PlanFlightsAndHotelsOut"/>
-                                <assign name="dontFinishProcess2">
-                                    <copy>
-                                        <from>false()</from>
-                                        <to variable="finishProcess"/>
-                                    </copy>
-                                </assign>
-                            </sequence>
-                    </onMessage>
-                 <onMessage partnerLink="PartnerLink3" operation="cancelItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CancelItineraryIn">
-                      <correlations>
-                           <correlation set="ItineraryCorrelation" initiate="no"/>
-                      </correlations>
-                      <sequence name="cancelItinerary">
-                           <assign name="AssignCancelItinerary">
-                                <copy>
-                                     <from>true()</from>
-                                     <to variable="finishProcess"/>
-                                </copy>
-                                <copy>
-                                     <from>true()</from>
-                                     <to variable="CancelItineraryOut" part="part1"/>
-                                </copy>
-                           </assign>
-                           <reply name="ReplyCancelItinerary" partnerLink="PartnerLink3" operation="cancelItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CancelItineraryOut"/>
-                      </sequence>
-                 </onMessage>
-            </pick>
-            <condition>true() = $finishProcess</condition>
-        </repeatUntil>
+                                                 <sxed:predicate path="$CancelItineraryOut.part1/HotelsItineraryInformation[$CancelHotelCounter]" source="to"/>
+                                                 <sxed:predicate path="$CancelItineraryOut.part1/FlightsItineraryInformation[$CancelFlightCounter]" source="to"/>
+                                            </sxed:editor>
+                                       </variable>
+                                       <variable name="CancelFlightCounter" type="xs:int"/>
+                                       <variable name="CancelHotelCounter" type="xs:int"/>
+                                  </variables>
+                                  <sequence name="SequenceCancelItinerary">
+                                       <assign name="CancellingCountersInit">
+                                                 <copy>
+                                                      <from>1</from>
+                                                           <to variable="CancelFlightCounter"/>
+                                                 </copy>
+                                                 <copy>
+                                                      <from>1</from>
+                                                           <to variable="CancelHotelCounter"/>
+                                                 </copy>
+                                       </assign>
+                                       <forEach name="ForEachHotelCancel" parallel="no" counterName="ForEach1Counter">
+                                            <startCounterValue>1</startCounterValue>
+                                                 <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
+                                                 <scope name="ScopeCancelHotels">
+                                                      <variables>
+                                                           <variable name="CancelHotelOut" messageType="ns0:cancelHotelResponse"/>
+                                                           <variable name="CancelHotelIn" messageType="ns0:cancelHotelRequest"/>
+                                                           <variable name="BookHotelOut" messageType="ns0:bookHotelResponse"/>
+                                                                     <variable name="BookHotelIn" messageType="ns0:bookHotelRequest"/>
+                                                           </variables>
+                                                           <sequence name="SequenceCancelHotels">
+                                                                <assign name="AssignCancelHotelsForNiceView">
+                                                                     <copy>
+                                                                          <from>$itineraryList/HotelsItineraryInformation[$CancelHotelCounter]/BookingNumber
+                                                                               <sxed:editor>
+                                                                                    <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$CancelHotelCounter]" source="from"/>
+                                                                               </sxed:editor>
+                                                                          </from>
+                                                                          <to variable="CancelHotelIn" part="cancelHotelRequest"/>
+                                                                     </copy>
+                                                                </assign>
+                                                                <invoke name="InvokeCancelHotel" partnerLink="NiceView" operation="cancelHotel" portType="ns0:NiceViewPortType" inputVariable="CancelHotelIn" outputVariable="CancelHotelOut"/>
+                                                                <assign name="CancelHotelSuccessful">
+                                                                     <copy>
+                                                                          <from>'cancelled'</from>
+                                                                          <to>$itineraryList/HotelsItineraryInformation[$CancelHotelCounter]/Status
+                                                                               <sxed:editor>
+                                                                                    <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$CancelHotelCounter]" source="to"/>
+                                                                               </sxed:editor>
+                                                                          </to>
+                                                                     </copy>
+                                                                </assign>
+                                                                <assign name="AddCancelledHotelToReplyItinerary">
+                                                                     <copy>
+                                                                          <from>$itineraryList/HotelsItineraryInformation[$CancelHotelCounter]
+                                                                               <sxed:editor>
+                                                                                    <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$CancelHotelCounter]" source="from"/>
+                                                                               </sxed:editor>
+                                                                          </from>
+                                                                          <to>$CancelItineraryOut.part1/HotelsItineraryInformation[$CancelHotelCounter]
+                                                                               <sxed:editor>
+                                                                                    <sxed:predicate path="$CancelItineraryOut.part1/HotelsItineraryInformation[$CancelHotelCounter]" source="to"/>
+                                                                               </sxed:editor>
+                                                                          </to>
+                                                                     </copy>
+                                                                </assign>
+                                                                <assign name="IncrementCancelHotelCounter">
+                                                                     <copy>
+                                                                          <from>1 + $CancelHotelCounter</from>
+                                                                          <to variable="CancelHotelCounter"/>
+                                                                     </copy>
+                                                                </assign>
+                                                           </sequence>
+                                                 </scope>
+                                       </forEach>
+                                       <forEach name="ForEachFlightCancel" parallel="no" counterName="ForEach1Counter">
+                                            <startCounterValue>1</startCounterValue>
+                                                 <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
+                                                 <scope name="ScopeCancelFlights">
+                                                      <variables>
+                                                           <variable name="CancelFlightOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:cancelFlightResponse"/>
+                                                           <variable name="CancelFlightIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:cancelFlightRequest"/>
+                                                           <variable name="CancelHotelOut" messageType="ns0:cancelHotelResponse"/>
+                                                           <variable name="CancelHotelIn" messageType="ns0:cancelHotelRequest"/>
+                                                           <variable name="BookHotelOut" messageType="ns0:bookHotelResponse"/>
+                                                                     <variable name="BookHotelIn" messageType="ns0:bookHotelRequest"/>
+                                                           </variables>
+                                                           <sequence name="SequenceCancelFlights">
+                                                                <assign name="AssignCancelFlightsForLameDuck">
+                                                                     <copy>
+                                                                          <from>$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]/BookingNumber
+                                                                               <sxed:editor>
+                                                                                    <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="from"/>
+                                                                               </sxed:editor>
+                                                                          </from>
+                                                                          <to>$CancelFlightIn.cancelFlightInput/BookingNumber</to>
+                                                                     </copy>
+                                                                     <copy>
+                                                                          <from>$CancelItineraryIn.part3/FlightPrice[$CancelFlightCounter]
+                                                                               <sxed:editor>
+                                                                                    <sxed:predicate path="$CancelItineraryIn.part3/FlightPrice[$CancelFlightCounter]" source="from"/>
+                                                                               </sxed:editor>
+                                                                          </from>
+                                                                          <to>$CancelFlightIn.cancelFlightInput/Price</to>
+                                                                     </copy>
+                                                                     <copy>
+                                                                          <from variable="CancelItineraryIn" part="part2"/>
+                                                                          <to>$CancelFlightIn.cancelFlightInput/CreditCard</to>
+                                                                     </copy>
+                                                                </assign>
+                                                                <invoke name="InvokeCancelFlightsForLameDuck" partnerLink="LameDuck" operation="cancelFlight" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" portType="tns:LameDuckPortType" inputVariable="CancelFlightIn" outputVariable="CancelFlightOut"/>
+                                                                <if name="IfFlightCancelSuccessful">
+                                                                     <condition>$CancelFlightOut.cancelFlightOutput</condition>
+                                                                     <sequence name="Sequence11">
+                                                                          <assign name="CancelFlightSuccessful">
+                                                                               <copy>
+                                                                                         <from>'cancelled'</from>
+                                                                                              <to>$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]/Status
+                                                                                                        <sxed:editor>
+                                                                                                             <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="to"/>
+                                                                                                        </sxed:editor>
+                                                                                              </to>
+                                                                                    </copy>
+                                                                          </assign>
+                                                                          <assign name="AddCancelledFlightToReplyItinerary">
+                                                                               <copy>
+                                                                                    <from>$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]
+                                                                                         <sxed:editor>
+                                                                                              <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="from"/>
+                                                                                         </sxed:editor>
+                                                                                    </from>
+                                                                                    <to>$CancelItineraryOut.part1/FlightsItineraryInformation[$CancelFlightCounter]
+                                                                                         <sxed:editor>
+                                                                                              <sxed:predicate path="$CancelItineraryOut.part1/FlightsItineraryInformation[$CancelFlightCounter]" source="to"/>
+                                                                                         </sxed:editor>
+                                                                                    </to>
+                                                                               </copy>
+                                                                          </assign>
+                                                                     </sequence>
+                                                                </if>
+                                                                <assign name="IncrementCancelFlightCounterCounter">
+                                                                     <copy>
+                                                                          <from>1 + $CancelFlightCounter</from>
+                                                                          <to variable="CancelFlightCounter"/>
+                                                                     </copy>
+                                                                </assign>
+                                                           </sequence>
+                                                 </scope>
+                                       </forEach>
+                                       <reply name="ReplyCancelItinerary" partnerLink="PartnerLink3" operation="cancelItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CancelItineraryOut"/>
+                                  </sequence>
+                             </scope>
+                        </onMessage>
+                        <onAlarm>
+                             <for>'P0Y0M0DT0H1M0.0S'</for>
+                             <assign name="WhenFirstTripStarts">
+                                  <copy>
+                                       <from>true()</from>
+                                       <to variable="processFinished"/>
+                                  </copy>
+                             </assign>
+                        </onAlarm>
+                   </pick>
+              </sequence>
+              <condition>$processFinished</condition>
+         </repeatUntil>
     </sequence>
 </process>
