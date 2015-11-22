@@ -12,8 +12,6 @@
                     xmlns:tns="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL">
             <!-- Import the xsd schema-->
             <xsd:import namespace="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" schemaLocation="LameDuckAndNiceView.xsd"/>
-            <!-- <xsd:import namespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" schemaLocation="LameDuck.xsd"/> -->
-            <xsd:import namespace="http://types.fastmoney.imm.dtu.dk" schemaLocation="http://localhost:8080/LameDuck/LameDuckService?xsd=1"/>
             <xsd:complexType name="HotelRequestType">
                 <xsd:sequence>
                     <xsd:element name="HotelsList" type="ns1:GetHotelInputType" minOccurs="0" maxOccurs="unbounded"></xsd:element> 
@@ -111,14 +109,14 @@
     </message>
     <message name="BookItineraryRequest">
         <part name="part1" type="tns:ItineraryIDType"/>
-        <part name="part2" type="ns2:creditCardInfoType"/>
+        <part name="part2" type="ns1:creditCardInfoType"/>
     </message>
     <message name="BookItineraryResponse">
         <part name="part1" type="tns:ItineraryListType"/>
     </message>
     <message name="cancelItineraryRequest">
         <part name="part1" type="tns:ItineraryIDType"/>
-        <part name="part2" type="ns2:creditCardInfoType"/>
+        <part name="part2" type="ns1:creditCardInfoType"/>
         <part name="part3" type="tns:FlightPriceListType"/>
     </message>
     <message name="cancelItineraryResponse">

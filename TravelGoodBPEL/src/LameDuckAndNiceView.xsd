@@ -4,7 +4,7 @@
            xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" 
            version="1.0" 
            targetNamespace="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView">	
-    <xs:import namespace="http://types.fastmoney.imm.dtu.dk" schemaLocation="http://localhost:8080/NiceView/NiceViewService?xsd=1"/>
+    <xs:include schemaLocation="BankServiceTypes.xsd"/>
     <xs:complexType name="GetHotelsOutputType">
             <xs:sequence>
                     <xs:element name="HotelInformations" type="tns:HotelInformationType" minOccurs="0" maxOccurs="unbounded"></xs:element>
@@ -37,7 +37,7 @@
     <xs:complexType name="BookHotelInputType">
             <xs:sequence>
                     <xs:element name="BookingNumber" type="xs:string"></xs:element>
-                    <xs:element name="CreditCard" type="ns:creditCardInfoType"></xs:element>
+                    <xs:element name="CreditCard" type="tns:creditCardInfoType"></xs:element>
             </xs:sequence>
     </xs:complexType>
     <xs:element name="BookHotelInput" type="tns:BookHotelInputType"></xs:element>
@@ -74,7 +74,7 @@
 	<xs:complexType name="BookFlightInputType">
 		<xs:sequence>
 			<xs:element name="BookingNumber" type="tns:BookingNumber"></xs:element>
-			<xs:element name="CreditCard" type="ns:creditCardInfoType"></xs:element>
+			<xs:element name="CreditCard" type="tns:creditCardInfoType"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="BookFlightInput" type="tns:BookFlightInputType"></xs:element>
@@ -83,7 +83,7 @@
 		<xs:sequence>
 			<xs:element name="BookingNumber" type="tns:BookingNumber"></xs:element>
 			<xs:element name="Price" type="xs:int"></xs:element>
-			<xs:element name="CreditCard" type="ns:creditCardInfoType"></xs:element>
+			<xs:element name="CreditCard" type="tns:creditCardInfoType"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:element name="CancelFlightInput" type="tns:CancelFlightInputType"></xs:element>
