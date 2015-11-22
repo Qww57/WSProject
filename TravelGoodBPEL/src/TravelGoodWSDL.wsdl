@@ -69,6 +69,9 @@
             <xsd:simpleType name="itineraryCreatedType">
                 <xsd:restriction base="xsd:boolean"/>
             </xsd:simpleType>
+            <xsd:simpleType name="ItineraryCancelledType">
+                <xsd:restriction base="xsd:boolean"/>
+            </xsd:simpleType>
         </xsd:schema>
     </types>
     <message name="GetFlightsAndHotelsRequest">
@@ -91,6 +94,12 @@
     <message name="createItineraryResponse">
         <part name="part1" type="tns:itineraryResponseType"/>
     </message>
+    <message name="cancelItineraryRequest">
+        <part name="part1" type="tns:ItineraryIDType"/>
+    </message>
+    <message name="cancelItineraryResponse">
+        <part name="part1" type="tns:ItineraryCancelledType"/>
+    </message>
     <portType name="TravelGoodWSDLPortType">
         <operation name="GetFlightsAndHotels">
             <input name="input1" message="tns:GetFlightsAndHotelsRequest"/>
@@ -103,6 +112,10 @@
         <operation name="createItinerary">
             <input name="input3" message="tns:createItineraryRequest"/>
             <output name="output3" message="tns:createItineraryResponse"/>
+        </operation>
+        <operation name="cancelItinerary">
+            <input name="input4" message="tns:cancelItineraryRequest"/>
+            <output name="output4" message="tns:cancelItineraryResponse"/>
         </operation>
     </portType>
     <binding name="TravelGoodWSDLPortTypeBinding" type="tns:TravelGoodWSDLPortType">
@@ -134,6 +147,15 @@
                 <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </output>
         </operation>
+        <operation name="cancelItinerary">
+            <soap:operation/>
+            <input name="input4">
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
+            </input>
+            <output name="output4">
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
+            </output>
+        </operation>
     </binding>
     <service name="TravelGoodWSDLService">
         <port name="TravelGoodWSDLPortTypeBindingPort" binding="tns:TravelGoodWSDLPortTypeBinding">
@@ -150,4 +172,5 @@ A partner link type characterizes the conversational relationship between two se
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:GetFlightsAndHotelsRequest" part="part2"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:PlanFlightsAndHotelsRequest" part="part2"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:createItineraryRequest" part="part1"/>
+    <vprop:propertyAlias propertyName="tns:ID" messageType="tns:cancelItineraryRequest" part="part1"/>
 </definitions>
