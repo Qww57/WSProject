@@ -168,7 +168,7 @@ public class LameDuckClientTest {
         
         return gregorianDate;
     }
-private CreditCardInfoType CreateCreditCard(String name, String number, int month, int year){
+    private CreditCardInfoType CreateCreditCard(String name, String number, int month, int year){
         CreditCardInfoType creditCard = new CreditCardInfoType();
         creditCard.setName(name);
         creditCard.setNumber(number);

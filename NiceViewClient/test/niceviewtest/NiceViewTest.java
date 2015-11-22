@@ -159,9 +159,10 @@ public class NiceViewTest {
     }
     
     /*
+    * DO NOT RUN THIS TEST 
     * There are two hotel in Paris, so we try to book one and then to make a get request to see if the booking worked
     */
-    @Test 
+    //@Test 
     public void bookHotelScenarioTest() throws BookHotelFault, DatatypeConfigurationException, CancelHotelFault{
         // Booking of an hotel in Paris
         BookHotelInputType input = CreateBookHotelInputType("booking_Hotel_4", "Tick Joachim", "50408824", 2, 11);
@@ -209,8 +210,9 @@ public class NiceViewTest {
         }       
     }
     
+    // DO NOT RUN THIS TEST 
     // We book one of the two hotel in Paris and then cancel it
-    @Test 
+    //@Test 
     public void cancelingHotelScenarioTest() throws BookHotelFault, DatatypeConfigurationException, CancelHotelFault{
         
         // There are two hotels available in Paris, we book one of them   

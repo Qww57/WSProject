@@ -142,7 +142,7 @@ public class NiceViewService {
                         try{
                             System.out.println("BOOKING - Valide Credit Card");
                             chargeCreditCard(group, creditCardInfo, price, account);                       
-                            availabilityDB.replace(bookedHotel, false);
+                            //availabilityDB.replace(bookedHotel, false);
                             System.out.println("BOOKING - Hotel successfuly booked");
                         }
                         catch(CreditCardFaultMessage e){ // if there is an error while charging the bank account
@@ -157,7 +157,7 @@ public class NiceViewService {
                     }
                 } else{ // if no credit card was required
                     System.out.println("BOOKING - No credit card guarantee needed to book the Hotel");                                
-                    availabilityDB.replace(bookedHotel, false);               
+                    //availabilityDB.replace(bookedHotel, false);               
                     System.out.println("BOOKING - Hotel successfuly booked");
                }        
             } else { // if no matching hotel was found   
@@ -187,13 +187,10 @@ public class NiceViewService {
             // Putting the availability of the hotel to true
             HashMap<String,HotelType> reversedHM = reverse (bookingDB);
             
-            if(reversedHM.get(bookingNumber) != null){
-              
-                   
+            if(reversedHM.get(bookingNumber) != null){ 
                 HotelType bookedHotel = reversedHM.get(bookingNumber);
-                availabilityDB.replace(bookedHotel, true);           
+                //availabilityDB.replace(bookedHotel, true);           
                 System.out.println("CANCELING - SUCCESS - END");
-                
             } else {
                 System.out.println("ERROR - There was an error canceling the hotel");  
                 CancelHotelFault fault = new CancelHotelFault("ERROR", "CancelHotelFault");

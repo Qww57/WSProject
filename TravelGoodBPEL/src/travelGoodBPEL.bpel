@@ -266,8 +266,8 @@
                                   </onMessage>
                                   <onMessage partnerLink="PartnerLink3" operation="PlanFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="PlanFlightsAndHotelsIn">
                                        <correlations>
-                                                 <correlation set="ItineraryCorrelation" initiate="no"/>
-                                            </correlations>
+                                            <correlation set="ItineraryCorrelation" initiate="no"/>
+                                       </correlations>
                                             <sequence name="planFlightsAndHotelsLogic">
                                                  <flow name="ItineraryPlanning">
                                                            <sequence name="HotelsItinerary">
@@ -470,8 +470,8 @@
                                   </onMessage>
                                   <onMessage partnerLink="PartnerLink3" operation="BookItinerary" portType="ns1:TravelGoodWSDLPortType" variable="BookItineraryIn">
                                        <correlations>
-                                                 <correlation set="ItineraryCorrelation" initiate="no"/>
-                                            </correlations>
+                                            <correlation set="ItineraryCorrelation" initiate="no"/>
+                                       </correlations>
                                             <sequence name="bookItinerary">
                                                  <scope name="ScopeBookItinerary">
                                                            <variables>
