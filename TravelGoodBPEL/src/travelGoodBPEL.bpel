@@ -638,7 +638,7 @@
                    <pick name="PickCancelOrFirstTrip">
                         <onMessage partnerLink="PartnerLink3" operation="cancelItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CancelItineraryIn">
                              <correlations>
-                                  <correlation set="ItineraryCorrelation" initiate="no"/>
+                                 <correlation set="ItineraryCorrelation" initiate="no"/>
                              </correlations>
                              <scope name="ScopeCancelItinerary">
                                   <variables>
@@ -719,8 +719,8 @@
                                        </forEach>
                                        <forEach name="ForEachFlightCancel" parallel="no" counterName="ForEach1Counter">
                                             <startCounterValue>1</startCounterValue>
-                                                 <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
-                                                 <scope name="ScopeCancelFlights">
+                                           <finalCounterValue>count($itineraryList/FlightsItineraryInformation)</finalCounterValue>
+                                           <scope name="ScopeCancelFlights">
                                                       <variables>
                                                            <variable name="CancelFlightOut" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:cancelFlightResponse"/>
                                                            <variable name="CancelFlightIn" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" messageType="tns:cancelFlightRequest"/>
@@ -749,35 +749,30 @@
                                                                        </copy>
                                                                 </assign>
                                                                 <invoke name="InvokeCancelFlightsForLameDuck" partnerLink="LameDuck" operation="cancelFlight" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" portType="tns:LameDuckPortType" inputVariable="CancelFlightIn" outputVariable="CancelFlightOut"/>
-                                                                <if name="IfFlightCancelSuccessful">
-                                                                     <condition>$CancelFlightOut.cancelFlightOutput</condition>
-                                                                     <sequence name="Sequence11">
-                                                                          <assign name="CancelFlightSuccessful">
-                                                                               <copy>
-                                                                                         <from>'cancelled'</from>
-                                                                                              <to>$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]/Status
+                                                               <assign name="CancelFlightSuccessful">
+                                                                   <copy>
+                                                                           <from>'cancelled'</from>
+                                                                               <to>$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]/Status
                                                                                                         <sxed:editor>
-                                                                                                             <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="to"/>
-                                                                                                        </sxed:editor>
-                                                                                              </to>
-                                                                                    </copy>
-                                                                          </assign>
-                                                                          <assign name="AddCancelledFlightToReplyItinerary">
-                                                                               <copy>
-                                                                                    <from>$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]
+                                                                                           <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="to"/>
+                                                                                       </sxed:editor>
+                                                                               </to>
+                                                                       </copy>
+                                                               </assign>
+                                                               <assign name="AddCancelledFlightToReplyItinerary">
+                                                                   <copy>
+                                                                           <from>$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]
                                                                                          <sxed:editor>
-                                                                                              <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="from"/>
-                                                                                         </sxed:editor>
-                                                                                    </from>
-                                                                                    <to>$CancelItineraryOut.part1/FlightsItineraryInformation[$CancelFlightCounter]
+                                                                                           <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="from"/>
+                                                                                       </sxed:editor>
+                                                                               </from>
+                                                                               <to>$CancelItineraryOut.part1/FlightsItineraryInformation[$CancelFlightCounter]
                                                                                          <sxed:editor>
-                                                                                              <sxed:predicate path="$CancelItineraryOut.part1/FlightsItineraryInformation[$CancelFlightCounter]" source="to"/>
-                                                                                         </sxed:editor>
-                                                                                    </to>
-                                                                               </copy>
-                                                                          </assign>
-                                                                     </sequence>
-                                                                </if>
+                                                                                           <sxed:predicate path="$CancelItineraryOut.part1/FlightsItineraryInformation[$CancelFlightCounter]" source="to"/>
+                                                                                       </sxed:editor>
+                                                                               </to>
+                                                                       </copy>
+                                                               </assign>
                                                                 <assign name="IncrementCancelFlightCounterCounter">
                                                                      <copy>
                                                                           <from>1 + $CancelFlightCounter</from>
@@ -792,8 +787,8 @@
                              </scope>
                         </onMessage>
                         <onAlarm>
-                             <for>'P0Y0M0DT0H1M0.0S'</for>
-                             <assign name="WhenFirstTripStarts">
+                            <for>'P0Y0M0DT0H0M20.0S'</for>
+                            <assign name="WhenFirstTripStarts">
                                   <copy>
                                        <from>true()</from>
                                        <to variable="processFinished"/>

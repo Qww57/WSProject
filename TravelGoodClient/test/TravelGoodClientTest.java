@@ -376,7 +376,7 @@ public class TravelGoodClientTest {
     @Test 
     public void bookOneFlightAndOneHotel() throws DatatypeConfigurationException{
         //Create the itinerary 
-        Integer myItinID = 7001;
+        Integer myItinID = 7002;
         ItineraryResponseType itineraryCreation = createItinerary(myItinID);
         Integer receivedItinID = itineraryCreation.getItineraryID();
         assertEquals(myItinID, receivedItinID);
@@ -431,7 +431,7 @@ public class TravelGoodClientTest {
         ItineraryListType bookOutput = bookItinerary(myItinID, creditCard); 
           
         hotelStatus = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
-        System.out.println("Get status: " + hotelStatus);
+        System.out.println("Hotel status: " + hotelStatus);
         assertEquals("confirmed", hotelStatus);    
         
         flightStatus = bookOutput.getFlightsItineraryInformation().get(0).getStatus();
@@ -442,12 +442,21 @@ public class TravelGoodClientTest {
         //cancelling
         ItineraryListType cancelOutput = cancelItinerary(myItinID, creditCard);
         System.out.println("cancelling performed!");
-        String cancelOutputBookingNumber = cancelOutput.getFlightsItineraryInformation().get(0).getBookingNumber();
-        System.out.println("cancelled flight: " + cancelOutputBookingNumber);
-        String cancelOutputStatus = cancelOutput.getFlightsItineraryInformation().get(0).getStatus();
-        String expectedCancelOutputStatus = "cancelled";
-        System.out.println("cancelled status: " + cancelOutputStatus);
-        assertEquals(cancelOutputStatus, expectedCancelOutputStatus);
+        //hotel testing
+        String cancelOutputHotelBookingNumber = cancelOutput.getHotelsItineraryInformation().get(0).getBookingNumber();
+        System.out.println("cancelled hotel: " + cancelOutputHotelBookingNumber);
+        String cancelOutputHotelStatus = cancelOutput.getHotelsItineraryInformation().get(0).getStatus();
+        String expectedCancelOutputHotelStatus = "cancelled";
+        System.out.println("cancelled hotel status: " + cancelOutputHotelStatus);
+        assertEquals(cancelOutputHotelStatus, expectedCancelOutputHotelStatus);
+        //flight testing
+        String cancelOutputFlightBookingNumber = cancelOutput.getFlightsItineraryInformation().get(0).getBookingNumber();
+        System.out.println("cancelled flight: " + cancelOutputFlightBookingNumber);
+        String cancelOutputFlightStatus = cancelOutput.getFlightsItineraryInformation().get(0).getStatus();
+        String expectedCancelOutputFlightStatus = "cancelled";
+        System.out.println("cancelled flight status: " + cancelOutputFlightStatus);
+        assertEquals(cancelOutputFlightStatus, expectedCancelOutputFlightStatus);
+        
         
     }
       
@@ -461,7 +470,7 @@ public class TravelGoodClientTest {
         // TODO
     }
     
-    //@Test
+    @Test
     public void gettingAndPlanningHotels() throws DatatypeConfigurationException {
         System.out.println("Test starts");
         //get one hotel
@@ -472,7 +481,7 @@ public class TravelGoodClientTest {
         input.getHotelRequests().add(hotelRequest);
         
         //itinerary ID
-        Integer myItinID = 1442;
+        Integer myItinID = 1448;
         System.out.println("Ready to call operations");
         ItineraryResponseType itineraryCreation = createItinerary(myItinID);
         Boolean expectedItineraryCreated = true;
@@ -589,16 +598,68 @@ public class TravelGoodClientTest {
         System.out.println("Booking performed correctly");
         //check itinerary length
         Integer bookedItinerarySize = AnnesBookedItinerary.getHotelsItineraryInformation().size();
-        System.out.println("Booked Itinerary length: " + AnnesBookedItinerary);
+        System.out.println("Booked Itinerary length: " + bookedItinerarySize);
         Integer expectedBookedItinerarySize = 3;
         assertEquals(bookedItinerarySize, expectedBookedItinerarySize);
-        expectedStatus2 = "confirmed";
+        expectedBookingNumber1 = bookingNumber1;
+        String expectedStatus1 = "confirmed";
         resultBookingNumber1 = AnnesBookedItinerary.getHotelsItineraryInformation().get(0).getBookingNumber();
         System.out.println("After Booking: Resulting booking number 1: " + resultBookingNumber1);
-        resultStatus2 = AnnesBookedItinerary.getHotelsItineraryInformation().get(0).getStatus();
+        resultStatus1 = AnnesBookedItinerary.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("After Booking: Resulting status 1: " + resultStatus1);
         assertEquals(expectedBookingNumber1, resultBookingNumber1);
-        assertEquals(expectedStatus2, resultStatus2);     
+        assertEquals(expectedStatus1, resultStatus1);
+        expectedBookingNumber2 = bookingNumber2;
+        expectedStatus2 = "confirmed";
+        resultBookingNumber2 = AnnesBookedItinerary.getHotelsItineraryInformation().get(1).getBookingNumber();
+        System.out.println("After Booking: Resulting booking number 2: " + resultBookingNumber2);
+        resultStatus2 = AnnesBookedItinerary.getHotelsItineraryInformation().get(1).getStatus();
+        System.out.println("After Booking: Resulting status 2: " + resultStatus2);
+        assertEquals(expectedBookingNumber2, resultBookingNumber2);
+        assertEquals(expectedStatus2, resultStatus2);
+        expectedBookingNumber3 = bookingNumber3;
+        String expectedStatus3 = "confirmed";
+        resultBookingNumber3 = AnnesBookedItinerary.getHotelsItineraryInformation().get(2).getBookingNumber();
+        System.out.println("After Booking: Resulting booking number 3: " + resultBookingNumber3);
+        resultStatus3 = AnnesBookedItinerary.getHotelsItineraryInformation().get(2).getStatus();
+        System.out.println("After Booking: Resulting status 3: " + resultStatus3);
+        assertEquals(expectedBookingNumber3, resultBookingNumber3);
+        assertEquals(expectedStatus3, resultStatus3); 
+        System.out.println("booking passed!");
+        
+        //cancelling stuff
+        ItineraryListType cancelledItinerary = cancelItinerary(myItinID, AnnesCreditCardInfo);
+        System.out.println("Cancelling performed correctly");
+        //check itinerary length
+        Integer cancelledItinerarySize = cancelledItinerary.getHotelsItineraryInformation().size();
+        System.out.println("Cancelled Itinerary length: " + cancelledItinerarySize);
+        Integer expectedCancelledItinerarySize = 3;
+        assertEquals(cancelledItinerarySize, expectedCancelledItinerarySize);
+        expectedBookingNumber1 = bookingNumber1;
+        expectedStatus1 = "cancelled";
+        resultBookingNumber1 = cancelledItinerary.getHotelsItineraryInformation().get(0).getBookingNumber();
+        System.out.println("After Cancelling: Resulting booking number 1: " + resultBookingNumber1);
+        resultStatus1 = cancelledItinerary.getHotelsItineraryInformation().get(0).getStatus();
+        System.out.println("After Cancelling: Resulting status 1: " + resultStatus1);
+        assertEquals(expectedBookingNumber1, resultBookingNumber1);
+        assertEquals(expectedStatus1, resultStatus1);
+        expectedBookingNumber2 = bookingNumber2;
+        expectedStatus2 = "cancelled";
+        resultBookingNumber2 = cancelledItinerary.getHotelsItineraryInformation().get(1).getBookingNumber();
+        System.out.println("After Cancelling: Resulting booking number 2: " + resultBookingNumber2);
+        resultStatus2 = cancelledItinerary.getHotelsItineraryInformation().get(1).getStatus();
+        System.out.println("After Cancelling: Resulting status 2: " + resultStatus2);
+        assertEquals(expectedBookingNumber2, resultBookingNumber2);
+        assertEquals(expectedStatus2, resultStatus2);
+        expectedBookingNumber3 = bookingNumber3;
+        expectedStatus3 = "cancelled";
+        resultBookingNumber3 = cancelledItinerary.getHotelsItineraryInformation().get(2).getBookingNumber();
+        System.out.println("After Cancelling: Resulting booking number 3: " + resultBookingNumber3);
+        resultStatus3 = cancelledItinerary.getHotelsItineraryInformation().get(2).getStatus();
+        System.out.println("After Cancelling: Resulting status 3: " + resultStatus3);
+        assertEquals(expectedBookingNumber3, resultBookingNumber3);
+        assertEquals(expectedStatus3, resultStatus3); 
+        System.out.println("cancelling finished!");
     }
     
     //@Test
