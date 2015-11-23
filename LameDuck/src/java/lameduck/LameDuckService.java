@@ -149,7 +149,7 @@ public class LameDuckService {
         }
     }
 
-    public void cancelFlight(CancelFlightInputType cancelFlightInput) throws CancelFlightFault, DatatypeConfigurationException {
+    public boolean cancelFlight(CancelFlightInputType cancelFlightInput) throws CancelFlightFault, DatatypeConfigurationException {
         System.out.println("CANCELING - START");
         
         if (cancelFlightInput != null) {
@@ -160,7 +160,7 @@ public class LameDuckService {
                 account.setNumber("50208812");
                 refundCreditCard(group, cancelFlightInput.getCreditCard(), 2500, account);
                 System.out.println("we canceled successfully");
-                
+                return true;
             } catch (CreditCardFaultMessage ex) {
                 System.out.println("ERROR - There was an error refunding the flight");  
                 CancelFlightFault fault = new CancelFlightFault("ERROR", "CancelFlightFault");

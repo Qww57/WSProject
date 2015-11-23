@@ -130,6 +130,21 @@ public class LameDuckClientTest {
         }       
     }
     
+    // in case refund information is correct
+    @Test
+    public void cancelFlightTest() throws DatatypeConfigurationException{    
+       CancelFlightInputType input = CreateCancelFlightInputType("19457", "Tick Joachim", "50408824", 2, 11, 5000);
+              try {
+                System.out.println("Cancelling in progress");
+                boolean result = cancelFlight(input);
+                assertEquals(true,result);
+                System.out.println("Cancelling is done");
+            } catch (CancelFlightFault e) {
+                System.out.println("Cancelling with wrong info is not accepted");
+                assertEquals("ERROR",e.getMessage());
+            }
+        }
+    
     // in case refund information was not correct
     @Test
     public void cancelFlightTest1() throws DatatypeConfigurationException{    
@@ -143,6 +158,7 @@ public class LameDuckClientTest {
             }
         }
 
+    
     
     @Test //in case if input is empty
     public void cancelFlightNull() throws DatatypeConfigurationException{    
