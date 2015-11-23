@@ -71,14 +71,6 @@
             <xsd:simpleType name="PlanningCancelledType">
                 <xsd:restriction base="xsd:boolean"/>
             </xsd:simpleType>
-            <xsd:simpleType name="FlightPriceType">
-                <xsd:restriction base="xsd:int"/>
-            </xsd:simpleType>
-            <xsd:complexType name="FlightPriceListType">
-                <xsd:sequence>
-                    <xsd:element name="FlightPrice" type="tns:FlightPriceType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
-                </xsd:sequence>
-            </xsd:complexType>
         </xsd:schema>
     </types>
     <message name="GetFlightsAndHotelsRequest">
@@ -117,7 +109,6 @@
     <message name="cancelItineraryRequest">
         <part name="part1" type="tns:ItineraryIDType"/>
         <part name="part2" type="ns1:creditCardInfoType"/>
-        <part name="part3" type="tns:FlightPriceListType"/>
     </message>
     <message name="cancelItineraryResponse">
         <part name="part1" type="tns:ItineraryListType"/>

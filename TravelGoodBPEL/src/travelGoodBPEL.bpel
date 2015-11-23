@@ -20,11 +20,7 @@
         <partnerLink name="NiceView" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" partnerLinkType="tns:NiceView" partnerRole="NiceViewPortTypeRole"/>
     </partnerLinks>
     <variables>
-         <variable name="CancelItineraryIn" messageType="ns1:cancelItineraryRequest">
-              <sxed:editor>
-                   <sxed:predicate path="$CancelItineraryIn.part3/FlightPrice[$CancelFlightCounter]" source="from"/>
-              </sxed:editor>
-         </variable>
+         <variable name="CancelItineraryIn" messageType="ns1:cancelItineraryRequest"></variable>
          <variable name="BookItineraryIn" messageType="ns1:BookItineraryRequest"/>
          <variable name="processFinished" type="xs:boolean"/>
          <variable name="CancelPlanningOut" messageType="ns1:cancelPlanningResponse"/>
@@ -559,8 +555,8 @@
                                                                           </forEach>
                                                                           <forEach name="ForEachFlightBooking" parallel="no" counterName="ForEach1Counter">
                                                                                <startCounterValue>1</startCounterValue>
-                                                                                    <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
-                                                                                    <scope name="ScopeBookFlights">
+                                                                                 <finalCounterValue>count($itineraryList/FlightsItineraryInformation)</finalCounterValue>
+                                                                                 <scope name="ScopeBookFlights">
                                                                                          <variables>
                                                                                                    <variable name="BookFlightOut" messageType="tns:bookFlightResponse"/>
                                                                                                         <variable name="BookFlightIn" messageType="tns:bookFlightRequest"/>
@@ -744,17 +740,13 @@
                                                                           <to>$CancelFlightIn.cancelFlightInput/BookingNumber</to>
                                                                      </copy>
                                                                      <copy>
-                                                                          <from>$CancelItineraryIn.part3/FlightPrice[$CancelFlightCounter]
-                                                                               <sxed:editor>
-                                                                                    <sxed:predicate path="$CancelItineraryIn.part3/FlightPrice[$CancelFlightCounter]" source="from"/>
-                                                                               </sxed:editor>
-                                                                          </from>
-                                                                          <to>$CancelFlightIn.cancelFlightInput/Price</to>
-                                                                     </copy>
-                                                                     <copy>
                                                                           <from variable="CancelItineraryIn" part="part2"/>
                                                                           <to>$CancelFlightIn.cancelFlightInput/CreditCard</to>
                                                                      </copy>
+                                                                       <copy>
+                                                                              <from>5000</from>
+                                                                              <to>$CancelFlightIn.cancelFlightInput/Price</to>
+                                                                       </copy>
                                                                 </assign>
                                                                 <invoke name="InvokeCancelFlightsForLameDuck" partnerLink="LameDuck" operation="cancelFlight" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" portType="tns:LameDuckPortType" inputVariable="CancelFlightIn" outputVariable="CancelFlightOut"/>
                                                                 <if name="IfFlightCancelSuccessful">

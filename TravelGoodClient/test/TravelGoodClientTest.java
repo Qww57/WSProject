@@ -434,10 +434,21 @@ public class TravelGoodClientTest {
         System.out.println("Get status: " + hotelStatus);
         assertEquals("confirmed", hotelStatus);    
         
-        flightStatus = planOutput.getFlightsItineraryInformation().get(0).getStatus();
+        flightStatus = bookOutput.getFlightsItineraryInformation().get(0).getStatus();
         System.out.println("Flight status: " + flightStatus);
         assertEquals("confirmed", flightStatus);
-        // TODO FAILS BECAUSE IS STILL UNCONFIRMED
+        System.out.println("booking passed!");
+        
+        //cancelling
+        ItineraryListType cancelOutput = cancelItinerary(myItinID, creditCard);
+        System.out.println("cancelling performed!");
+        String cancelOutputBookingNumber = cancelOutput.getFlightsItineraryInformation().get(0).getBookingNumber();
+        System.out.println("cancelled flight: " + cancelOutputBookingNumber);
+        String cancelOutputStatus = cancelOutput.getFlightsItineraryInformation().get(0).getStatus();
+        String expectedCancelOutputStatus = "cancelled";
+        System.out.println("cancelled status: " + cancelOutputStatus);
+        assertEquals(cancelOutputStatus, expectedCancelOutputStatus);
+        
     }
       
     @Test 
@@ -789,9 +800,13 @@ public class TravelGoodClientTest {
         return port.cancelPlanning(part1);
     }
 
-    private static ItineraryListType cancelItinerary(int part1, CreditCardInfoType part2, FlightPriceListType part3) {
+    private static ItineraryListType cancelItinerary(int part1, org.netbeans.j2ee.wsdl.niceview.java.niceview.CreditCardInfoType part2) {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.cancelItinerary(part1, part2, part3);
-    } 
+        return port.cancelItinerary(part1, part2);
+    }
+
+
+
+
 }
