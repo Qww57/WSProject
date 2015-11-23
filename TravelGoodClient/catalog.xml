@@ -30,6 +30,7 @@
 >>>>>>> Stashed changes
 
     
+    
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
