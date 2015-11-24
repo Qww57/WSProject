@@ -55,3 +55,6 @@
 TESTBPEL/src/TESTBPEL.bpel
 TESTBPEL/src/testWSDL.wsdl
 TESTBPEL/nbproject/project.properties
+/SharedRepresentations/nbproject/private/
+/SharedRepresentations/build/
+/SharedRepresentations/dist/

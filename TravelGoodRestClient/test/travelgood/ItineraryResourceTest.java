@@ -16,15 +16,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import travelgood.representations.CreateItineraryRepresentation;
 
 /**
  *
  * @author Daniel
  */
-public class TravelGoodResourceTest {
-    
-    Client client = ClientBuilder.newClient();
-    WebTarget r = client.target("http://localhost:8080/ws/webresources/travelgood");
+public class ItineraryResourceTest {
 
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
@@ -33,15 +31,10 @@ public class TravelGoodResourceTest {
     // public void hello() {}
     
     @Test
-    public void TravelGoodResourceGetTest() {
-        String result = r.request().get(String.class);
-        assertEquals("TravelGood", result);
-    }
-    
-    @Test
-    public void TravelGoodResourcePutTest() {
-        String expected = "TG";
-        r.request().put(Entity.entity(expected, MediaType.TEXT_PLAIN));
-        assertEquals(expected, r.request().get(String.class));
+    public void createItineraryTest() {
+        Client client = ClientBuilder.newClient();
+        WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
+        CreateItineraryRepresentation result = r.request().get(CreateItineraryRepresentation.class);
+        assertTrue(0 < result.ID);
     }
 }
