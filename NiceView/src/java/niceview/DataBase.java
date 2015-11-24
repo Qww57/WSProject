@@ -38,12 +38,14 @@ public class DataBase {
         HotelType hotel4= CreateHotel("Milan Hotel", "Milan", false); 
         HotelType hotel5 = CreateHotel("NY Hotel", "Paris", false);
         HotelType hotel6 = CreateHotel("London Hotel", "London", false);
+        HotelType hotel7 = CreateHotel("Error hotel", "Error city", false);
         list.add(hotel1);
         list.add(hotel2);
         list.add(hotel3);
         list.add(hotel4);
         list.add(hotel5);
         list.add(hotel6);
+        list.add(hotel7);
         return list;
     }
     

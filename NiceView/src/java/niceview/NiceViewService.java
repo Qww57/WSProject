@@ -177,9 +177,15 @@ public class NiceViewService {
     public void cancelHotel(java.lang.String cancelHotelRequest) throws CancelHotelFault, DatatypeConfigurationException {
         System.out.println("CANCELING - START");
         
-        if(cancelHotelRequest != null){
+        if ("booking_Hotel_6".equals(cancelHotelRequest)){ 
+            System.out.println("CANCELING - FAIL " + cancelHotelRequest);
+            CancelHotelFault exception = new CancelHotelFault("Error hotel exception", "CancelHotelFault");
+            throw exception; 
+        }       
+        else if(cancelHotelRequest != null ){
          
             String bookingNumber = cancelHotelRequest;
+            System.out.println("CANCELING - START " + bookingNumber);
 
             // Initialize the list of hotel we are using as a database
             InitializeDataBases();
@@ -197,6 +203,7 @@ public class NiceViewService {
                 throw fault;
             }
         } else { // If no input
+            System.out.println("CANCELING - FAIL ");
             CancelHotelFault exception = new CancelHotelFault("Empty", "CancelHotelFault");
             throw exception;
         } 
