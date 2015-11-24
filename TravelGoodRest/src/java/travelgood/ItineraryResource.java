@@ -20,6 +20,7 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
+import travelgood.representations.AddToItineraryInputRepresentation;
 import travelgood.representations.CreateItineraryRepresentation;
 
 /**
@@ -33,7 +34,7 @@ public class ItineraryResource {
     
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public CreateItineraryRepresentation createItinerary() {
+    public Response createItinerary() {
         int ID = Database.createItinerary();
         
         List<Link> links = new ArrayList<>();
@@ -56,23 +57,44 @@ public class ItineraryResource {
         CreateItineraryRepresentation rep = new CreateItineraryRepresentation();
         rep.links = links;
         rep.ID = ID;
-        return rep;
+        return Response.ok(rep).build();
     }
     
     @Path("itinerary/{ID}")
     @POST
-    public Itinerary addToItinerary(@PathParam("ID") String ID) {
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response addToItinerary(@PathParam("ID") String ID, AddToItineraryInputRepresentation input) {
+        int parsedID;
+        try {
+            parsedID = Integer.parseInt(ID);
+        } catch (NumberFormatException e) {
+            
+        }
         return null;
     }
     
-    @Path("itinerary/{ID}/cancel")
+    @Path("{ID}/cancel")
     @GET
-    public boolean cancelItinerary(@PathParam("ID") String ID) {
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response cancelItinerary(@PathParam("ID") String ID) {
         try {
-            return Database.removeItinerary(Integer.parseInt(ID));
+            boolean success = Database.removeItinerary(Integer.parseInt(ID));
+            if (success) {
+                return Response.ok().build();
+            }
+            else {
+                return Response.status(Response.Status.NOT_FOUND).
+                        entity("Itinerary with ID " + ID + " was not found.").
+                        build();
+            }
+            
             
         } catch (NumberFormatException e) {
-            return false;
+            return Response.status(Response.Status.BAD_REQUEST).
+                    entity("ID is malformed. Must be numbers only.").
+                    build();
         }
     }
 }

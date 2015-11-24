@@ -5,15 +5,15 @@
  */
 package travelgood.representations;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 /**
  *
  * @author Daniel
  */
-@XmlRootElement
-public class CreateItineraryRepresentation extends Representation {
-
-    public int ID;
-
+public class AddToItineraryInputRepresentation extends Representation {
+    
+    public List<Integer> hotel_booking_numbers;
+    public List<Integer> flight_booking_number;
+   
 }
