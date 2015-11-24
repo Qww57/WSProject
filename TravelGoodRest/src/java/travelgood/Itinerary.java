@@ -18,8 +18,9 @@ import org.netbeans.j2ee.wsdl.niceview.java.niceview.HotelInformationType;
  */
 public class Itinerary {
     private final int ID;
-    private final Map<HotelInformationType, String> hotels = new HashMap<>();
-    private final Map<FlightInformationType, String> flights = new HashMap<>();
+    // Booking number, status
+    private final Map<String, String> hotels = new HashMap<>();
+    private final Map<String, String> flights = new HashMap<>();
     
     public Itinerary(int ID) {
         this.ID = ID;
@@ -29,19 +30,19 @@ public class Itinerary {
         return ID;
     }
     
-    public Map<HotelInformationType, String> getHotels() {
+    public Map<String, String> getHotels() {
         return hotels;
     }
     
-    public Map<FlightInformationType, String> getFlights() {
+    public Map<String, String> getFlights() {
         return flights;
     }
     
-    public void addHotel(HotelInformationType hotel) {
-        hotels.put(hotel, "unconfirmed");
+    public void addHotel(String bookingnumber) {
+        hotels.put(bookingnumber, "unconfirmed");
     }
     
-    public void addFlight(FlightInformationType flight) {
-        flights.put(flight, "unconfirmed");
+    public void addFlight(String bookingnumber) {
+        flights.put(bookingnumber, "unconfirmed");
     }
 }

@@ -20,6 +20,8 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
+import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsInputType;
+import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsOutputType;
 import travelgood.representations.AddToItineraryInputRepresentation;
 import travelgood.representations.CreateItineraryRepresentation;
 
@@ -66,12 +68,36 @@ public class ItineraryResource {
     @Produces(MediaType.APPLICATION_XML)
     public Response addToItinerary(@PathParam("ID") String ID, AddToItineraryInputRepresentation input) {
         int parsedID;
-        try {
+        if (input != null) {
+            try {
             parsedID = Integer.parseInt(ID);
-        } catch (NumberFormatException e) {
-            
+            Itinerary it = Database.getItinerary(parsedID);
+            if (it != null) {
+                for (String bookingnumber : input.flight_booking_number) {
+                    it.addFlight(bookingnumber);
+                }
+                for (String bookingnumber : input.hotel_booking_numbers) {
+                    it.addHotel(bookingnumber);
+                }
+                return Response.accepted().entity(it).build();
+            }
+            else {
+                return Response.status(Response.Status.NOT_FOUND).
+                        entity("Itinerary with ID " + ID + " was not found.").
+                        build();
+            }
+            } catch (NumberFormatException e) {
+                return Response.status(Response.Status.BAD_REQUEST).
+                        entity("ID is malformed. Must be numbers only.").
+                        build();
+            }
         }
-        return null;
+        else {
+            return Response.status(Response.Status.BAD_REQUEST).
+                    entity("No booking  numbers defined.").
+                    build();
+        }
+        
     }
     
     @Path("{ID}/cancel")
@@ -89,7 +115,6 @@ public class ItineraryResource {
                         entity("Itinerary with ID " + ID + " was not found.").
                         build();
             }
-            
             
         } catch (NumberFormatException e) {
             return Response.status(Response.Status.BAD_REQUEST).

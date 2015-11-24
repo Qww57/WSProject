@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class AddToItineraryInputRepresentation extends Representation {
     
-    public List<Integer> hotel_booking_numbers;
-    public List<Integer> flight_booking_number;
+    public List<String> hotel_booking_numbers;
+    public List<String> flight_booking_number;
    
 }

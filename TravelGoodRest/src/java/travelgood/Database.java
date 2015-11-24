@@ -24,4 +24,8 @@ public class Database {
     public static boolean removeItinerary(Integer ID) {
         return itineraries.remove(ID) != null;
     }
+    
+    public static Itinerary getItinerary(int ID) {
+        return itineraries.get(ID);
+    }
 }
