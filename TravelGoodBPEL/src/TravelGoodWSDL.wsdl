@@ -71,6 +71,24 @@
             <xsd:simpleType name="PlanningCancelledType">
                 <xsd:restriction base="xsd:boolean"/>
             </xsd:simpleType>
+            <xsd:complexType name="bookingNumberDateType">
+                <xsd:sequence>
+                    <xsd:element name="hotelBookingNumberDate" type="tns:hotelBookingNumberDateType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                    <xsd:element name="flightBookingNumberDate" type="tns:flightBookingNumberDateType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="flightBookingNumberDateType">
+                <xsd:sequence>
+                    <xsd:element name="bookingNumberFlight" type="xsd:string" minOccurs="1" maxOccurs="1"></xsd:element>
+                    <xsd:element name="dateFlight" type="xsd:date" minOccurs="1" maxOccurs="1"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="hotelBookingNumberDateType">
+                <xsd:sequence>
+                    <xsd:element name="bookingNumberHotel" type="xsd:string" minOccurs="1" maxOccurs="1"></xsd:element>
+                    <xsd:element name="dateHotel" type="xsd:date" minOccurs="1" maxOccurs="1"></xsd:element>
+                </xsd:sequence>
+            </xsd:complexType>
         </xsd:schema>
     </types>
     <message name="GetFlightsAndHotelsRequest">

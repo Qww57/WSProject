@@ -333,7 +333,7 @@ public class TravelGoodClientTest {
     @Test 
     public void bookOneHotel() throws DatatypeConfigurationException{
         //Create the itinerary 
-        Integer myItinID = 77956;
+        Integer myItinID = 77996;
         ItineraryResponseType itineraryCreation = createItinerary(myItinID);
         Integer receivedItinID = itineraryCreation.getItineraryID();
         assertEquals(myItinID, receivedItinID);
@@ -376,7 +376,7 @@ public class TravelGoodClientTest {
     @Test 
     public void bookOneFlightAndOneHotel() throws DatatypeConfigurationException{
         //Create the itinerary 
-        Integer myItinID = 7002;
+        Integer myItinID = 7010;
         ItineraryResponseType itineraryCreation = createItinerary(myItinID);
         Integer receivedItinID = itineraryCreation.getItineraryID();
         assertEquals(myItinID, receivedItinID);
@@ -540,7 +540,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - bookManyHotels");
         
         //Create the itinerary 
-        Integer myItinID = 12825535;
+        Integer myItinID = 128253;
         ItineraryResponseType itineraryCreation = createItinerary(myItinID);
         Integer receivedItinID = itineraryCreation.getItineraryID();
         assertEquals(myItinID, receivedItinID);

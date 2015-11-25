@@ -20,7 +20,15 @@
         <partnerLink name="NiceView" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" partnerLinkType="tns:NiceView" partnerRole="NiceViewPortTypeRole"/>
     </partnerLinks>
     <variables>
-           <variable name="hotelCompCounter" type="xs:int"/>
+        <variable name="earliestDate" type="xs:date"/>
+        <variable name="bookingNumberDate" type="ns1:bookingNumberDateType">
+            <sxed:editor>
+                <sxed:predicate path="$bookingNumberDate/hotelBookingNumberDate[$GetHotelCount]" source="to"/>
+                <sxed:predicate path="$bookingNumberDate/flightBookingNumberDate[$GetFlightCounter]" source="to"/>
+                <sxed:predicate path="$bookingNumberDate/hotelBookingNumberDate[$getDatesCounter]" source="from"/>
+            </sxed:editor>
+        </variable>
+        <variable name="hotelCompCounter" type="xs:int"/>
            <variable name="CancelItineraryIn" messageType="ns1:cancelItineraryRequest"></variable>
          <variable name="BookItineraryIn" messageType="ns1:BookItineraryRequest"/>
          <variable name="processFinished" type="xs:boolean"/>
@@ -47,6 +55,7 @@
                  <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$CancelFlightCounter]" source="to"/>
                    <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$hotelCompCounter]" source="from"/>
                    <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$hotelCompCounter]" source="to"/>
+                <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$itineraryDatesCounter]" source="from"/>
             </sxed:editor>
         </variable>
         <variable name="planHotelsCounter" type="xs:int"/>
@@ -112,6 +121,10 @@
                    <from>1</from>
                    <to variable="itineraryListFlightCounter"/>
               </copy>
+             <copy>
+                 <from>'2100-11-25T13:47:26.67+01:00'</from>
+                 <to variable="earliestDate"/>
+             </copy>
          </assign>
          <repeatUntil name="RepeatUntilFinished">
               <sequence name="Sequence10">
@@ -185,6 +198,26 @@
                                                                                                                   </sxed:editor>
                                                                                                         </to>
                                                                                               </copy>
+                                                                                        <copy>
+                                                                                            <from>$GetHotelsOut.hotels/HotelInformations/BookingNumber</from>
+                                                                                            <to>$bookingNumberDate/hotelBookingNumberDate[$GetHotelCount]/bookingNumberHotel
+                                                                                                <sxed:editor>
+                                                                                                    <sxed:predicate path="$bookingNumberDate/hotelBookingNumberDate[$GetHotelCount]" source="to"/>
+                                                                                                </sxed:editor>
+                                                                                            </to>
+                                                                                        </copy>
+                                                                                        <copy>
+                                                                                            <from>$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]/ArrivalDate
+                                                                                                <sxed:editor>
+                                                                                                    <sxed:predicate path="$GetFlightsAndHotelsIn.part1/HotelRequests/HotelsList[$GetHotelCount]" source="from"/>
+                                                                                                </sxed:editor>
+                                                                                            </from>
+                                                                                            <to>$bookingNumberDate/hotelBookingNumberDate[$GetHotelCount]/dateHotel
+                                                                                                <sxed:editor>
+                                                                                                    <sxed:predicate path="$bookingNumberDate/hotelBookingNumberDate[$GetHotelCount]" source="to"/>
+                                                                                                </sxed:editor>
+                                                                                            </to>
+                                                                                        </copy>
                                                                                     </assign>
                                                                                     <assign name="Assign7">
                                                                                          <copy>
@@ -240,6 +273,22 @@
                                                                                                                   </sxed:editor>
                                                                                                         </to>
                                                                                               </copy>
+                                                                                        <copy>
+                                                                                            <from>$GetFlightsOut.getFlightsOutput/FlightInformations/BookingNumber</from>
+                                                                                            <to>$bookingNumberDate/flightBookingNumberDate[$GetFlightCounter]/bookingNumberFlight
+                                                                                                <sxed:editor>
+                                                                                                    <sxed:predicate path="$bookingNumberDate/flightBookingNumberDate[$GetFlightCounter]" source="to"/>
+                                                                                                </sxed:editor>
+                                                                                            </to>
+                                                                                        </copy>
+                                                                                        <copy>
+                                                                                            <from>$GetFlightsOut.getFlightsOutput/FlightInformations/Flight/StartDateTime</from>
+                                                                                            <to>$bookingNumberDate/flightBookingNumberDate[$GetFlightCounter]/dateFlight
+                                                                                                <sxed:editor>
+                                                                                                    <sxed:predicate path="$bookingNumberDate/flightBookingNumberDate[$GetFlightCounter]" source="to"/>
+                                                                                                </sxed:editor>
+                                                                                            </to>
+                                                                                        </copy>
                                                                                     </assign>
                                                                                     <assign name="Assign6">
                                                                                          <copy>
@@ -310,7 +359,7 @@
                                                                                                                             <to>$itineraryList/HotelsItineraryInformation[$itineraryListHotelCounter]/Status</to>
                                                                                                                   </copy>
                                                                                                         </assign>
-                                                                                                        <assign name="increasePlanHotelCounters">
+                                                                                             <assign name="increasePlanHotelCounters">
                                                                                                              <copy>
                                                                                                                        <from>$itineraryListHotelCounter + 1</from>
                                                                                                                             <to variable="itineraryListHotelCounter"/>
@@ -709,7 +758,145 @@
                         </pick>
                              <condition>true() = $itineraryFinished</condition>
                    </repeatUntil>
-                   <pick name="PickCancelOrFirstTrip">
+                  <scope name="ScopeEarliestDate">
+                      <variables>
+                          <variable name="itineraryDatesCounter" type="xs:int"/>
+                          <variable name="getDatesCounter" type="xs:int"/>
+                      </variables>
+                      <sequence name="SequenceEarliestDate">
+                          <assign name="ItineraryDatesCounterHotelInitialise">
+                              <copy>
+                                  <from>1</from>
+                                  <to variable="itineraryDatesCounter"/>
+                              </copy>
+                          </assign>
+                          <forEach name="ForEachHotelDateInItinerary" parallel="no" counterName="ForEach2Counter">
+                              <startCounterValue>1</startCounterValue>
+                              <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
+                              <scope name="ScopeForEachHotelDate">
+                                  <sequence name="SequenceForEachGetHotelDate">
+                                      <assign name="GetDatesCounterHotelsInitialise">
+                                          <copy>
+                                              <from>1</from>
+                                              <to variable="getDatesCounter"/>
+                                          </copy>
+                                      </assign>
+                                      <forEach name="ForEachGetHotelDate" parallel="no" counterName="ForEach2Counter">
+                                          <startCounterValue>1</startCounterValue>
+                                              <finalCounterValue>count($bookingNumberDate/hotelBookingNumberDate)</finalCounterValue>
+                                          <scope name="ScopeEarliestDateHotel">
+                                              <sequence name="SequenceEariliestDateHotel">
+                                                  <if name="IfHotelIsInItinerary">
+                                                      <condition>$itineraryList/HotelsItineraryInformation[$itineraryDatesCounter]/BookingNumber = $bookingNumberDate/hotelBookingNumberDate[$getDatesCounter]/bookingNumberHotel
+                                                          <sxed:editor>
+                                                              <sxed:predicate path="$itineraryList/HotelsItineraryInformation[$itineraryDatesCounter]" source="from"/>
+                                                              <sxed:predicate path="$bookingNumberDate/hotelBookingNumberDate[$getDatesCounter]" source="from"/>
+                                                          </sxed:editor>
+                                                      </condition>
+                                                      <if name="IfEarliestDateHotel">
+                                                          <condition>sxxf:date-less-than($bookingNumberDate/hotelBookingNumberDate[$getDatesCounter]/dateHotel, $earliestDate)
+                                                              <sxed:editor>
+                                                                  <sxed:predicate path="$bookingNumberDate/hotelBookingNumberDate[$getDatesCounter]" source="from"/>
+                                                              </sxed:editor>
+                                                          </condition>
+                                                          <assign name="AssignEarliestDateHotel">
+                                                              <copy>
+                                                                  <from>$bookingNumberDate/hotelBookingNumberDate[$getDatesCounter]/dateHotel
+                                                                      <sxed:editor>
+                                                                          <sxed:predicate path="$bookingNumberDate/hotelBookingNumberDate[$getDatesCounter]" source="from"/>
+                                                                      </sxed:editor>
+                                                                  </from>
+                                                                  <to variable="earliestDate"/>
+                                                              </copy>
+                                                          </assign>
+                                                      </if>
+                                                  </if>
+                                                  <assign name="GetDatesCounterHotelIncrease">
+                                                      <copy>
+                                                          <from>1 + $getDatesCounter</from>
+                                                          <to variable="getDatesCounter"/>
+                                                      </copy>
+                                                  </assign>
+                                              </sequence>
+                                          </scope>
+                                      </forEach>
+                                      <assign name="IncreaseItineraryDatesCounterHotel">
+                                          <copy>
+                                              <from>1 + $itineraryDatesCounter</from>
+                                              <to variable="itineraryDatesCounter"/>
+                                          </copy>
+                                      </assign>
+                                  </sequence>
+                              </scope>
+                          </forEach>
+                          <assign name="ItineraryDatesCounterFlightsInitialise">
+                              <copy>
+                                  <from>1</from>
+                                  <to variable="itineraryDatesCounter"/>
+                              </copy>
+                          </assign>
+                          <forEach name="ForEachFlightDateInItinerary" parallel="no" counterName="ForEach2Counter">
+                              <startCounterValue>1</startCounterValue>
+                              <finalCounterValue>count($itineraryList/FlightsItineraryInformation)</finalCounterValue>
+                              <scope name="ScopeForEachFlightDate">
+                                  <sequence name="SequenceForEachGetFlightsDate">
+                                      <assign name="GetDatesCounterFlightsInitialise">
+                                          <copy>
+                                              <from>1</from>
+                                              <to variable="getDatesCounter"/>
+                                          </copy>
+                                      </assign>
+                                      <forEach name="ForEachGetFlightDate" parallel="no" counterName="ForEach2Counter">
+                                          <startCounterValue>1</startCounterValue>
+                                          <finalCounterValue>count($bookingNumberDate/flightBookingNumberDate)</finalCounterValue>
+                                          <scope name="ScopeEarliestDateFlight">
+                                              <sequence name="SequenceEariliestDateFlight">
+                                                  <if name="IfFlightIsInItinerary">
+                                                      <condition>$itineraryList/FlightsItineraryInformation[$itineraryDatesCounter]/BookingNumber = $bookingNumberDate/flightBookingNumberDate[$getDatesCounter]/bookingNumberFlight
+                                                          <sxed:editor>
+                                                              <sxed:predicate path="$itineraryList/FlightsItineraryInformation[$itineraryDatesCounter]" source="from"/>
+                                                              <sxed:predicate path="$bookingNumberDate/flightBookingNumberDate[$getDatesCounter]" source="from"/>
+                                                          </sxed:editor>
+                                                      </condition>
+                                                      <if name="IfEarliestDateFlight">
+                                                          <condition>sxxf:date-less-than($bookingNumberDate/flightBookingNumberDate[$getDatesCounter]/dateFlight, $earliestDate)
+                                                              <sxed:editor>
+                                                                  <sxed:predicate path="$bookingNumberDate/flightBookingNumberDate[$getDatesCounter]" source="from"/>
+                                                              </sxed:editor>
+                                                          </condition>
+                                                          <assign name="AssignEarliestDateFlight">
+                                                              <copy>
+                                                                  <from>$bookingNumberDate/flightBookingNumberDate[$getDatesCounter]/dateFlight
+                                                                      <sxed:editor>
+                                                                          <sxed:predicate path="$bookingNumberDate/flightBookingNumberDate[$getDatesCounter]" source="from"/>
+                                                                      </sxed:editor>
+                                                                  </from>
+                                                                  <to variable="earliestDate"/>
+                                                              </copy>
+                                                          </assign>
+                                                      </if>
+                                                  </if>
+                                                  <assign name="GetDatesCounterFlightIncrease">
+                                                      <copy>
+                                                          <from>1 + $getDatesCounter</from>
+                                                          <to variable="getDatesCounter"/>
+                                                      </copy>
+                                                  </assign>
+                                              </sequence>
+                                          </scope>
+                                      </forEach>
+                                      <assign name="IncreaseItineraryDatesCounterFlight">
+                                          <copy>
+                                              <from>1 + $itineraryDatesCounter</from>
+                                              <to variable="itineraryDatesCounter"/>
+                                          </copy>
+                                      </assign>
+                                  </sequence>
+                              </scope>
+                          </forEach>
+                      </sequence>
+                  </scope>
+                  <pick name="PickCancelOrFirstTrip">
                         <onMessage partnerLink="PartnerLink3" operation="cancelItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CancelItineraryIn">
                              <correlations>
                                  <correlation set="ItineraryCorrelation" initiate="no"/>
@@ -871,13 +1058,18 @@
                              </scope>
                         </onMessage>
                         <onAlarm>
-                            <for>'P0Y0M0DT0H0M20.0S'</for>
-                            <assign name="WhenFirstTripStarts">
-                                  <copy>
-                                       <from>true()</from>
-                                       <to variable="processFinished"/>
-                                  </copy>
-                             </assign>
+                            <for>'PT1M'</for>
+                            <sequence name="SequenceIfEarliestDate">
+                                <if name="If2">
+                                    <condition>not(sxxf:date-less-than(sxxf:current-date(), $earliestDate))</condition>
+                                    <assign name="WhenFirstTripStarts">
+                                        <copy>
+                                            <from>true()</from>
+                                                <to variable="processFinished"/>
+                                        </copy>
+                                    </assign>
+                                </if>
+                            </sequence>
                         </onAlarm>
                    </pick>
               </sequence>
