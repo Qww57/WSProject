@@ -6,6 +6,7 @@
 package travelgood.representations;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class AddToItineraryInputRepresentation extends Representation {
     
-    public List<String> hotel_booking_numbers;
-    public List<String> flight_booking_number;
+    public List<String> hotel_booking_numbers = new ArrayList<String>();
+    public List<String> flight_booking_number = new ArrayList<String>();
    
 }
