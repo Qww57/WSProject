@@ -123,6 +123,12 @@
     <message name="cancelItineraryResponse">
         <part name="part1" type="tns:ItineraryListType"/>
     </message>
+    <message name="getItineraryRequest">
+        <part name="part1" type="tns:ItineraryIDType"/>
+    </message>
+    <message name="getItineraryResponse">
+        <part name="part1" type="tns:ItineraryListType"/>
+    </message>
     <portType name="TravelGoodWSDLPortType">
         <operation name="GetFlightsAndHotels">
             <input name="input1" message="tns:GetFlightsAndHotelsRequest"/>
@@ -147,6 +153,10 @@
         <operation name="cancelItinerary">
             <input name="input6" message="tns:cancelItineraryRequest"/>
             <output name="output6" message="tns:cancelItineraryResponse"/>
+        </operation>
+        <operation name="GetItinerary">
+            <input name="input7" message="tns:getItineraryRequest"/>
+            <output name="output7" message="tns:getItineraryResponse"/>
         </operation>
     </portType>
     <binding name="TravelGoodWSDLPortTypeBinding" type="tns:TravelGoodWSDLPortType">
@@ -205,6 +215,15 @@
                 <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
             </output>
         </operation>
+                <operation name="GetItinerary">
+            <soap:operation/>
+            <input name="input7">
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
+            </input>
+            <output name="output7">
+                <soap:body use="literal" namespace="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL"/>
+            </output>
+        </operation>
     </binding>
     <service name="TravelGoodWSDLService">
         <port name="TravelGoodWSDLPortTypeBindingPort" binding="tns:TravelGoodWSDLPortTypeBinding">
@@ -224,4 +243,5 @@ A partner link type characterizes the conversational relationship between two se
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:BookItineraryRequest" part="part1"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:cancelItineraryRequest" part="part1"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:createItineraryResponse" part="part1"/>
+    <vprop:propertyAlias propertyName="tns:ID" messageType="tns:getItineraryRequest" part="part1"/>
 </definitions>

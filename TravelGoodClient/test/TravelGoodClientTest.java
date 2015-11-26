@@ -4,10 +4,9 @@
  * and open the template in the editor.
  */
 
-import java.util.GregorianCalendar;
-import java.util.List;
+import static ConstructorPackage.Constructors.*;
+import static ConstructorPackage.TravelGoodOperations.*;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -16,7 +15,8 @@ import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.*;
 
 /**
- *
+ * Class composed of unit tests in order to help and test the BPEL implementation. 
+ * 
  * @author Quentin
  */
 public class TravelGoodClientTest {
@@ -24,6 +24,8 @@ public class TravelGoodClientTest {
     public TravelGoodClientTest() {
     }
 
+    /* Create Itinerery */
+    
     @Test 
     public void createEmptyItinerary(){
         System.out.println("Test Start");
@@ -46,6 +48,8 @@ public class TravelGoodClientTest {
         
         // TODO cancelling it
     }
+    
+    /* Get hotels and flights */
     
     @Test
     public void getOneHotel() throws DatatypeConfigurationException{
@@ -211,6 +215,8 @@ public class TravelGoodClientTest {
         assertEquals(expected3, result3);
     }
     
+    /* Plan hotels and flights */
+    
     @Test 
     public void planOneHotel() throws DatatypeConfigurationException {
         //Create the itinerary 
@@ -290,15 +296,60 @@ public class TravelGoodClientTest {
         assertEquals("unconfirmed", flightStatus);
     }
     
-    @Test
+    //@Test // TODO
     public void planManyFlights(){
         // TODO
     }
     
-    @Test
+   //@Test // TODO
     public void planManyHotels(){
         // TODO
     }
+    
+    /* Book hotels and flights */
+    
+    @Test 
+    public void getItineraryNotBooked() throws DatatypeConfigurationException{
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+               
+        //Get one hotel
+        String city = "Milan";
+        GetInputType input = CreateGetInputType(city);
+        
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
+        String resultCity = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getAddress();
+        assertEquals(city, resultCity);
+        System.out.println("Getting an hotel from the city: " + resultCity); 
+        
+        String bookingNumber = output.getHotelsList().get(0).getHotelInformations().get(0).getBookingNumber();
+        
+        // Plan itinerary using the ID number
+        PlanInputType plan = new PlanInputType();
+        plan.getHotelsBookingNumber().add(bookingNumber);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
+        
+        // Getting the status as unconfirmed
+        String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
+        String booking_number = planOutput.getHotelsItineraryInformation().get(0).getBookingNumber();
+        System.out.println("Get status: " + planOutput.getHotelsItineraryInformation().get(0).getStatus());
+        assertEquals("unconfirmed", status);
+        
+        // Requesting the itinerary again using the GetItinerary method
+        ItineraryListType getInineraryOutput = getItinerary(receivedItinID);
+        String status_bis = getInineraryOutput.getHotelsItineraryInformation().get(0).getStatus();
+        String booking_number_bis = getInineraryOutput.getHotelsItineraryInformation().get(0).getBookingNumber();
+        assertEquals(status, status_bis);
+        assertEquals(booking_number, booking_number_bis);
+    }
+    
+    @Test 
+    public void getItineraryBooked(){
+        
+    }
+    
+    /* Book hotels and flights */
     
     @Test 
     public void bookOneHotel() throws DatatypeConfigurationException{
@@ -335,7 +386,7 @@ public class TravelGoodClientTest {
         assertEquals("confirmed", status);     
     }
     
-    @Test 
+   //@Test //TODO 
     public void bookOneFlight(){
         // TODO
     }
@@ -422,7 +473,12 @@ public class TravelGoodClientTest {
         System.out.println("cancelled flight status: " + cancelOutputFlightStatus);
         assertEquals(cancelOutputFlightStatus, expectedCancelOutputFlightStatus);      
     }
-      
+    
+    @Test 
+    public void bookManyFlights(){
+        // TODO
+    }
+    
     @Test 
     public void bookManyHotels() throws DatatypeConfigurationException{
         System.out.println("Test starts - bookManyHotels");
@@ -495,7 +551,7 @@ public class TravelGoodClientTest {
         assertEquals("confirmed", status2);
     }
     
-    @Test // One of the scenario: B 
+    @Test // One of the scenario: B TODO add one flight
     public void bookManyHotelwithOneFail() throws DatatypeConfigurationException{
         System.out.println("Test starts - bookManyHotels");
         
@@ -734,6 +790,8 @@ public class TravelGoodClientTest {
         assertEquals("unconfirmed", status4);
     }
     
+    /* Cancel itinerary hotels and flights */
+    
     @Test 
     public void cancelOneHotel() throws DatatypeConfigurationException{
         System.out.println("Test starts - bookManyHotels");
@@ -889,11 +947,7 @@ public class TravelGoodClientTest {
         assertEquals("cancelled", status3);
     }
       
-    @Test 
-    public void bookManyFlights(){
-        // TODO
-    }
-    
+
     //@Test
     public void gettingAndPlanningHotels() throws DatatypeConfigurationException {
         System.out.println("Test starts");
@@ -1146,148 +1200,5 @@ public class TravelGoodClientTest {
         assertEquals(2, result2);
         
     }    
-    
-    private CreditCardInfoType CreateCreditCard(String name, String number, int month, int year){
-        CreditCardInfoType creditCard = new CreditCardInfoType();
-        creditCard.setName(name);
-        creditCard.setNumber(number);
-        CreditCardInfoType.ExpirationDate date = new CreditCardInfoType.ExpirationDate();
-        date.setMonth(month);
-        date.setYear(year);
-        creditCard.setExpirationDate(date);
-        return creditCard;
-    }
-    
-    private GetInputType CreateGetInputType(String city) throws DatatypeConfigurationException{    
-        GetInputType input = new GetInputType();
-        
-        // Adding one hotel to the request
-        HotelRequestType hotelRequest = new HotelRequestType();
-        GetHotelInputType hotel = CreateGetHotelInputType(city);
-        hotelRequest.getHotelsList().add(hotel);
-        input.getHotelRequests().add(hotelRequest);
-        
-        return input;
-    }
-    
-    private GetHotelInputType CreateGetHotelInputType(String place, XMLGregorianCalendar arrival, XMLGregorianCalendar deperture) throws DatatypeConfigurationException{
-        GetHotelInputType output = new GetHotelInputType();
-          
-        output.setDepartureDate(arrival);
-        output.setArrivalDate(deperture);
-        output.setCity(place);
-        
-        return output;
-    }
-    
-    private GetFlightsInputType CreateGetFlightsInputType(XMLGregorianCalendar date, String start, String destination) throws DatatypeConfigurationException{
-        GetFlightsInputType output = new GetFlightsInputType();
-          
-        output.setDate(date);
-        output.setStart(start);
-        output.setDestination(destination);
-        
-        return output;
-    }
-    
-    private void AddFlight(GetInputType request, GetFlightsInputType flight){
-        if (request.getFlightRequests().isEmpty()){
-            FlightRequestType flightRequest = new FlightRequestType();
-            flightRequest.getFlightsList().add(flight);
-            request.getFlightRequests().add(flightRequest);
-        } else {
-            request.getFlightRequests().get(0).getFlightsList().add(flight);
-        }
-    }
-    
-    private void AddHotel(GetInputType request, GetHotelInputType hotel){
-        if (request.getHotelRequests().isEmpty()){
-            HotelRequestType hotelRequest = new HotelRequestType();
-            hotelRequest.getHotelsList().add(hotel);
-            request.getHotelRequests().add(hotelRequest);
-        } else {
-            request.getHotelRequests().get(0).getHotelsList().add(hotel);
-        }
-    }
-    
-    private XMLGregorianCalendar CreateDate(int day, int month, int year) throws DatatypeConfigurationException{
-        XMLGregorianCalendar date;
-        
-        GregorianCalendar gc = new GregorianCalendar(year, month, day);
-        DatatypeFactory df = DatatypeFactory.newInstance();
-        date = df.newXMLGregorianCalendar(gc);
-        date.setDay(26);
-        date.setMonth(10);
-        date.setYear(2015);
-        
-        return date;
-    }
-       
-    private GetHotelInputType CreateGetHotelInputType(String city) throws DatatypeConfigurationException{
-        GetHotelInputType input = new GetHotelInputType();
-        input.setCity(city);
-        
-        GregorianCalendar _arrivalDate = new GregorianCalendar(2016, 11, 04);
-        DatatypeFactory df = DatatypeFactory.newInstance();
-        XMLGregorianCalendar arrivalDate = df.newXMLGregorianCalendar(_arrivalDate);
-        input.setArrivalDate(arrivalDate);
-        
-        GregorianCalendar _departureDate = new GregorianCalendar(2016, 11, 14);
-        XMLGregorianCalendar departureDate = df.newXMLGregorianCalendar(_departureDate);      
-        input.setDepartureDate(departureDate);
-        
-        return input;
-    }
-    
-    private GetFlightsInputType CreateGetFlightsInputType(String start, String destination, Integer day, Integer month, Integer year) throws DatatypeConfigurationException{
-        GetFlightsInputType input = new GetFlightsInputType();
-        input.setDestination(destination);
-        input.setStart(start);
-        
-        DatatypeFactory df = DatatypeFactory.newInstance();
-        GregorianCalendar _departureDate = new GregorianCalendar(2016, 11, 14);
-        XMLGregorianCalendar departureDate = df.newXMLGregorianCalendar(_departureDate);
-        departureDate.setDay(day);
-        departureDate.setMonth(month);
-        departureDate.setYear(year);
-        input.setDate(departureDate);
-        
-        return input;
-    }
 
-    private static ItineraryListType bookItinerary(java.lang.String part1, org.netbeans.j2ee.wsdl.niceview.java.niceview.CreditCardInfoType part2) {
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.bookItinerary(part1, part2);
-    }
-
-    private static GetOutputType getFlightsAndHotels(org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.GetInputType part1, java.lang.String part2) {
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.getFlightsAndHotels(part1, part2);
-    }
-
-    private static ItineraryListType cancelItinerary(java.lang.String part1, org.netbeans.j2ee.wsdl.niceview.java.niceview.CreditCardInfoType part2) {
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.cancelItinerary(part1, part2);
-    }
-
-    private static ItineraryListType planFlightsAndHotels(org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.PlanInputType part1, java.lang.String part2) {
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.planFlightsAndHotels(part1, part2);
-    }
-
-    private static boolean cancelPlanning(java.lang.String part1) {
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.cancelPlanning(part1);
-    }
-
-    private static String createItinerary() {
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.createItinerary();
-    }
 }

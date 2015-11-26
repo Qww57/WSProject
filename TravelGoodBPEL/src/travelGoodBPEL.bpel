@@ -20,6 +20,10 @@
         <partnerLink name="NiceView" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" partnerLinkType="tns:NiceView" partnerRole="NiceViewPortTypeRole"/>
     </partnerLinks>
     <variables>
+            <variable name="GetItineraryOut1" messageType="ns1:getItineraryResponse"/>
+            <variable name="GetItineraryIn1" messageType="ns1:getItineraryRequest"/>
+            <variable name="GetItineraryOut" messageType="ns1:getItineraryResponse"/>
+            <variable name="GetItineraryIn" messageType="ns1:getItineraryRequest"/>
             <variable name="Client_ID" type="xs:int"/>
             <variable name="flightCounterComp" type="xs:int"/>
            <variable name="earliestDate" type="xs:date"/>
@@ -873,6 +877,20 @@
                                                     </scope>
                                             </sequence>
                                   </onMessage>
+                                <onMessage partnerLink="PartnerLink3" operation="GetItinerary" portType="ns1:TravelGoodWSDLPortType" variable="GetItineraryIn">
+                                        <correlations>
+                                                <correlation set="ItineraryCorrelation" initiate="no"/>
+                                        </correlations>
+                                        <sequence name="Sequence20">
+                                                <assign name="Assign25">
+                                                        <copy>
+                                                                <from variable="itineraryList"/>
+                                                                <to variable="GetItineraryOut" part="part1"/>
+                                                        </copy>
+                                                </assign>
+                                                <reply name="Reply2" partnerLink="PartnerLink3" operation="GetItinerary" portType="ns1:TravelGoodWSDLPortType" variable="GetItineraryOut"/>
+                                        </sequence>
+                                </onMessage>
                         </pick>
                              <condition>true() = $itineraryFinished</condition>
                    </repeatUntil>
@@ -1188,7 +1206,7 @@
                                   </sequence>
                              </scope>
                         </onMessage>
-                        <onAlarm>
+                          <onAlarm>
                             <for>'PT1M'</for>
                             <sequence name="SequenceIfEarliestDate">
                                 <if name="If2">
