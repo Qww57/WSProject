@@ -15,20 +15,29 @@ import travelgood.objects.Itinerary;
 public class Database {
     
     private static int count = 0;
-    private static final HashMap<Integer, Itinerary> itineraries = new HashMap<>();
+    private static final HashMap<Integer, Itinerary> plannedItineraries = new HashMap<>();
+    private static final HashMap<Integer, Itinerary> bookedItineraries = new HashMap<>();
     
     public static int createItinerary() {
         Itinerary it = new Itinerary();
         it.ID = count;
-        itineraries.put(count, it);
+        plannedItineraries.put(count, it);
         return count++;
     }
     
-    public static boolean removeItinerary(Integer ID) {
-        return itineraries.remove(ID) != null;
+    public static boolean cancelPlannedItinerary(Integer ID) {
+        return plannedItineraries.remove(ID) != null;
     }
     
-    public static Itinerary getItinerary(int ID) {
-        return itineraries.get(ID);
+    public static Itinerary getPlannedItinerary(int ID) {
+        return plannedItineraries.get(ID);
+    }
+    
+    public static boolean cancelBookedItinerary(Integer ID) {
+        return bookedItineraries.remove(ID) != null;
+    }
+    
+    public static Itinerary getBookedItinerary(int ID) {
+        return bookedItineraries.get(ID);
     }
 }

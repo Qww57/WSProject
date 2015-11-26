@@ -6,26 +6,21 @@
 package travelgood;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.namespace.QName;
-import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsInputType;
-import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsOutputType;
 import travelgood.objects.Itinerary;
 import travelgood.representations.AddToItineraryInputRepresentation;
 import travelgood.representations.AddToItineraryOutputRepresentation;
 import travelgood.representations.CreateItineraryRepresentation;
+import travelgood.representations.FindPlannedItineraryOutputRepresentation;
 
 /**
  *
@@ -48,15 +43,10 @@ public class ItineraryResource {
         builder.rel("http://travelgood.ws/relations/add");
         links.add(builder.build(ID));
         
-        builder = Link.fromMethod(ItineraryResource.class, "cancelItinerary");
+        builder = Link.fromMethod(ItineraryResource.class, "cancelPlannedItinerary");
         builder.baseUri(baseURI);
-        builder.rel("http://travelgood.ws/relations/cancel");
+        builder.rel("http://travelgood.ws/relations/cancelplanned");
         links.add(builder.build(ID));
-        
-        builder = Link.fromResource(SearchResource.class);
-        builder.baseUri(baseURI);
-        builder.rel("http://travelgood.ws/relations/search");
-        links.add(builder.build());
         
         CreateItineraryRepresentation rep = new CreateItineraryRepresentation();
         rep.links = links;
@@ -65,15 +55,61 @@ public class ItineraryResource {
     }
     
     @Path("{ID}")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public Response findPlannedItinerary(@PathParam("ID") String ID) {
+        try {
+            int parsedID = Integer.parseInt(ID);
+            Itinerary it = Database.getPlannedItinerary(parsedID);
+            if (it != null) {
+                
+                // Create links
+                List<Link> links = new ArrayList<>();
+                
+                Link.Builder builder = Link.fromMethod(ItineraryResource.class, "addToItinerary");
+                builder.baseUri(baseURI);
+                builder.rel("http://travelgood.ws/relations/add");
+                links.add(builder.build(ID));
+
+                builder = Link.fromMethod(ItineraryResource.class, "cancelPlannedItinerary");
+                builder.baseUri(baseURI);
+                builder.rel("http://travelgood.ws/relations/cancelplanned");
+                links.add(builder.build(ID));
+                
+                if (!it.flights.isEmpty() && !it.hotels.isEmpty()) {
+                    builder = Link.fromMethod(BookingResource.class, "bookItinerary");
+                    builder.baseUri(baseURI);
+                    builder.rel("http://travelgood.ws/relations/book");
+                    links.add(builder.build(ID));
+                }
+                
+                FindPlannedItineraryOutputRepresentation rep = new FindPlannedItineraryOutputRepresentation();
+                rep.itinerary = it;
+                rep.links = links;
+                
+                return Response.accepted().entity(rep).build();
+            }
+            else {
+                return Response.status(Response.Status.NOT_FOUND).
+                        entity("Itinerary with ID " + ID + " was not found.").
+                        build();
+            }
+            } catch (NumberFormatException e) {
+                return Response.status(Response.Status.BAD_REQUEST).
+                        entity("ID is malformed. Must be numbers only.").
+                        build();
+            }
+    }
+    
+    @Path("{ID}")
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response addToItinerary(@PathParam("ID") String ID, AddToItineraryInputRepresentation input) {
-        int parsedID;
         if (input != null) {
             try {
-            parsedID = Integer.parseInt(ID);
-            Itinerary it = Database.getItinerary(parsedID);
+            int parsedID = Integer.parseInt(ID);
+            Itinerary it = Database.getPlannedItinerary(parsedID);
             if (it != null) {
                 for (String bookingnumber : input.flight_booking_number) {
                     it.addFlight(bookingnumber);
@@ -85,26 +121,31 @@ public class ItineraryResource {
                 // Create links
                 List<Link> links = new ArrayList<>();
                 
-                Link.Builder builder = Link.fromMethod(ItineraryResource.class, "addToItinerary");
+                Link.Builder builder = Link.fromMethod(ItineraryResource.class, "findPlannedItinerary");
+                builder.baseUri(baseURI);
+                builder.rel("http://travelgood.ws/relations/findplanned");
+                links.add(builder.build(ID));
+                
+                builder = Link.fromMethod(ItineraryResource.class, "addToItinerary");
                 builder.baseUri(baseURI);
                 builder.rel("http://travelgood.ws/relations/add");
                 links.add(builder.build(ID));
 
-                builder = Link.fromMethod(ItineraryResource.class, "cancelItinerary");
+                builder = Link.fromMethod(ItineraryResource.class, "cancelPlannedItinerary");
                 builder.baseUri(baseURI);
-                builder.rel("http://travelgood.ws/relations/cancel");
+                builder.rel("http://travelgood.ws/relations/cancelplanned");
                 links.add(builder.build(ID));
-
-                builder = Link.fromResource(SearchResource.class);
+                
+                builder = Link.fromMethod(BookingResource.class, "bookItinerary");
                 builder.baseUri(baseURI);
-                builder.rel("http://travelgood.ws/relations/search");
-                links.add(builder.build());
+                builder.rel("http://travelgood.ws/relations/book");
+                links.add(builder.build(ID));
                 
                 AddToItineraryOutputRepresentation rep = new AddToItineraryOutputRepresentation();
                 rep.itinerary = it;
                 rep.links = links;
                 
-                return Response.accepted().entity(rep).build();
+                return Response.ok().entity(rep).build();
             }
             else {
                 return Response.status(Response.Status.NOT_FOUND).
@@ -129,9 +170,9 @@ public class ItineraryResource {
     @GET
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response cancelItinerary(@PathParam("ID") String ID) {
+    public Response cancelPlannedItinerary(@PathParam("ID") String ID) {
         try {
-            boolean success = Database.removeItinerary(Integer.parseInt(ID));
+            boolean success = Database.cancelPlannedItinerary(Integer.parseInt(ID));
             if (success) {
                 return Response.ok().build();
             }
