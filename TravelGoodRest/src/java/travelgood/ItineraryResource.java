@@ -22,7 +22,9 @@ import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsInputType;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsOutputType;
+import travelgood.objects.Itinerary;
 import travelgood.representations.AddToItineraryInputRepresentation;
+import travelgood.representations.AddToItineraryOutputRepresentation;
 import travelgood.representations.CreateItineraryRepresentation;
 
 /**
@@ -79,7 +81,30 @@ public class ItineraryResource {
                 for (String bookingnumber : input.hotel_booking_numbers) {
                     it.addHotel(bookingnumber);
                 }
-                return Response.accepted().entity(it).build();
+                
+                // Create links
+                List<Link> links = new ArrayList<>();
+                
+                Link.Builder builder = Link.fromMethod(ItineraryResource.class, "addToItinerary");
+                builder.baseUri(baseURI);
+                builder.rel("http://addtoitinerary.ws/relations/add");
+                links.add(builder.build(ID));
+
+                builder = Link.fromMethod(ItineraryResource.class, "cancelItinerary");
+                builder.baseUri(baseURI);
+                builder.rel("http://addtoitinerary.ws/relations/cancel");
+                links.add(builder.build(ID));
+
+                builder = Link.fromResource(SearchResource.class);
+                builder.baseUri(baseURI);
+                builder.rel("http://addtoitinerary.ws/relations/search");
+                links.add(builder.build());
+                
+                AddToItineraryOutputRepresentation rep = new AddToItineraryOutputRepresentation();
+                rep.itinerary = it;
+                rep.links = links;
+                
+                return Response.accepted().entity(rep).build();
             }
             else {
                 return Response.status(Response.Status.NOT_FOUND).

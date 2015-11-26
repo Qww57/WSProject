@@ -6,6 +6,7 @@
 package travelgood;
 
 import java.util.HashMap;
+import travelgood.objects.Itinerary;
 
 /**
  *

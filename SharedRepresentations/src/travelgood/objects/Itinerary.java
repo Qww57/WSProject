@@ -3,14 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package travelgood;
+package travelgood.objects;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.FlightInformationType;
-import org.netbeans.j2ee.wsdl.niceview.java.niceview.HotelInformationType;
 
 /**
  *
