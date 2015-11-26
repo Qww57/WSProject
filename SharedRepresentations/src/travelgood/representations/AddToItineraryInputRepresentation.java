@@ -7,11 +7,13 @@ package travelgood.representations;
 
 import java.util.List;
 import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Daniel
  */
+@XmlRootElement
 public class AddToItineraryInputRepresentation extends Representation {
     
     public List<String> hotel_booking_numbers = new ArrayList<String>();
