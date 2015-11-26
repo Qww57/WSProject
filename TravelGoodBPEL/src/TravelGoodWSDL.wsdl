@@ -56,14 +56,8 @@
             </xsd:complexType>
             <xsd:element name="PlanInput" type="tns:PlanInputType"></xsd:element>
             <xsd:element name="PlanOutput" type="tns:ItineraryListType"></xsd:element>
-            <xsd:complexType name="itineraryResponseType">
-                <xsd:sequence>
-                    <xsd:element name="ItineraryID" type="tns:ItineraryIDType"></xsd:element>
-                    <xsd:element name="itineraryCreated" type="tns:itineraryCreatedType"></xsd:element>
-                </xsd:sequence>
-            </xsd:complexType>
             <xsd:simpleType name="ItineraryIDType">
-                <xsd:restriction base="xsd:int"/>
+                <xsd:restriction base="xsd:string"/>
             </xsd:simpleType>
             <xsd:simpleType name="itineraryCreatedType">
                 <xsd:restriction base="xsd:boolean"/>
@@ -105,11 +99,9 @@
     <message name="PlanFlightsAndHotelsResponse">
         <part name="part1" type="tns:ItineraryListType"/>
     </message>
-    <message name="createItineraryRequest">
-        <part name="part1" type="tns:ItineraryIDType"/>
-    </message>
+    <message name="createItineraryRequest"></message>
     <message name="createItineraryResponse">
-        <part name="part1" type="tns:itineraryResponseType"/>
+        <part name="part1" type="tns:ItineraryIDType"/>
     </message>
     <message name="cancelPlanningRequest">
         <part name="part1" type="tns:ItineraryIDType"/>
@@ -228,8 +220,8 @@ A partner link type characterizes the conversational relationship between two se
     <vprop:property name="ID" type="tns:ItineraryIDType"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:GetFlightsAndHotelsRequest" part="part2"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:PlanFlightsAndHotelsRequest" part="part2"/>
-    <vprop:propertyAlias propertyName="tns:ID" messageType="tns:createItineraryRequest" part="part1"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:cancelPlanningRequest" part="part1"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:BookItineraryRequest" part="part1"/>
     <vprop:propertyAlias propertyName="tns:ID" messageType="tns:cancelItineraryRequest" part="part1"/>
+    <vprop:propertyAlias propertyName="tns:ID" messageType="tns:createItineraryResponse" part="part1"/>
 </definitions>

@@ -28,30 +28,21 @@ public class TravelGoodClientTest {
     public void createEmptyItinerary(){
         System.out.println("Test Start");
         
-        int myIntID = 15;
-        ItineraryResponseType itineraryCreation = createItinerary(myIntID);
+        String receivedItinID = createItinerary();
         
-        System.out.println("Itinerary Created");
-        Boolean receivedItineraryCreated = itineraryCreation.isItineraryCreated();
-        int receivedItinID = itineraryCreation.getItineraryID();
-        
-        assertTrue(receivedItineraryCreated);
-        assertEquals(myIntID, receivedItinID);     
+        System.out.println("Itinerary Created - " + receivedItinID );   
+        assertTrue(true);
     }
     
-    //@Test 
+    //@Test  // TODO cancelling Itinerary
     public void cancelEmptyItinerary(){
         System.out.println("Test Start");
         
-        int myIntID = 19;
-        ItineraryResponseType itineraryCreation = createItinerary(myIntID);
+        String receivedItinID = createItinerary();
         
-        System.out.println("Itinerary Created");
-        Boolean receivedItineraryCreated = itineraryCreation.isItineraryCreated();
-        int receivedItinID = itineraryCreation.getItineraryID();
-        
-        assertTrue(receivedItineraryCreated);
-        assertEquals(myIntID, receivedItinID);  
+        System.out.println("Itinerary Created - " + receivedItinID ); 
+
+        assertTrue(true);
         
         // TODO cancelling it
     }
@@ -61,17 +52,14 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - GetOneHotel");
          
         //Create the itinerary 
-        Integer myItinID = 1890;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
                
         //Get one hotel
         String city = "Milan";
         GetInputType input = CreateGetInputType(city);
         
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         String resultCity = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getAddress();
         assertEquals(city, resultCity);
         System.out.println("Getting an hotel from the city: " + resultCity);      
@@ -82,10 +70,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - GetOneFlight");
          
         //Create the itinerary 
-        Integer myItinID = 1888;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         // Create the input  
@@ -96,7 +81,7 @@ public class TravelGoodClientTest {
         GetFlightsInputType flight = CreateGetFlightsInputType(date, "Copenhagen", "London");
         AddFlight(input, flight);
        
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         String resultStart = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();
         assertEquals("Copenhagen", resultStart);
         System.out.println("Getting a flight from the city: " + resultStart);      
@@ -107,10 +92,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - GetOneFlight");
         
         //Create the itinerary 
-        Integer myItinID = 1878;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         // Create the input  
@@ -129,7 +111,7 @@ public class TravelGoodClientTest {
         AddHotel(input, hotel);
         
         // Making the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         
         // Checking the flight result
         String resultStart = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();
@@ -147,10 +129,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - getManyHotels");
         
         //Create the itinerary 
-        Integer myItinID = 1410;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         // Creating the request      
@@ -166,7 +145,7 @@ public class TravelGoodClientTest {
         input.getHotelRequests().add(hotelRequest); 
         
         // Make the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
                
         String expected1 = "Milan Hotel";
         String expected2 = "London Hotel"; 
@@ -194,10 +173,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts");
         
         //Create the itinerary 
-        Integer myItinID = 14555;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         // Creating the request
@@ -214,7 +190,7 @@ public class TravelGoodClientTest {
         input.getFlightRequests().add(flightRequest); 
 
         // Make the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         System.out.println("Request done");
           
         String expected1 = "Copenhagen";
@@ -238,17 +214,14 @@ public class TravelGoodClientTest {
     @Test 
     public void planOneHotel() throws DatatypeConfigurationException {
         //Create the itinerary 
-        Integer myItinID = 7555;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
                
         //Get one hotel
         String city = "Milan";
         GetInputType input = CreateGetInputType(city);
         
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         String resultCity = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getAddress();
         assertEquals(city, resultCity);
         System.out.println("Getting an hotel from the city: " + resultCity); 
@@ -258,7 +231,7 @@ public class TravelGoodClientTest {
         // Plan itinerary using the ID number
         PlanInputType plan = new PlanInputType();
         plan.getHotelsBookingNumber().add(bookingNumber);
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Getting the status as unconfirmed
         String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -269,10 +242,7 @@ public class TravelGoodClientTest {
     @Test 
     public void planOneHotelAndOneFlight() throws DatatypeConfigurationException {
         //Create the itinerary 
-        Integer myItinID = 7520;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
                
         // Create the input  
@@ -291,7 +261,7 @@ public class TravelGoodClientTest {
         AddHotel(input, hotel);
         
         // Making the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         
         // Checking the flight result
         String resultStart = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();
@@ -308,7 +278,7 @@ public class TravelGoodClientTest {
         PlanInputType plan = new PlanInputType();
         plan.getHotelsBookingNumber().add(hotelBookingNumber);
         plan.getFlightsBookingNumber().add(flightBookingNumber);
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Getting the status as unconfirmed
         String hotelStatus = planOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -333,17 +303,14 @@ public class TravelGoodClientTest {
     @Test 
     public void bookOneHotel() throws DatatypeConfigurationException{
         //Create the itinerary 
-        Integer myItinID = 799588;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
                
         //Get one hotel
         String city = "Milan";
         GetInputType input = CreateGetInputType(city);
         
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         String resultCity = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getAddress();
         assertEquals(city, resultCity);
         System.out.println("Getting an hotel from the city: " + resultCity); 
@@ -353,7 +320,7 @@ public class TravelGoodClientTest {
         // Plan itinerary using the ID number
         PlanInputType plan = new PlanInputType();
         plan.getHotelsBookingNumber().add(bookingNumber);
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Getting the status as unconfirmed
         String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -362,7 +329,7 @@ public class TravelGoodClientTest {
         
         // Booking the hotel
         CreditCardInfoType creditCard = new CreditCardInfoType(); 
-        ItineraryListType bookOutput = bookItinerary(myItinID, creditCard); // Fails here because BPEL doesn't check that the list of flights is null and try to assigned the value
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard); // Fails here because BPEL doesn't check that the list of flights is null and try to assigned the value
         status = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(0).getStatus());
         assertEquals("confirmed", status);     
@@ -375,11 +342,9 @@ public class TravelGoodClientTest {
     
     @Test 
     public void bookOneFlightAndOneHotel() throws DatatypeConfigurationException{
+        
         //Create the itinerary 
-        Integer myItinID = 70100;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
                
         // Create the input  
@@ -398,7 +363,7 @@ public class TravelGoodClientTest {
         AddHotel(input, hotel);
         
         // Making the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         
         // Checking the flight result
         String resultStart = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();
@@ -415,7 +380,7 @@ public class TravelGoodClientTest {
         PlanInputType plan = new PlanInputType();
         plan.getHotelsBookingNumber().add(hotelBookingNumber);
         plan.getFlightsBookingNumber().add(flightBookingNumber);
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Getting the status as unconfirmed
         String hotelStatus = planOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -428,7 +393,7 @@ public class TravelGoodClientTest {
         
         // Booking the hotel
         CreditCardInfoType creditCard = CreateCreditCard("Bruhn Brigitte", "50408821", 2, 10);
-        ItineraryListType bookOutput = bookItinerary(myItinID, creditCard); 
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard); 
           
         hotelStatus = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Hotel status: " + hotelStatus);
@@ -440,7 +405,7 @@ public class TravelGoodClientTest {
         System.out.println("booking passed!");
         
         //cancelling
-        ItineraryListType cancelOutput = cancelItinerary(myItinID, creditCard);
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);
         System.out.println("cancelling performed!");
         //hotel testing
         String cancelOutputHotelBookingNumber = cancelOutput.getHotelsItineraryInformation().get(0).getBookingNumber();
@@ -455,9 +420,7 @@ public class TravelGoodClientTest {
         String cancelOutputFlightStatus = cancelOutput.getFlightsItineraryInformation().get(0).getStatus();
         String expectedCancelOutputFlightStatus = "cancelled";
         System.out.println("cancelled flight status: " + cancelOutputFlightStatus);
-        assertEquals(cancelOutputFlightStatus, expectedCancelOutputFlightStatus);
-        
-        
+        assertEquals(cancelOutputFlightStatus, expectedCancelOutputFlightStatus);      
     }
       
     @Test 
@@ -465,10 +428,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - bookManyHotels");
         
         //Create the itinerary 
-        Integer myItinID = 12825535;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         // Creating the request      
@@ -484,7 +444,7 @@ public class TravelGoodClientTest {
         input.getHotelRequests().add(hotelRequest); 
         
         // Make the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
                
         String expected1 = "Milan Hotel";
         String expected2 = "London Hotel"; 
@@ -513,7 +473,7 @@ public class TravelGoodClientTest {
         PlanInputType plan = new PlanInputType();
         plan.getHotelsBookingNumber().add(bookingNumber);
         plan.getHotelsBookingNumber().add(bookingNumber2);
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Getting the status as unconfirmed
         String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -525,7 +485,7 @@ public class TravelGoodClientTest {
         
         // Booking the hotel
         CreditCardInfoType creditCard = new CreditCardInfoType(); 
-        ItineraryListType bookOutput = bookItinerary(myItinID, creditCard); // Fails here because BPEL doesn't check that the list of flights is null and try to assigned the value
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard); // Fails here because BPEL doesn't check that the list of flights is null and try to assigned the value
         status = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(0).getStatus());
         assertEquals("confirmed", status);
@@ -540,10 +500,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - bookManyHotels");
         
         //Create the itinerary 
-        Integer myItinID = 1286253;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         // Creating the request      
@@ -559,7 +516,7 @@ public class TravelGoodClientTest {
         input.getHotelRequests().add(hotelRequest); 
         
         // Make the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
                
         String expected1 = "Milan Hotel";
         String expected2 = "Hotel Madrid"; 
@@ -588,7 +545,7 @@ public class TravelGoodClientTest {
         PlanInputType plan = new PlanInputType();
         plan.getHotelsBookingNumber().add(bookingNumber);
         plan.getHotelsBookingNumber().add(bookingNumber2);
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Getting the status as unconfirmed
         String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -601,7 +558,7 @@ public class TravelGoodClientTest {
         
         // Booking the hotel but the second one should fail
         CreditCardInfoType creditCard = new CreditCardInfoType(); 
-        ItineraryListType bookOutput = bookItinerary(myItinID, creditCard);
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard);
         status = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(0).getStatus());
         assertEquals("cancelled", status);
@@ -616,10 +573,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - bookManyFlights");
         
         //Create the itinerary 
-        Integer myItinID = 15614321;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         GetInputType input = new GetInputType();
@@ -638,7 +592,7 @@ public class TravelGoodClientTest {
         AddHotel(input, hotel);
         
         // Make the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         String resultStart = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();
         assertEquals("Copenhagen", resultStart);
         System.out.println(resultStart);
@@ -664,7 +618,7 @@ public class TravelGoodClientTest {
         plan.getFlightsBookingNumber().add("hello");
         plan.getHotelsBookingNumber().add(hotelBookingNumber);
         System.out.println("added all");
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Getting the status as unconfirmed
         String status = planOutput.getFlightsItineraryInformation().get(0).getStatus();
@@ -681,7 +635,7 @@ public class TravelGoodClientTest {
         
         // Booking the flight but the second one should fail
         CreditCardInfoType creditCard = CreateCreditCard("Bruhn Brigitte", "50408821", 2, 10);
-        ItineraryListType bookOutput = bookItinerary(myItinID, creditCard);
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard);
         status = bookOutput.getFlightsItineraryInformation().get(0).getStatus();
         System.out.println("Flight status: " + status);
         assertEquals("cancelled", status);
@@ -698,10 +652,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - bookManyHotels");
         
         //Create the itinerary 
-        Integer myItinID = 12755;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         // Creating the request      
@@ -719,7 +670,7 @@ public class TravelGoodClientTest {
         input.getHotelRequests().add(hotelRequest);
         
         // Make the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
                
         String expected1 = "Milan Hotel";
         String expected2 = "Error hotel"; 
@@ -742,7 +693,7 @@ public class TravelGoodClientTest {
         plan.getHotelsBookingNumber().add(bookingNumber2);
         plan.getHotelsBookingNumber().add(bookingNumber3);
         plan.getHotelsBookingNumber().add(bookingNumber4);
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Getting the status as unconfirmed
         String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -760,7 +711,7 @@ public class TravelGoodClientTest {
         
         // Booking the hotel but the second one should fail
         CreditCardInfoType creditCard = new CreditCardInfoType(); 
-        ItineraryListType bookOutput = bookItinerary(myItinID, creditCard); 
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard); 
         
         // should be booked and then cancelled
         status = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -788,10 +739,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - bookManyHotels");
         
         //Create the itinerary 
-        Integer myItinID = 188755572;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         // Creating the request      
@@ -803,7 +751,7 @@ public class TravelGoodClientTest {
         input.getHotelRequests().add(hotelRequest); 
         
         // Make the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
                
         String expected1 = "Milan Hotel";
         System.out.println("GetHotelsList size: " + output.getHotelsList().size());
@@ -818,7 +766,7 @@ public class TravelGoodClientTest {
         // Plan itinerary using the ID number
         PlanInputType plan = new PlanInputType();
         plan.getHotelsBookingNumber().add(bookingNumber1);        
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
                
         // Getting the status as unconfirmed
         String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -827,7 +775,7 @@ public class TravelGoodClientTest {
         
         // Booking the hotels
         CreditCardInfoType creditCard = CreateCreditCard("Bruhn Brigitte", "50408821", 2, 10);
-        ItineraryListType bookOutput = bookItinerary(myItinID, creditCard); 
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard); 
         
         status = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(0).getStatus());
@@ -835,7 +783,7 @@ public class TravelGoodClientTest {
         
         
         // Cancelling of the hotel
-        ItineraryListType cancelOutput = cancelItinerary(myItinID, creditCard);            
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);            
             
         status = cancelOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + cancelOutput.getHotelsItineraryInformation().get(0).getStatus());
@@ -847,10 +795,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - bookManyHotels");
         
         //Create the itinerary 
-        Integer myItinID = 14565982;
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(myItinID, receivedItinID);
+        String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
         // Creating the request      
@@ -866,7 +811,7 @@ public class TravelGoodClientTest {
         input.getHotelRequests().add(hotelRequest); 
         
         // Make the request
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
                
         String expected1 = "Milan Hotel";
         String expected2 = "Error hotel"; 
@@ -897,7 +842,7 @@ public class TravelGoodClientTest {
         plan.getHotelsBookingNumber().add(bookingNumber1);        
         plan.getHotelsBookingNumber().add(bookingNumber2);
         plan.getHotelsBookingNumber().add(bookingNumber3);
-        ItineraryListType planOutput = planFlightsAndHotels(plan, myItinID);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
                
         // Getting the status as unconfirmed
         String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
@@ -912,7 +857,7 @@ public class TravelGoodClientTest {
         
         // Booking the hotels
         CreditCardInfoType creditCard = CreateCreditCard("Bruhn Brigitte", "50408821", 2, 10);
-        ItineraryListType bookOutput = bookItinerary(myItinID, creditCard); // Fails here because BPEL doesn't check that the list of flights is null and try to assigned the value
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard); // Fails here because BPEL doesn't check that the list of flights is null and try to assigned the value
         
         status = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(0).getStatus());
@@ -929,7 +874,7 @@ public class TravelGoodClientTest {
         System.out.println("booking done");
         
         // Cancelling of the hotel
-        ItineraryListType cancelOutput = cancelItinerary(myItinID, creditCard);            
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);            
             
         status = cancelOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + status);
@@ -960,16 +905,12 @@ public class TravelGoodClientTest {
         input.getHotelRequests().add(hotelRequest);
         
         //itinerary ID
-        Integer myItinID = 1448;
         System.out.println("Ready to call operations");
-        ItineraryResponseType itineraryCreation = createItinerary(myItinID);
-        Boolean expectedItineraryCreated = true;
-        Boolean receivedItineraryCreated = itineraryCreation.isItineraryCreated();
-        Integer expectedItinID = myItinID;
-        Integer receivedItinID = itineraryCreation.getItineraryID();
-        assertEquals(expectedItinID, receivedItinID);
+        String receivedItinID = createItinerary();
+        
         System.out.println("Itinerary Created!!");
-        GetOutputType output = getFlightsAndHotels(input, myItinID);
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
+        
         //check results
         System.out.println("ouput: "+ output.getHotelsList().size());
         System.out.println("ouput 0: "+ output.getHotelsList().get(0).getHotelInformations().size());
@@ -984,7 +925,7 @@ public class TravelGoodClientTest {
         PlanInputType inputBookingNumberList = new PlanInputType();
         inputBookingNumberList.getHotelsBookingNumber().add(bookingNumber1);
         System.out.println("planning operation to be called");
-        ItineraryListType outputItinerary = planFlightsAndHotels(inputBookingNumberList, myItinID);
+        ItineraryListType outputItinerary = planFlightsAndHotels(inputBookingNumberList, receivedItinID);
         System.out.println("operation performed correctly");
         String expectedBookingNumber = bookingNumber1;
         String expectedStatus = "unconfirmed";
@@ -1002,7 +943,7 @@ public class TravelGoodClientTest {
         GetHotelInputType hotel2 = CreateGetHotelInputType("Paris");
         hotelRequest2.getHotelsList().add(hotel2);
         input2.getHotelRequests().add(hotelRequest2);
-        GetOutputType output2 = getFlightsAndHotels(input2, myItinID);
+        GetOutputType output2 = getFlightsAndHotels(input2, receivedItinID);
         System.out.println("It did it again!!!");
         //check results
         System.out.println("ouput2: "+ output2.getHotelsList().size());
@@ -1023,7 +964,7 @@ public class TravelGoodClientTest {
         inputBookingNumberList2.getHotelsBookingNumber().add(bookingNumber2);
         inputBookingNumberList2.getHotelsBookingNumber().add(bookingNumber3);
         System.out.println("planning operation to be called");
-        ItineraryListType outputItinerary2 = planFlightsAndHotels(inputBookingNumberList2, myItinID);
+        ItineraryListType outputItinerary2 = planFlightsAndHotels(inputBookingNumberList2, receivedItinID);
         System.out.println("operation performed correctly");
         //check itinerary length
         Integer resultItinerarySize = outputItinerary2.getHotelsItineraryInformation().size();
@@ -1056,8 +997,8 @@ public class TravelGoodClientTest {
         /*
         //cancel Itinerary
         System.out.println("Cancel itinerary starts");
-        Boolean itineraryCancelledResult = cancelPlanning(myItinID);
-        System.out.println("Itinerary cancelled for: " + myItinID);
+        Boolean itineraryCancelledResult = cancelPlanning(receivedItinID);
+        System.out.println("Itinerary cancelled for: " + receivedItinID);
         Boolean itineraryCancelledExpected = true;
         assertEquals(itineraryCancelledResult, itineraryCancelledExpected);
         */
@@ -1073,7 +1014,7 @@ public class TravelGoodClientTest {
         AnnesCreditCardInfo.setNumber("50408816");
         //book itinerary
         System.out.println("Itinerary to be booked");
-        ItineraryListType AnnesBookedItinerary = bookItinerary(myItinID, AnnesCreditCardInfo);
+        ItineraryListType AnnesBookedItinerary = bookItinerary(receivedItinID, AnnesCreditCardInfo);
         System.out.println("Booking performed correctly");
         //check itinerary length
         Integer bookedItinerarySize = AnnesBookedItinerary.getHotelsItineraryInformation().size();
@@ -1107,7 +1048,7 @@ public class TravelGoodClientTest {
         System.out.println("booking passed!");
         
         //cancelling stuff
-        ItineraryListType cancelledItinerary = cancelItinerary(myItinID, AnnesCreditCardInfo);
+        ItineraryListType cancelledItinerary = cancelItinerary(receivedItinID, AnnesCreditCardInfo);
         System.out.println("Cancelling performed correctly");
         //check itinerary length
         Integer cancelledItinerarySize = cancelledItinerary.getHotelsItineraryInformation().size();
@@ -1146,6 +1087,10 @@ public class TravelGoodClientTest {
         
         System.out.println("Test starts");
         
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+        
         GetInputType inputData = new GetInputType();
         //flights
         FlightRequestType flightRequest = new FlightRequestType();        
@@ -1156,6 +1101,7 @@ public class TravelGoodClientTest {
         flightRequest.getFlightsList().add(flight2);
         flightRequest.getFlightsList().add(flight3);
         inputData.getFlightRequests().add(flightRequest);
+        
         //hotels
         HotelRequestType hotelRequest = new HotelRequestType();    
         GetHotelInputType hotel1 = CreateGetHotelInputType("Madrid");
@@ -1164,11 +1110,10 @@ public class TravelGoodClientTest {
         hotelRequest.getHotelsList().add(hotel2);
         inputData.getHotelRequests().add(hotelRequest); 
         
-        Integer myItinID = 1445;
-        
         System.out.println("Inputs created");
+        
         // Make the request
-        GetOutputType output = getFlightsAndHotels(inputData, myItinID);
+        GetOutputType output = getFlightsAndHotels(inputData, receivedItinID);
         System.out.println("Request done");
         
         System.out.println("output.getFlightsList() size: " + output.getFlightsList().size());
@@ -1200,7 +1145,7 @@ public class TravelGoodClientTest {
         System.out.println("2nd city hotel amount: " + result2);
         assertEquals(2, result2);
         
-    }
+    }    
     
     private CreditCardInfoType CreateCreditCard(String name, String number, int month, int year){
         CreditCardInfoType creditCard = new CreditCardInfoType();
@@ -1310,43 +1255,39 @@ public class TravelGoodClientTest {
         return input;
     }
 
-    private static GetOutputType getFlightsAndHotels(GetInputType part1, int part2) {
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.getFlightsAndHotels(part1, part2);
-    }
-
-    private static ItineraryResponseType createItinerary(int part1) {
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.createItinerary(part1);
-    }
-
-    private static ItineraryListType planFlightsAndHotels(PlanInputType part1, int part2) {
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
-        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.planFlightsAndHotels(part1, part2);
-    }
-
-    private static ItineraryListType bookItinerary(int part1, CreditCardInfoType part2) {
+    private static ItineraryListType bookItinerary(java.lang.String part1, org.netbeans.j2ee.wsdl.niceview.java.niceview.CreditCardInfoType part2) {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
         return port.bookItinerary(part1, part2);
     }
 
-    private static boolean cancelPlanning(int part1) {
+    private static GetOutputType getFlightsAndHotels(org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.GetInputType part1, java.lang.String part2) {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
-        return port.cancelPlanning(part1);
+        return port.getFlightsAndHotels(part1, part2);
     }
 
-    private static ItineraryListType cancelItinerary(int part1, org.netbeans.j2ee.wsdl.niceview.java.niceview.CreditCardInfoType part2) {
+    private static ItineraryListType cancelItinerary(java.lang.String part1, org.netbeans.j2ee.wsdl.niceview.java.niceview.CreditCardInfoType part2) {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
         return port.cancelItinerary(part1, part2);
     }
 
+    private static ItineraryListType planFlightsAndHotels(org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.PlanInputType part1, java.lang.String part2) {
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
+        return port.planFlightsAndHotels(part1, part2);
+    }
 
+    private static boolean cancelPlanning(java.lang.String part1) {
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
+        return port.cancelPlanning(part1);
+    }
 
-
+    private static String createItinerary() {
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
+        org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
+        return port.createItinerary();
+    }
 }

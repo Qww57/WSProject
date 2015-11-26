@@ -20,7 +20,8 @@
         <partnerLink name="NiceView" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" partnerLinkType="tns:NiceView" partnerRole="NiceViewPortTypeRole"/>
     </partnerLinks>
     <variables>
-           <variable name="flightCounterComp" type="xs:int"/>
+            <variable name="Client_ID" type="xs:int"/>
+            <variable name="flightCounterComp" type="xs:int"/>
            <variable name="earliestDate" type="xs:date"/>
         <variable name="bookingNumberDate" type="ns1:bookingNumberDateType">
             <sxed:editor>
@@ -36,7 +37,6 @@
          <variable name="CancelPlanningOut" messageType="ns1:cancelPlanningResponse"/>
          <variable name="CancelPlanningIn" messageType="ns1:cancelPlanningRequest"/>
          <variable name="itineraryFinished" type="xs:boolean"/>
-        <variable name="CreateItineraryOut" messageType="ns1:createItineraryResponse"/>
         <variable name="CreateItineraryIn" messageType="ns1:createItineraryRequest"/>
         <variable name="itineraryListHotelCounter" type="xs:int"/>
         <variable name="itineraryListFlightCounter" type="xs:int"/>
@@ -94,25 +94,19 @@
         <correlationSet name="ItineraryCorrelation" properties="ns1:ID"/>
     </correlationSets>
     <sequence>
-        <scope name="createItinerary">
-            <sequence name="Sequence7">
-                <receive name="Receive3" createInstance="yes" partnerLink="PartnerLink3" operation="createItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CreateItineraryIn">
-                    <correlations>
-                        <correlation set="ItineraryCorrelation" initiate="join"/>
-                    </correlations>
-                </receive>
-                <assign name="ItineraryAssign">
-                    <copy>
-                            <from variable="CreateItineraryIn" part="part1"/>
-                                <to>$CreateItineraryOut.part1/ItineraryID</to>
-                        </copy>
-                        <copy>
-                            <from>true()</from>
-                                <to>$CreateItineraryOut.part1/itineraryCreated</to>
-                        </copy>
-                </assign>
-                <reply name="createItineraryReply" partnerLink="PartnerLink3" operation="createItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CreateItineraryOut">
-        </reply>
+            <scope name="createItinerary">
+                    <variables>
+                            <variable name="CreateItineraryIn1" messageType="ns1:createItineraryRequest"/>
+                            <variable name="CreateItineraryOut" messageType="ns1:createItineraryResponse"/>
+                    </variables>
+                    <sequence name="Sequence7">
+                    <receive name="Receive1" createInstance="yes" partnerLink="PartnerLink3" operation="createItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CreateItineraryIn1"></receive>
+                    <assign name="ItineraryAssign">
+                            <copy>
+                                    <from>sxxf:getBPId()</from>
+                                    <to variable="CreateItineraryOut" part="part1"/>
+                            </copy>
+                    </assign>
                     <assign name="initialiseItineraryCounter">
                             <copy>
                                             <from>1</from>
@@ -127,7 +121,12 @@
                                             <to variable="earliestDate"/>
                                     </copy>
                     </assign>
-            </sequence>
+                    <reply name="Reply1" partnerLink="PartnerLink3" operation="createItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CreateItineraryOut">
+                            <correlations>
+                                    <correlation set="ItineraryCorrelation" initiate="yes"/>
+                            </correlations>
+                    </reply>
+                    </sequence>
         </scope>
          <repeatUntil name="RepeatUntilFinished">
               <sequence name="Sequence10">
