@@ -64,7 +64,7 @@ public class ItineraryResource {
         return Response.ok(rep).build();
     }
     
-    @Path("itinerary/{ID}")
+    @Path("{ID}")
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)

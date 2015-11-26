@@ -7,32 +7,19 @@ package travelgood.objects;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Daniel
  */
+@XmlRootElement
 public class Itinerary {
-    private final int ID;
+    
+    public int ID;
     // Booking number, status
-    private final Map<String, String> hotels = new HashMap<>();
-    private final Map<String, String> flights = new HashMap<>();
-    
-    public Itinerary(int ID) {
-        this.ID = ID;
-    }
-    
-    public int getID() {
-        return ID;
-    }
-    
-    public Map<String, String> getHotels() {
-        return hotels;
-    }
-    
-    public Map<String, String> getFlights() {
-        return flights;
-    }
+    public final Map<String, String> hotels = new HashMap<>();
+    public final Map<String, String> flights = new HashMap<>();
     
     public void addHotel(String bookingnumber) {
         hotels.put(bookingnumber, "unconfirmed");

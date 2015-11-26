@@ -19,4 +19,5 @@ import javax.ws.rs.core.MediaType;
 @Path("book")
 public class BookResource {
     
+    
 }

@@ -18,7 +18,9 @@ public class Database {
     private static final HashMap<Integer, Itinerary> itineraries = new HashMap<>();
     
     public static int createItinerary() {
-        itineraries.put(count, new Itinerary(count));
+        Itinerary it = new Itinerary();
+        it.ID = count;
+        itineraries.put(count, it);
         return count++;
     }
     
