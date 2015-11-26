@@ -36,19 +36,6 @@ public class TravelGoodClientTest {
         assertTrue(true);
     }
     
-    //@Test  // TODO cancelling Itinerary
-    public void cancelEmptyItinerary(){
-        System.out.println("Test Start");
-        
-        String receivedItinID = createItinerary();
-        
-        System.out.println("Itinerary Created - " + receivedItinID ); 
-
-        assertTrue(true);
-        
-        // TODO cancelling it
-    }
-    
     /* Get hotels and flights */
     
     @Test
@@ -245,6 +232,39 @@ public class TravelGoodClientTest {
         assertEquals("unconfirmed", status);
     }
     
+    @Test // FIX
+    public void planOneFlight() throws DatatypeConfigurationException{
+        System.out.println("Test starts");
+        
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+        
+        // Creating the request
+        GetInputType input = new GetInputType();
+        FlightRequestType flightRequest = new FlightRequestType();         
+        GetFlightsInputType flight = CreateGetFlightsInputType("Copenhagen", "London", 26, 10, 2015);       
+        flightRequest.getFlightsList().add(flight);
+        input.getFlightRequests().add(flightRequest); 
+
+        // Make the request
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);        
+        String expected1 = "Copenhagen";     
+        String result1 = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();      
+        assertEquals(expected1, result1);                     
+        String bookingNumber = output.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
+        
+        // Plan itinerary using the ID number
+        PlanInputType plan = new PlanInputType();
+        plan.getFlightsBookingNumber().add(bookingNumber);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
+        
+        // Getting the status as unconfirmed
+        String status = planOutput.getFlightsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
+        assertEquals("unconfirmed", status);    
+    }
+    
     @Test 
     public void planOneHotelAndOneFlight() throws DatatypeConfigurationException {
         //Create the itinerary 
@@ -296,17 +316,114 @@ public class TravelGoodClientTest {
         assertEquals("unconfirmed", flightStatus);
     }
     
-    //@Test // TODO
-    public void planManyFlights(){
-        // TODO
+    @Test // FIX
+    public void planManyFlights() throws DatatypeConfigurationException{
+        System.out.println("Test starts");
+        
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+        
+        // Creating the request
+        GetInputType input = new GetInputType();
+        FlightRequestType flightRequest = new FlightRequestType();
+            
+        GetFlightsInputType flight = CreateGetFlightsInputType("Copenhagen", "London", 26, 10, 2015);
+        GetFlightsInputType flight2 = CreateGetFlightsInputType("London", "New York", 26,10,2015);
+        GetFlightsInputType flight3 = CreateGetFlightsInputType("Copenhagen", "Kuala Lumpur", 26,2,2016);
+        
+        flightRequest.getFlightsList().add(flight);
+        flightRequest.getFlightsList().add(flight2);
+        flightRequest.getFlightsList().add(flight3);
+        input.getFlightRequests().add(flightRequest); 
+
+        // Make the request
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
+        System.out.println("Request done");
+          
+        String expected1 = "Copenhagen";
+        String expected2 = "London"; 
+        String expected3 = "Copenhagen";       
+        
+        String result1 = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();      
+        assertEquals(expected1, result1);              
+        String result2 = output.getFlightsList().get(1).getFlightInformations().get(0).getFlight().getStart();     
+        assertEquals(expected2, result2); 
+        String result3 = output.getFlightsList().get(2).getFlightInformations().get(0).getFlight().getStart();     
+        assertEquals(expected3, result3);
+        
+        String bookingNumber = output.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
+        String bookingNumber1 = output.getFlightsList().get(1).getFlightInformations().get(0).getBookingNumber();
+        String bookingNumber2 = output.getFlightsList().get(2).getFlightInformations().get(0).getBookingNumber();
+        
+        // Plan itinerary using the ID number
+        PlanInputType plan = new PlanInputType();
+        plan.getFlightsBookingNumber().add(bookingNumber);
+        plan.getFlightsBookingNumber().add(bookingNumber1);
+        plan.getFlightsBookingNumber().add(bookingNumber2);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
+        
+        // Getting the status as unconfirmed
+        String status = planOutput.getFlightsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
+        assertEquals("unconfirmed", status);
+        
+        String status1 = planOutput.getFlightsItineraryInformation().get(1).getStatus();
+        System.out.println("Get status: " + status1);
+        assertEquals("unconfirmed", status1);
+        
+        String status2 = planOutput.getFlightsItineraryInformation().get(2).getStatus();
+        System.out.println("Get status: " + status2);
+        assertEquals("unconfirmed", status2);
     }
     
-   //@Test // TODO
-    public void planManyHotels(){
-        // TODO
+   @Test 
+    public void planManyHotels() throws DatatypeConfigurationException{
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+        
+        String city = "Milan";
+        String city1 = "London";
+                
+        //Get one hotel
+        GetInputType input = new GetInputType();
+        HotelRequestType hotelRequest = new HotelRequestType();
+              
+        GetHotelInputType hotel = CreateGetHotelInputType("Milan");
+        GetHotelInputType hotel2 = CreateGetHotelInputType("London");
+        hotelRequest.getHotelsList().add(hotel);
+        hotelRequest.getHotelsList().add(hotel2);
+        input.getHotelRequests().add(hotelRequest); 
+        
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
+        String resultCity = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getAddress();
+        assertEquals(city, resultCity);
+        String resultCity1 = output.getHotelsList().get(1).getHotelInformations().get(0).getHotel().getAddress();
+        assertEquals(city1, resultCity1);
+        System.out.println("Getting an hotel from the city: " + resultCity); 
+        System.out.println("Getting an hotel from the city: " + resultCity1); 
+        
+        String bookingNumber = output.getHotelsList().get(0).getHotelInformations().get(0).getBookingNumber();
+        String bookingNumber1 = output.getHotelsList().get(1).getHotelInformations().get(0).getBookingNumber();
+        
+        // Plan itinerary using the ID number
+        PlanInputType plan = new PlanInputType();
+        plan.getHotelsBookingNumber().add(bookingNumber);
+        plan.getHotelsBookingNumber().add(bookingNumber1);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
+        
+        // Getting the status as unconfirmed
+        String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
+        assertEquals("unconfirmed", status);
+        
+        String status1 = planOutput.getHotelsItineraryInformation().get(1).getStatus();
+        System.out.println("Get status: " + status1);
+        assertEquals("unconfirmed", status1);
     }
     
-    /* Book hotels and flights */
+    /* Get itinerary */
     
     @Test 
     public void getItineraryNotBooked() throws DatatypeConfigurationException{
@@ -386,6 +503,63 @@ public class TravelGoodClientTest {
         assertEquals(booking_number, booking_number_bis);
     }
     
+    /* Cancel Plan */
+    
+    @Test 
+    public void cancelPlanWithOneHotelAndOneFlight() throws DatatypeConfigurationException {
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+               
+        // Create the input  
+        GetInputType input = new GetInputType();
+        
+        //Create one flight request
+        XMLGregorianCalendar date = CreateDate(26, 11, 2015);
+        GetFlightsInputType flight = CreateGetFlightsInputType(date, "Copenhagen", "London");
+        AddFlight(input, flight);
+        
+        // Create one hotel request
+        String city = "Milan";
+        XMLGregorianCalendar date1 = CreateDate(26, 11, 2015);
+        XMLGregorianCalendar date2 = CreateDate(29, 11, 2015);
+        GetHotelInputType hotel = CreateGetHotelInputType(city, date1, date2);
+        AddHotel(input, hotel);
+        
+        // Making the request
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
+        
+        // Checking the flight result
+        String resultStart = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();
+        assertEquals("Copenhagen", resultStart);
+        
+        // Checking the hotel result
+        String resultCity = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getAddress();
+        assertEquals(city, resultCity);  
+        
+        String hotelBookingNumber = output.getHotelsList().get(0).getHotelInformations().get(0).getBookingNumber();
+        String flightBookingNumber = output.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
+        
+        // Plan itinerary using the ID number
+        PlanInputType plan = new PlanInputType();
+        plan.getHotelsBookingNumber().add(hotelBookingNumber);
+        plan.getFlightsBookingNumber().add(flightBookingNumber);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
+        
+        // Getting the status as unconfirmed
+        String hotelStatus = planOutput.getHotelsItineraryInformation().get(0).getStatus();
+        System.out.println("Hotel status: " + hotelStatus);
+        assertEquals("unconfirmed", hotelStatus);
+        
+        String flightStatus = planOutput.getFlightsItineraryInformation().get(0).getStatus();
+        System.out.println("Flight status: " + flightStatus);
+        assertEquals("unconfirmed", flightStatus);
+        
+        // Cancel plan
+        boolean cancel = cancelPlanning(receivedItinID);
+        assertTrue(cancel);      
+    } 
+    
     /* Book hotels and flights */
     
     @Test 
@@ -423,9 +597,47 @@ public class TravelGoodClientTest {
         assertEquals("confirmed", status);     
     }
     
-   //@Test //TODO 
-    public void bookOneFlight(){
-        // TODO
+   @Test // FIX
+    public void bookOneFlight() throws DatatypeConfigurationException{
+        System.out.println("Test starts");
+        
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+        
+        // Creating the request
+        GetInputType input = new GetInputType();
+        FlightRequestType flightRequest = new FlightRequestType();
+        GetFlightsInputType flight = CreateGetFlightsInputType("Copenhagen", "London", 26, 10, 2015);
+        
+        flightRequest.getFlightsList().add(flight);
+        input.getFlightRequests().add(flightRequest); 
+
+        // Make the request
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);        
+        String expected1 = "Copenhagen";     
+        String result1 = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();      
+        assertEquals(expected1, result1);              
+        
+        String bookingNumber = output.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
+        
+        // Plan itinerary using the ID number
+        PlanInputType plan = new PlanInputType();
+        plan.getFlightsBookingNumber().add(bookingNumber);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
+        
+        // Getting the status as unconfirmed
+        String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
+        assertEquals("unconfirmed", status);
+        
+        // Booking the flight
+        CreditCardInfoType creditCard = new CreditCardInfoType(); 
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard);
+        
+        status = bookOutput.getFlightsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
+        assertEquals("confirmed", status);    
     }
     
     @Test 
@@ -511,9 +723,82 @@ public class TravelGoodClientTest {
         assertEquals(cancelOutputFlightStatus, expectedCancelOutputFlightStatus);      
     }
     
-    @Test 
-    public void bookManyFlights(){
-        // TODO
+    @Test // FIX
+    public void bookManyFlights() throws DatatypeConfigurationException{
+         System.out.println("Test starts");
+        
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+        
+        // Creating the request
+        GetInputType input = new GetInputType();
+        FlightRequestType flightRequest = new FlightRequestType();
+            
+        GetFlightsInputType flight = CreateGetFlightsInputType("Copenhagen", "London", 26, 10, 2015);
+        GetFlightsInputType flight2 = CreateGetFlightsInputType("London", "New York", 26,10,2015);
+        GetFlightsInputType flight3 = CreateGetFlightsInputType("Copenhagen", "Kuala Lumpur", 26,2,2016);
+        
+        flightRequest.getFlightsList().add(flight);
+        flightRequest.getFlightsList().add(flight2);
+        flightRequest.getFlightsList().add(flight3);
+        input.getFlightRequests().add(flightRequest); 
+
+        // Make the request
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
+        System.out.println("Request done");
+          
+        String expected1 = "Copenhagen";
+        String expected2 = "London"; 
+        String expected3 = "Copenhagen";       
+        
+        String result1 = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();      
+        assertEquals(expected1, result1);              
+        String result2 = output.getFlightsList().get(1).getFlightInformations().get(0).getFlight().getStart();     
+        assertEquals(expected2, result2); 
+        String result3 = output.getFlightsList().get(2).getFlightInformations().get(0).getFlight().getStart();     
+        assertEquals(expected3, result3);
+        
+        // Plan itinerary using the ID number
+        PlanInputType plan = new PlanInputType();
+        
+        String bookingNumber = output.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
+        String bookingNumber1 = output.getFlightsList().get(1).getFlightInformations().get(0).getBookingNumber();
+        String bookingNumber2 = output.getFlightsList().get(2).getFlightInformations().get(0).getBookingNumber();
+        
+        plan.getFlightsBookingNumber().add(bookingNumber);
+        plan.getFlightsBookingNumber().add(bookingNumber1);
+        plan.getFlightsBookingNumber().add(bookingNumber2);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
+        
+        // Getting the status as unconfirmed
+        String status = planOutput.getFlightsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
+        assertEquals("unconfirmed", status);
+        
+        String status1 = planOutput.getFlightsItineraryInformation().get(1).getStatus();
+        System.out.println("Get status: " + status1);
+        assertEquals("unconfirmed", status1);
+        
+        String status2 = planOutput.getFlightsItineraryInformation().get(2).getStatus();
+        System.out.println("Get status: " + status2);
+        assertEquals("unconfirmed", status2);
+        
+        // Booking the flight
+        CreditCardInfoType creditCard = new CreditCardInfoType(); 
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard);
+        
+        status = bookOutput.getFlightsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
+        assertEquals("confirmed", status);
+        
+        status1 = bookOutput.getFlightsItineraryInformation().get(1).getStatus();
+        System.out.println("Get status: " + status1);
+        assertEquals("confirmed", status1);
+        
+        status2 = bookOutput.getFlightsItineraryInformation().get(2).getStatus();
+        System.out.println("Get status: " + status2);
+        assertEquals("confirmed", status2);
     }
     
     @Test 
@@ -740,7 +1025,7 @@ public class TravelGoodClientTest {
         
     }
     
-    @Test //TODO fix cancel error in compensation handler
+    @Test 
     public void bookManyHotelwithOneFailAndCancelCompensationFail() throws DatatypeConfigurationException{
         System.out.println("Test starts - bookManyHotels");
         
@@ -885,8 +1170,107 @@ public class TravelGoodClientTest {
         assertEquals("cancelled", status);
     }
     
+    @Test 
+    public void cancelManyHotel() throws DatatypeConfigurationException{
+                System.out.println("Test starts - bookManyHotels");
+        
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+        
+        // Creating the request      
+        GetInputType input = new GetInputType();
+        HotelRequestType hotelRequest = new HotelRequestType();
+            
+        GetHotelInputType hotel = CreateGetHotelInputType("Milan");
+        GetHotelInputType hotel2 = CreateGetHotelInputType("London");
+        GetHotelInputType hotel3 = CreateGetHotelInputType("Paris");
+        hotelRequest.getHotelsList().add(hotel);
+        hotelRequest.getHotelsList().add(hotel2);
+        hotelRequest.getHotelsList().add(hotel3);
+        input.getHotelRequests().add(hotelRequest); 
+        
+        // Make the request
+        GetOutputType output = getFlightsAndHotels(input, receivedItinID);
+               
+        String expected1 = "Milan Hotel";
+        String expected2 = "London Hotel"; 
+        System.out.println("GetHotelsList size: " + output.getHotelsList().size());
+        System.out.println("GetHotelsInformations.get() size: " + output.getHotelsList().get(1).getHotelInformations().size());
+        
+        String result1 = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getName();
+        System.out.println(result1);
+         
+        assertEquals(expected1, result1);  
+              
+        System.out.println(output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getName());
+        System.out.println(output.getHotelsList().get(1).getHotelInformations().get(0).getHotel().getName());  
+        System.out.println(output.getHotelsList().get(2).getHotelInformations().get(1).getHotel().getName());  
+        
+        String result2 = output.getHotelsList().get(1).getHotelInformations().get(0).getHotel().getName();       
+        assertEquals(expected2, result2); 
+        
+        int result3 = output.getHotelsList().get(2).getHotelInformations().size(); 
+        assertEquals(2, result3);
+        
+        String bookingNumber1 = output.getHotelsList().get(0).getHotelInformations().get(0).getBookingNumber();
+        String bookingNumber2 = output.getHotelsList().get(1).getHotelInformations().get(0).getBookingNumber();
+        String bookingNumber3 = output.getHotelsList().get(2).getHotelInformations().get(0).getBookingNumber();
+        
+        // Plan itinerary using the ID number
+        PlanInputType plan = new PlanInputType();
+        plan.getHotelsBookingNumber().add(bookingNumber1);        
+        plan.getHotelsBookingNumber().add(bookingNumber2);
+        plan.getHotelsBookingNumber().add(bookingNumber3);
+        ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
+               
+        // Getting the status as unconfirmed
+        String status = planOutput.getHotelsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + planOutput.getHotelsItineraryInformation().get(0).getStatus());
+        assertEquals("unconfirmed", status);
+        String status2 = planOutput.getHotelsItineraryInformation().get(1).getStatus();
+        System.out.println("Get status: " + planOutput.getHotelsItineraryInformation().get(0).getStatus());
+        assertEquals("unconfirmed", status2);
+        String status3 = planOutput.getHotelsItineraryInformation().get(1).getStatus();
+        System.out.println("Get status: " + planOutput.getHotelsItineraryInformation().get(0).getStatus());
+        assertEquals("unconfirmed", status3);
+        
+        // Booking the hotels
+        CreditCardInfoType creditCard = CreateCreditCard("Bruhn Brigitte", "50408821", 2, 10);
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard); // Fails here because BPEL doesn't check that the list of flights is null and try to assigned the value
+        
+        status = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(0).getStatus());
+        assertEquals("confirmed", status);
+        
+        status2 = bookOutput.getHotelsItineraryInformation().get(1).getStatus();
+        System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(1).getStatus());
+        assertEquals("confirmed", status2);
+        
+        status3 = bookOutput.getHotelsItineraryInformation().get(2).getStatus();
+        System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(1).getStatus());
+        assertEquals("confirmed", status3);
+        
+        System.out.println("booking done");
+        
+        // Cancelling of the hotel
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);            
+            
+        status = cancelOutput.getHotelsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
+        assertEquals("cancelled", status);
+
+        status2 = cancelOutput.getHotelsItineraryInformation().get(1).getStatus();
+        System.out.println("Get status: " +status2);
+        assertEquals("cancelled", status2);
+            
+        status3 = cancelOutput.getHotelsItineraryInformation().get(2).getStatus();
+        System.out.println("Get status: " + status3);
+        assertEquals("cancelled", status3);
+    }
+    
     @Test // One of the scenario: P2
-    public void cancelHotelFail() throws DatatypeConfigurationException{
+    public void cancelManyHotelWithOneFail() throws DatatypeConfigurationException{
         System.out.println("Test starts - bookManyHotels");
         
         //Create the itinerary 
@@ -977,13 +1361,22 @@ public class TravelGoodClientTest {
 
         status2 = cancelOutput.getHotelsItineraryInformation().get(1).getStatus();
         System.out.println("Get status: " +status2);
-        //assertEquals("confirmed", status2);
+        assertEquals("confirmed", status2);
             
         status3 = cancelOutput.getHotelsItineraryInformation().get(2).getStatus();
         System.out.println("Get status: " + status3);
         assertEquals("cancelled", status3);
     }
-      
+    
+    @Test //TODO
+    public void cancelOneFlight(){
+        
+    }
+    
+    @Test //TODO
+    public void cancelManyFlight(){
+        
+    }
 
     //@Test
     public void gettingAndPlanningHotels() throws DatatypeConfigurationException {
@@ -1237,5 +1630,4 @@ public class TravelGoodClientTest {
         assertEquals(2, result2);
         
     }    
-
 }
