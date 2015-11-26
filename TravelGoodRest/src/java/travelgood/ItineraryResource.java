@@ -20,8 +20,6 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
-import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsInputType;
-import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsOutputType;
 import travelgood.objects.Itinerary;
 import travelgood.representations.AddToItineraryInputRepresentation;
 import travelgood.representations.AddToItineraryOutputRepresentation;
