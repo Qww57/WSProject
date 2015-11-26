@@ -333,7 +333,7 @@ public class TravelGoodClientTest {
     @Test 
     public void bookOneHotel() throws DatatypeConfigurationException{
         //Create the itinerary 
-        Integer myItinID = 77996;
+        Integer myItinID = 799588;
         ItineraryResponseType itineraryCreation = createItinerary(myItinID);
         Integer receivedItinID = itineraryCreation.getItineraryID();
         assertEquals(myItinID, receivedItinID);
@@ -693,7 +693,7 @@ public class TravelGoodClientTest {
         
     }
     
-    //@Test //TODO fix cancel error in compensation handler
+    @Test //TODO fix cancel error in compensation handler
     public void bookManyHotelwithOneFailAndCancelCompensationFail() throws DatatypeConfigurationException{
         System.out.println("Test starts - bookManyHotels");
         
@@ -788,7 +788,7 @@ public class TravelGoodClientTest {
         System.out.println("Test starts - bookManyHotels");
         
         //Create the itinerary 
-        Integer myItinID = 145545682;
+        Integer myItinID = 188755572;
         ItineraryResponseType itineraryCreation = createItinerary(myItinID);
         Integer receivedItinID = itineraryCreation.getItineraryID();
         assertEquals(myItinID, receivedItinID);
@@ -949,7 +949,7 @@ public class TravelGoodClientTest {
         // TODO
     }
     
-    @Test
+    //@Test
     public void gettingAndPlanningHotels() throws DatatypeConfigurationException {
         System.out.println("Test starts");
         //get one hotel
