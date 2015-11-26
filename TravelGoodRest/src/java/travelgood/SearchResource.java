@@ -12,16 +12,22 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import travelgood.representations.*;
 
 /**
  *
- * @author Daniel
+ * @author Daniel & Dani Sanz
  */
 @Path("search")
 public class SearchResource {
     
+    private final String baseURI = "http://localhost:8080/ws/webresources";
+    
     @POST
-    public int search() {
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public Response search(SearchRepresentation input) {
         return 0;
     }
 }
