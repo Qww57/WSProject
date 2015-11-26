@@ -27,7 +27,7 @@ public class SearchResource {
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response search(SearchRepresentation input) {
-        return 0;
+    public void search(SearchRepresentation input) {
+        //return 0;
     }
 }

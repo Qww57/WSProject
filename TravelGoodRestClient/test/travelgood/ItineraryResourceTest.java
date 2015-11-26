@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import travelgood.objects.Itinerary;
 import travelgood.representations.*;
 
 /**
@@ -49,11 +50,11 @@ public class ItineraryResourceTest {
         inputRepresentation.hotel_booking_numbers.add("thisBN");
         
         Response secondResult = r.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
-        AddToItineraryInputRepresentation secondResultEntity = secondResult.readEntity(AddToItineraryInputRepresentation.class);
+        Itinerary secondResultEntity = secondResult.readEntity(Itinerary.class);
         
-        System.out.println("length: " + secondResultEntity.hotel_booking_numbers.size());
-        String resultthes = secondResultEntity.hotel_booking_numbers.get(0);
-        System.out.println("result: " + resultthes);
+        //System.out.println("length: " + secondResultEntity.hotel_booking_numbers.size());
+        //String resultthes = secondResultEntity.hotel_booking_numbers.get(0);
+        //System.out.println("result: " + resultthes);
         
     }
 }
