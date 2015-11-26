@@ -45,17 +45,17 @@ public class ItineraryResource {
         
         Link.Builder builder = Link.fromMethod(ItineraryResource.class, "addToItinerary");
         builder.baseUri(baseURI);
-        builder.rel("http://createitinerary.ws/relations/add");
+        builder.rel("http://travelgood.ws/relations/add");
         links.add(builder.build(ID));
         
         builder = Link.fromMethod(ItineraryResource.class, "cancelItinerary");
         builder.baseUri(baseURI);
-        builder.rel("http://createitinerary.ws/relations/cancel");
+        builder.rel("http://travelgood.ws/relations/cancel");
         links.add(builder.build(ID));
         
         builder = Link.fromResource(SearchResource.class);
         builder.baseUri(baseURI);
-        builder.rel("http://createitinerary.ws/relations/search");
+        builder.rel("http://travelgood.ws/relations/search");
         links.add(builder.build());
         
         CreateItineraryRepresentation rep = new CreateItineraryRepresentation();
@@ -87,17 +87,17 @@ public class ItineraryResource {
                 
                 Link.Builder builder = Link.fromMethod(ItineraryResource.class, "addToItinerary");
                 builder.baseUri(baseURI);
-                builder.rel("http://addtoitinerary.ws/relations/add");
+                builder.rel("http://travelgood.ws/relations/add");
                 links.add(builder.build(ID));
 
                 builder = Link.fromMethod(ItineraryResource.class, "cancelItinerary");
                 builder.baseUri(baseURI);
-                builder.rel("http://addtoitinerary.ws/relations/cancel");
+                builder.rel("http://travelgood.ws/relations/cancel");
                 links.add(builder.build(ID));
 
                 builder = Link.fromResource(SearchResource.class);
                 builder.baseUri(baseURI);
-                builder.rel("http://addtoitinerary.ws/relations/search");
+                builder.rel("http://travelgood.ws/relations/search");
                 links.add(builder.build());
                 
                 AddToItineraryOutputRepresentation rep = new AddToItineraryOutputRepresentation();
