@@ -16,25 +16,28 @@
     <system systemId="http://10.16.131.73:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/service/wsdl/10.16.131.73_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
     <system systemId="http://10.16.174.97:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/service/wsdl/10.16.174.97_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://10.16.174.97:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/service/wsdl/10.16.174.97_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
-    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
-    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
     <system systemId="http://daniels-mbp-2:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/daniels-mbp-2_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://daniels-mbp-2:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/daniels-mbp-2_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
     <system systemId="http://172.20.10.5:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/service/wsdl/172.20.10.5_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://172.20.10.5:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/service/wsdl/172.20.10.5_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
     <system systemId="http://Ehsan-PC.mshome.net:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/service/wsdl/Ehsan-PC.mshome.net_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://Ehsan-PC.mshome.net:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/service/wsdl/Ehsan-PC.mshome.net_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
-    <system systemId="http://localhost:9080/service?wsdl" uri="xml-resources/web-service-references/service/wsdl/localhost_9080/service.wsdl"/>
     <system systemId="http://10.16.142.4:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/service/wsdl/10.16.142.4_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://10.16.142.4:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/service/wsdl/10.16.142.4_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
-    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
 <<<<<<< HEAD
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
-    <system systemId="http://PC-Quentin:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/PC-Quentin_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
-    <system systemId="http://PC-Quentin:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/PC-Quentin_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
 =======
     <system systemId="http://10.16.162.132:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/10.16.162.132_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://10.16.162.132:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/10.16.162.132_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
 >>>>>>> origin/master
+
+    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
+    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
+    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
+    <system systemId="http://PC-Quentin:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/PC-Quentin_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
+    <system systemId="http://PC-Quentin:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/PC-Quentin_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
+    <system systemId="http://localhost:9080/service?wsdl" uri="xml-resources/web-service-references/service/wsdl/localhost_9080/service.wsdl"/>
+    <system systemId="http://10.16.174.215:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/service/wsdl/10.16.174.215_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
+    <system systemId="http://10.16.174.215:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/service/wsdl/10.16.174.215_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
 </catalog>
