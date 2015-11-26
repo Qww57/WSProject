@@ -50,9 +50,9 @@ public class ItineraryResourceTest {
         inputRepresentation.hotel_booking_numbers.add("thisBN");
         
         Response secondResult = r.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
-        Itinerary secondResultEntity = secondResult.readEntity(Itinerary.class);
+        AddToItineraryOutputRepresentation secondResultEntity = secondResult.readEntity(AddToItineraryOutputRepresentation.class);
         
-        //System.out.println("length: " + secondResultEntity.hotel_booking_numbers.size());
+        System.out.println("result: " + secondResultEntity.itinerary.getHotels());
         //String resultthes = secondResultEntity.hotel_booking_numbers.get(0);
         //System.out.println("result: " + resultthes);
         
