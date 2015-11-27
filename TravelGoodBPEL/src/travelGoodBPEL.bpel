@@ -9,7 +9,7 @@
     xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" 
     xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor2"
     xmlns:sxat="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Attachment"
-    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" xmlns:ns1="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" xmlns:ns2="http://docs.oasis-open.org/wsbpel/2.0/process/executable">
+    xmlns:sxeh="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/ErrorHandling" xmlns:ns0="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" xmlns:ns1="http://j2ee.netbeans.org/wsdl/TravelGoodBPEL/src/TravelGoodWSDL" xmlns:sxxf="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/XPathFunctions" xmlns:ns2="http://docs.oasis-open.org/wsbpel/2.0/process/executable" xmlns:ns3="http://types.fastmoney.imm.dtu.dk">
     <import namespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" location="http://localhost:8080/LameDuck/LameDuckService?wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" location="http://localhost:8080/NiceView/NiceViewService?wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
     <import namespace="http://types.fastmoney.imm.dtu.dk" location="http://localhost:8080/NiceView/NiceViewService?xsd=1" importType="http://www.w3.org/2001/XMLSchema"/>
@@ -337,19 +337,34 @@
                                     <correlation set="ItineraryCorrelation" initiate="no"/>
                                 </correlations>
                                 <sequence name="planFlightsAndHotelsLogic">
-                                        <if name="If5">
+                                     <assign name="Assign28">
+                                          <copy>
+                                               <from>'empty'</from>
+                                               <to variable="itineraryList"/>
+                                          </copy>
+                                     </assign>
+                                     <if name="If5">
                                                 <condition>not($itineraryFinished)</condition>
                                                 <sequence name="Sequence23">
                                                      <sequence name="HotelsItinerary">
                                                           <if name="IfHotelsItineraryIsEmpty">
-                                                                    <condition>1 = $itineraryListHotelCounter</condition>
-                                                                         <assign name="ItineraryHotelCountersInit">
+                                                                <condition>1 = $itineraryListHotelCounter and $itineraryList != 'empty'</condition>
+                                                                <assign name="ItineraryHotelCountersInit">
                                                                               <copy>
                                                                                         <from>1</from>
                                                                                              <to variable="planHotelsCounter"/>
                                                                                    </copy>
                                                                          </assign>
-                                                                         <else>
+                                                               <elseif>
+                                                                    <condition>$itineraryList = 'empty'</condition>
+                                                                    <assign name="Assign29">
+                                                                         <copy>
+                                                                              <from>1</from>
+                                                                              <to variable="planHotelsCounter"/>
+                                                                         </copy>
+                                                                    </assign>
+                                                               </elseif>
+                                                               <else>
                                                                               <assign name="ItineraryHotelCountersReset">
                                                                                         <copy>
                                                                                                   <from>1</from>
@@ -423,14 +438,23 @@
                                                      </sequence>
                                                      <sequence name="FlightsItinerary">
                                                           <if name="IfFlightsItineraryIsEmpty">
-                                                                    <condition>1 = $itineraryListFlightCounter</condition>
-                                                                         <assign name="ItineraryFlightsCountersInit">
+                                                                <condition>1 = $itineraryListFlightCounter and $itineraryList != 'empty'</condition>
+                                                                <assign name="ItineraryFlightsCountersInit">
                                                                               <copy>
                                                                                         <from>1</from>
                                                                                              <to variable="planFlightCounter"/>
                                                                                    </copy>
                                                                          </assign>
-                                                                         <else>
+                                                               <elseif>
+                                                                    <condition>$itineraryList = 'empty'</condition>
+                                                                    <assign name="Assign30">
+                                                                         <copy>
+                                                                              <from>1</from>
+                                                                              <to variable="planFlightCounter"/>
+                                                                         </copy>
+                                                                    </assign>
+                                                               </elseif>
+                                                               <else>
                                                                               <assign name="ItineraryFlightCountersReset">
                                                                                         <copy>
                                                                                                   <from>1</from>
@@ -554,10 +578,10 @@
                                                     <variable name="BookItineraryOut" messageType="ns1:BookItineraryResponse"/>
                                                 </variables>
                                                 <sequence name="Sequence19">
-                                                        <if name="If6">
+                                                     <if name="If6">
                                                                 <condition>not($itineraryFinished)</condition>
                                                                 <sequence name="Sequence24">
-                                                                        <scope name="ScopeBookItinerary">
+                                                                     <scope name="ScopeBookItinerary">
                                                                                 <variables>
                                                                                         <variable name="bookFlightsCounter" type="xs:int"/>
                                                                                                 <variable name="bookHotelsCounter" type="xs:int"/>
@@ -578,12 +602,12 @@
                                                                                         <sequence name="SequenceBookItinerary">
                                                                                         <assign name="BookingCountersInit">
                                                                                                         <copy>
-                                                                                                                        <from>1</from>
-                                                                                                                                <to variable="bookFlightsCounter"/>
-                                                                                                                </copy>
+                                                                                                             <from>1</from>
+                                                                                                             <to variable="bookFlightsCounter"/>
+                                                                                                        </copy>
                                                                                                                 <copy>
-                                                                                                                        <from>1</from>
-                                                                                                                                <to variable="bookHotelsCounter"/>
+                                                                                                                     <from>1</from>
+                                                                                                                     <to variable="bookHotelsCounter"/>
                                                                                                                 </copy>
                                                                                                 </assign>
                                                                                                 <forEach name="ForEachHotelBooking" parallel="no" counterName="ForEach1Counter">
@@ -610,8 +634,7 @@
                                                                                                                                                                                 <scope name="Scope7">
                                                                                                                                                                                         <variables>
                                                                                                                                                                                                         <variable name="CancelHotelOut" messageType="ns0:cancelHotelResponse"/>
-                                                                                                                                                                                                                <variable name="bookHotelCompensationCounter" type="xs:int"/>
-                                                                                                                                                                                                                <variable name="CancelHotelIn" messageType="ns0:cancelHotelRequest"/>
+                                                                                                                                                                                                        <variable name="CancelHotelIn" messageType="ns0:cancelHotelRequest"/>
                                                                                                                                                                                                 </variables>
                                                                                                                                                                                                 <faultHandlers>
                                                                                                                                                                                                         <catchAll>
@@ -1135,10 +1158,10 @@
                                                                                                                                     <from>5000</from>
                                                                                                                                             <to>$CancelFlightIn.cancelFlightInput/Price</to>
                                                                                                                             </copy>
-                                                                                                      <copy>
-                                                                                                           <from variable="CancelItineraryIn1" part="part2"/>
-                                                                                                           <to>$CancelFlightIn.cancelFlightInput/CreditCard</to>
-                                                                                                      </copy>
+                                                                                                       <copy>
+                                                                                                             <from variable="BookItineraryIn" part="part2"/>
+                                                                                                             <to>$CancelFlightIn.cancelFlightInput/CreditCard</to>
+                                                                                                       </copy>
                                                                                                  </assign>
                                                                                                             <invoke name="InvokeCancelFlightsForLameDuck" partnerLink="LameDuck" operation="cancelFlight" xmlns:tns="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck" portType="tns:LameDuckPortType" inputVariable="CancelFlightIn" outputVariable="CancelFlightOut"/>
                                                                                                             <if name="IfCancelFlightSuccess">

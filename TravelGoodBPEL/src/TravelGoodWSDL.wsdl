@@ -118,7 +118,6 @@
     </message>
     <message name="cancelItineraryRequest">
         <part name="part1" type="tns:ItineraryIDType"/>
-        <part name="part2" type="ns1:creditCardInfoType"/>
     </message>
     <message name="cancelItineraryResponse">
         <part name="part1" type="tns:ItineraryListType"/>
