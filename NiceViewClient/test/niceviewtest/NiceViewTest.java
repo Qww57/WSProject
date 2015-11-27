@@ -102,7 +102,7 @@ public class NiceViewTest {
         assertEquals(true, result);     
     }
     
-    @Test //TODO: pb because getting "Account doesn't exist" as error from the bank ws
+    @Test 
     public void bookHotelTestWithCreditCard() throws BookHotelFault, DatatypeConfigurationException{
         // Booking of an hotel that requires credit card 
         try{

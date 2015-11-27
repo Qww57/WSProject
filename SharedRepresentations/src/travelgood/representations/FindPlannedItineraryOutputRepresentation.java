@@ -13,6 +13,9 @@ import travelgood.objects.Itinerary;
  * @author Daniel
  */
 @XmlRootElement
+
+// TODO Should be deleted now because of ItineraryOutputRepresentation
+
 public class FindPlannedItineraryOutputRepresentation extends Representation {
     
     public Itinerary itinerary;

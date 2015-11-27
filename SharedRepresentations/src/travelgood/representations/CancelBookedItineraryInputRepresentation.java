@@ -11,9 +11,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Daniel
  */
+
+// TODO Should be deleted now because of ItineraryOutputRepresentation
+
 @XmlRootElement
 public class CancelBookedItineraryInputRepresentation extends Representation {
     
-    public String cancelstatus;
+    private String cancelstatus;
+    
+    public String getStatus(){
+        return cancelstatus;
+    }
     
 }

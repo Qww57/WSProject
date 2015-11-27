@@ -13,7 +13,7 @@ import travelgood.objects.Itinerary;
  * @author Daniel
  */
 @XmlRootElement
-public class AddToItineraryOutputRepresentation extends Representation {
+public class ItineraryOutputRepresentation extends Representation {
     
     public Itinerary itinerary;
    

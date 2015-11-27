@@ -11,6 +11,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Daniel
  */
+
+// TODO Should be deleted now because of ItineraryOutputRepresentation
+
 @XmlRootElement
 public class BookItineraryOutputRepresentation extends Representation {
     
