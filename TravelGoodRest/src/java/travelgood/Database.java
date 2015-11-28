@@ -48,6 +48,11 @@ public class Database {
         return bookedItineraries.get(ID);
     }
     
+    public static void moveItineraryToBooked(int ID) {
+        Itinerary it = plannedItineraries.remove(ID);
+        bookedItineraries.put(ID, it);
+    }
+    
     public static CreditCardInfoType getBookingCreditCard(int ID){
         return bookingCreditCard.get(ID);
     }

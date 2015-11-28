@@ -84,7 +84,7 @@ public class BookingResource {
         if (input != null) {
             try {
                 int parsedID = Integer.parseInt(ID);
-                Itinerary it = Database.getBookedItinerary(parsedID);
+                Itinerary it = Database.getPlannedItinerary(parsedID);
                 if (it != null) {
                     // Book flights
                     
@@ -129,16 +129,19 @@ public class BookingResource {
                         
                         it.hotels.put(bookingNumber, "confirmed");
                     }
+                    
+                    // Move itinerary to booked database
+                    Database.moveItineraryToBooked(parsedID);
 
                     // Create links
                     List<Link> links = new ArrayList<>();
 
-                    Link.Builder builder = Link.fromMethod(ItineraryResource.class, "cancelBookedItinerary");
+                    Link.Builder builder = Link.fromMethod(BookingResource.class, "cancelBookedItinerary");
                     builder.baseUri(baseURI);
                     builder.rel("http://travelgood.ws/relations/cancelbooked");
                     links.add(builder.build(ID));
 
-                    builder = Link.fromMethod(ItineraryResource.class, "findBookedItinerary");
+                    builder = Link.fromMethod(BookingResource.class, "findBookedItinerary");
                     builder.baseUri(baseURI);
                     builder.rel("http://travelgood.ws/relations/findbooked");
                     links.add(builder.build(ID));

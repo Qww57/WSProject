@@ -59,7 +59,7 @@ public class BookingResourceTest {
         // Adding a booking number to the itinerary
         BookItineraryInputRepresentation bookInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
         
-        WebTarget r3 = client.target("http://localhost:8070/ws/webresources/booking/" + Integer.toString(resultentity.ID));
+        WebTarget r3 = client.target("http://localhost:8080/ws/webresources/booking/" + Integer.toString(resultentity.ID));
         Response thirdResult = r3.request().post(Entity.entity(bookInput, MediaType.APPLICATION_XML), Response.class);
         System.out.println(thirdResult.toString());
         ItineraryOutputRepresentation thirdResultEntity = thirdResult.readEntity(ItineraryOutputRepresentation.class);
