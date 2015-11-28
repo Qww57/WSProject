@@ -34,31 +34,56 @@ import travelgood.representations.*;
 public class SearchResourceTest {
     
     @Test
-    public void searchOneHotelandOneFLight()  throws DatatypeConfigurationException{
+    public void searchTwoHotelsandTwoFlights()  throws DatatypeConfigurationException{
         //input stuff for searching flights and hotels
         SearchInputRepresentation mySearch = new SearchInputRepresentation();
-        SearchInputRepresentation.SearchHotelInputRepresentation myHotel = new SearchInputRepresentation.SearchHotelInputRepresentation();
-        myHotel.setArrivalDate(CreateDate(26, 10, 2015));
-        myHotel.setDepartureDate(CreateDate(29, 10, 2015));
-        myHotel.setCity("Milan");
-        mySearch.hotelsList.add(myHotel);
-        SearchInputRepresentation.SearchFlightInputRepresentation myFlight = new SearchInputRepresentation.SearchFlightInputRepresentation();
-        myFlight.setDate(CreateDate(26, 10, 2015));
-        myFlight.setStart("Copenhagen");
-        myFlight.setDestination("London");
-        mySearch.flightsList.add(myFlight);
+        //first hotel
+        SearchInputRepresentation.SearchHotelInputRepresentation myFisrtHotel = new SearchInputRepresentation.SearchHotelInputRepresentation();
+        myFisrtHotel.setArrivalDate(CreateDate(26, 10, 2015));
+        myFisrtHotel.setDepartureDate(CreateDate(29, 10, 2015));
+        myFisrtHotel.setCity("Paris");
+        mySearch.hotelsList.add(0, myFisrtHotel);
+        //second hotel
+        SearchInputRepresentation.SearchHotelInputRepresentation mySecondHotel = new SearchInputRepresentation.SearchHotelInputRepresentation();
+        mySecondHotel.setArrivalDate(CreateDate(12, 11, 2015));
+        mySecondHotel.setDepartureDate(CreateDate(18, 11, 2015));
+        mySecondHotel.setCity("Milan");
+        mySearch.hotelsList.add(1, mySecondHotel);
+        //first flight
+        SearchInputRepresentation.SearchFlightInputRepresentation myFirstFlight = new SearchInputRepresentation.SearchFlightInputRepresentation();
+        myFirstFlight.setDate(CreateDate(26, 12, 2015));
+        myFirstFlight.setStart("Barcelona");
+        myFirstFlight.setDestination("New York");
+        mySearch.flightsList.add(myFirstFlight);
+        //second flight
+        SearchInputRepresentation.SearchFlightInputRepresentation mySecondFlight = new SearchInputRepresentation.SearchFlightInputRepresentation();
+        mySecondFlight.setDate(CreateDate(26, 10, 2015));
+        mySecondFlight.setStart("Copenhagen");
+        mySecondFlight.setDestination("London");
+        mySearch.flightsList.add(mySecondFlight);
         //build client and make post request
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
         Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
         //hotel result
-        System.out.println("hotel name: " + searchResultEntity.hotelsList.get(0).gethotel().getName());
-        System.out.println("hotel price: " + searchResultEntity.hotelsList.get(0).getPrice());
-        System.out.println("hotel booking number: " + searchResultEntity.hotelsList.get(0).getBookingNumber());
+        System.out.println("hotels list length: " + searchResultEntity.hotelsList.size());
+        System.out.println("number of hotels for 1st option: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.size());
+        System.out.println("hotel 0.0 name: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).gethotel().getName());
+        System.out.println("hotel 0.0 price: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getPrice());
+        System.out.println("hotel 0.0 booking number: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber());
+        System.out.println("hotel 0.1 name: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(1).gethotel().getName());
+        System.out.println("hotel 0.1 price: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(1).getPrice());
+        System.out.println("hotel 0.1 booking number: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(1).getBookingNumber());
+        System.out.println("hotel 1.0 name: " + searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).gethotel().getName());
+        System.out.println("hotel 1.0 price: " + searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).getPrice());
+        System.out.println("hotel 1.0 booking number: " + searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).getBookingNumber());
         //flight result
-        System.out.println("flight booking number: " + searchResultEntity.flightsList.get(0).getBookingNumber());
-        
+        System.out.println("flights list length: " + searchResultEntity.flightsList.size());
+        System.out.println("flight 1 booking number: " + searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber());
+        System.out.println("flight 1 booking start: " + searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getFlight().getStart());
+        System.out.println("flight 2 number: " + searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getBookingNumber()); 
+        System.out.println("flight 2 start: " + searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getFlight().getStart());
     }
     
     public static XMLGregorianCalendar CreateDate(int day, int month, int year) throws DatatypeConfigurationException{

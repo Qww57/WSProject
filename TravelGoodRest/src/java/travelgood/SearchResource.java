@@ -24,8 +24,10 @@ import travelgood.objects.Itinerary;
 import travelgood.representations.*;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsInputType;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsOutputType;
+import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.FlightInformationType;
 import org.netbeans.j2ee.wsdl.niceview.java.niceview.GetHotelInputType;
 import org.netbeans.j2ee.wsdl.niceview.java.niceview.GetHotelsOutputType;
+import org.netbeans.j2ee.wsdl.niceview.java.niceview.HotelInformationType;
 
 /**
  *
@@ -49,7 +51,6 @@ public class SearchResource {
         List<SearchOutputRepresentation.SearchFlightOutputRepresentation> outputFlightsList = new ArrayList<SearchOutputRepresentation.SearchFlightOutputRepresentation>();
         SearchOutputRepresentation outputList = new SearchOutputRepresentation();
         if (hotelsList != null) {
-            Integer i = 0;
             for (SearchInputRepresentation.SearchHotelInputRepresentation hotel : hotelsList) {
                 //prepare datafor niceview
                 GetHotelInputType inputHotelForNiceView = new GetHotelInputType();
@@ -58,22 +59,25 @@ public class SearchResource {
                 inputHotelForNiceView.setCity(hotel.getCity());
                 //gethotel operation of niceview
                 GetHotelsOutputType outputHotelFromNiceView = getHotels(inputHotelForNiceView);
-                SearchOutputRepresentation.SearchHotelOutputRepresentation searchedHotelInformation = new SearchOutputRepresentation.SearchHotelOutputRepresentation();
-                SearchOutputRepresentation.SearchHotelOutputRepresentation.SearchedHotel searchedHotelItem = new SearchOutputRepresentation.SearchHotelOutputRepresentation.SearchedHotel();
-                searchedHotelItem.setName(outputHotelFromNiceView.getHotelInformations().get(i).getHotel().getName());
-                searchedHotelItem.setAddress(outputHotelFromNiceView.getHotelInformations().get(i).getHotel().getAddress());
-                searchedHotelItem.setCreditCardGuarantee(outputHotelFromNiceView.getHotelInformations().get(i).getHotel().isCreditCardGuarantee());
-                searchedHotelInformation.sethotel(searchedHotelItem);
-                searchedHotelInformation.setBookingNumber(outputHotelFromNiceView.getHotelInformations().get(i).getBookingNumber());
-                searchedHotelInformation.setPrice(outputHotelFromNiceView.getHotelInformations().get(i).getPrice());
-                searchedHotelInformation.setReservationService(outputHotelFromNiceView.getHotelInformations().get(i).getReservationService());
-                //add object to output list
-                outputHotelsList.add(searchedHotelInformation);
-                i++;
+                SearchOutputRepresentation.SearchHotelOutputRepresentation searchedHotelsInformations = new SearchOutputRepresentation.SearchHotelOutputRepresentation();
+                for (HotelInformationType hotelInformationFromNiceView : outputHotelFromNiceView.getHotelInformations()) {
+                    SearchOutputRepresentation.SearchHotelOutputRepresentation.SearchHotelInformationOutputRepresentation searchedHotelInformation = new SearchOutputRepresentation.SearchHotelOutputRepresentation.SearchHotelInformationOutputRepresentation();
+                    SearchOutputRepresentation.SearchHotelOutputRepresentation.SearchHotelInformationOutputRepresentation.SearchedHotel searchedHotel = new SearchOutputRepresentation.SearchHotelOutputRepresentation.SearchHotelInformationOutputRepresentation.SearchedHotel();
+                    searchedHotel.setName(hotelInformationFromNiceView.getHotel().getName());
+                    searchedHotel.setAddress(hotelInformationFromNiceView.getHotel().getAddress());
+                    searchedHotel.setCreditCardGuarantee(hotelInformationFromNiceView.getHotel().isCreditCardGuarantee());
+                    searchedHotelInformation.sethotel(searchedHotel);
+                    searchedHotelInformation.setBookingNumber(hotelInformationFromNiceView.getBookingNumber());
+                    searchedHotelInformation.setPrice(hotelInformationFromNiceView.getPrice());
+                    searchedHotelInformation.setReservationService(hotelInformationFromNiceView.getReservationService());
+                    //add hotelInformation to list of hotelsInformations
+                    searchedHotelsInformations.hotelsInformationList.add(searchedHotelInformation);
+                }
+                //add object to output list of hotels
+                outputHotelsList.add(searchedHotelsInformations);
             }
         }
         if(flightsList != null) {
-            Integer j = 0;
             for (SearchInputRepresentation.SearchFlightInputRepresentation flight : flightsList) {
                 //prepare datafor lameduck
                 GetFlightsInputType inputFlightForLameDuck = new GetFlightsInputType();
@@ -82,20 +86,26 @@ public class SearchResource {
                 inputFlightForLameDuck.setStart(flight.getStart());
                 //getflight operation of lameduck
                 GetFlightsOutputType outputFlightFromLameDuck = getFlights(inputFlightForLameDuck);
-                SearchOutputRepresentation.SearchFlightOutputRepresentation searchedFlightInformation = new SearchOutputRepresentation.SearchFlightOutputRepresentation();
-                SearchOutputRepresentation.SearchFlightOutputRepresentation.SearchedFlight searchedFlightItem = new SearchOutputRepresentation.SearchFlightOutputRepresentation.SearchedFlight();
-                searchedFlightItem.setStart(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getStart());
-                searchedFlightItem.setStartDateTime(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getStartDateTime());
-                searchedFlightItem.setDestination(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getDestination());
-                searchedFlightItem.setDestinationDateTime(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getDestinationDateTime());
-                searchedFlightItem.setCarrier(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getCarrier());
-                searchedFlightInformation.setFlight(searchedFlightItem);
-                searchedFlightInformation.setAirlineReservationService(outputFlightFromLameDuck.getFlightInformations().get(j).getAirlineReservationService());
-                searchedFlightInformation.setBookingNumber(outputFlightFromLameDuck.getFlightInformations().get(j).getBookingNumber());
-                searchedFlightInformation.setPrice(outputFlightFromLameDuck.getFlightInformations().get(j).getPrice());
+                
+                SearchOutputRepresentation.SearchFlightOutputRepresentation searchedFlightsInformations = new SearchOutputRepresentation.SearchFlightOutputRepresentation();
+                for (FlightInformationType flightInformationFromLameDuck : outputFlightFromLameDuck.getFlightInformations()) {
+                    SearchOutputRepresentation.SearchFlightOutputRepresentation.SearchFlightInformationOutputRepresentation searchedFlightInformation = new SearchOutputRepresentation.SearchFlightOutputRepresentation.SearchFlightInformationOutputRepresentation();
+                    SearchOutputRepresentation.SearchFlightOutputRepresentation.SearchFlightInformationOutputRepresentation.SearchedFlight searchedFlight = new SearchOutputRepresentation.SearchFlightOutputRepresentation.SearchFlightInformationOutputRepresentation.SearchedFlight();
+                    searchedFlight.setCarrier(flightInformationFromLameDuck.getFlight().getCarrier());
+                    searchedFlight.setDestination(flightInformationFromLameDuck.getFlight().getDestination());
+                    searchedFlight.setDestinationDateTime(flightInformationFromLameDuck.getFlight().getDestinationDateTime());
+                    searchedFlight.setStart(flightInformationFromLameDuck.getFlight().getStart());
+                    searchedFlight.setStartDateTime(flightInformationFromLameDuck.getFlight().getStartDateTime());
+                    searchedFlightInformation.setFlight(searchedFlight);
+                    searchedFlightInformation.setAirlineReservationService(flightInformationFromLameDuck.getAirlineReservationService());
+                    searchedFlightInformation.setBookingNumber(flightInformationFromLameDuck.getBookingNumber());
+                    searchedFlightInformation.setPrice(flightInformationFromLameDuck.getPrice());
+                    //add flightInformation to list of flightInformations
+                    searchedFlightsInformations.flightsInformationList.add(searchedFlightInformation);
+                }                
                 //add object to output list
-                outputFlightsList.add(searchedFlightInformation);
-                j++;
+                outputFlightsList.add(searchedFlightsInformations);
+
             }    
         }
         //prepare output
