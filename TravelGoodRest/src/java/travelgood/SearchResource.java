@@ -6,21 +6,14 @@
 package travelgood;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import travelgood.objects.Itinerary;
 import travelgood.representations.*;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsInputType;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsOutputType;
@@ -72,6 +65,8 @@ public class SearchResource {
                     searchedHotelInformation.setReservationService(hotelInformationFromNiceView.getReservationService());
                     //add hotelInformation to list of hotelsInformations
                     searchedHotelsInformations.hotelsInformationList.add(searchedHotelInformation);
+                    //add dates of booking numbers to database
+                    Database.addHotelDate(hotelInformationFromNiceView.getBookingNumber(), hotel.getArrivalDate());
                 }
                 //add object to output list of hotels
                 outputHotelsList.add(searchedHotelsInformations);
@@ -102,10 +97,11 @@ public class SearchResource {
                     searchedFlightInformation.setPrice(flightInformationFromLameDuck.getPrice());
                     //add flightInformation to list of flightInformations
                     searchedFlightsInformations.flightsInformationList.add(searchedFlightInformation);
+                    //add dates of booking numbers to database
+                    Database.addFlightDate(flightInformationFromLameDuck.getBookingNumber(), flight.getDate());
                 }                
                 //add object to output list
                 outputFlightsList.add(searchedFlightsInformations);
-
             }    
         }
         //prepare output

@@ -7,6 +7,7 @@ package travelgood;
 
 import dk.dtu.imm.fastmoney.types.CreditCardInfoType;
 import java.util.HashMap;
+import javax.xml.datatype.XMLGregorianCalendar;
 import travelgood.objects.Itinerary;
 
 /**
@@ -19,6 +20,10 @@ public class Database {
     private static final HashMap<Integer, Itinerary> plannedItineraries = new HashMap<>();
     private static final HashMap<Integer, Itinerary> bookedItineraries = new HashMap<>();
     private static final HashMap<Integer, CreditCardInfoType> bookingCreditCard = new HashMap<>();
+    
+    //added for dates:
+    private static final HashMap<String, XMLGregorianCalendar> hotelsDates = new HashMap<>();
+    private static final HashMap<String, XMLGregorianCalendar> flightsDates = new HashMap<>();
     
     public static int createItinerary() {
         Itinerary it = new Itinerary();
@@ -49,5 +54,20 @@ public class Database {
     
     public static void storeCreditCard(int ID, CreditCardInfoType creditCard){
         bookingCreditCard.put(ID, creditCard);
+    }
+    
+    //added for dates
+    public static void addHotelDate(String bookingnumber, XMLGregorianCalendar date) {
+        hotelsDates.put(bookingnumber, date);
+    }
+    public static XMLGregorianCalendar getHotelDate(String bookingNumber) {
+        return hotelsDates.get(bookingNumber);
+    }
+    
+    public static void addFlightDate(String bookingnumber, XMLGregorianCalendar date) {
+        flightsDates.put(bookingnumber, date);
+    }
+    public static XMLGregorianCalendar getFlightDate(String bookingNumber) {
+        return flightsDates.get(bookingNumber);
     }
 }

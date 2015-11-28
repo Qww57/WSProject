@@ -6,8 +6,6 @@
 
 package travelgood;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -24,7 +22,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import travelgood.objects.Itinerary;
 import travelgood.representations.*;
 
 /**
@@ -32,6 +29,20 @@ import travelgood.representations.*;
  * @author Dani Sanz
  */
 public class SearchResourceTest {
+    
+    @Test
+    public void searchEmpty() throws DatatypeConfigurationException {
+        //input stuff for searching flights and hotels
+        SearchInputRepresentation myEmptySearch = new SearchInputRepresentation();
+        //build client and make post request
+        Client clientEmpty = ClientBuilder.newClient();
+        WebTarget resourceEmpty = clientEmpty.target("http://localhost:8080/ws/webresources/search");
+        Response searchEmptyResult = resourceEmpty.request().post(Entity.entity(myEmptySearch, MediaType.APPLICATION_XML), Response.class);
+        SearchOutputRepresentation searchEmptyResultEntity = searchEmptyResult.readEntity(SearchOutputRepresentation.class);
+        //check that lists are empty
+        System.out.println("hotels list length: " + searchEmptyResultEntity.hotelsList.size());
+        System.out.println("flights list length: " + searchEmptyResultEntity.flightsList.size());
+    }
     
     @Test
     public void searchTwoHotelsandTwoFlights()  throws DatatypeConfigurationException{
