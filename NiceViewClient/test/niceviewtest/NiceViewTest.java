@@ -5,19 +5,19 @@
  */
 package niceviewtest;
 
+import dk.dtu.imm.fastmoney.types.CreditCardInfoType;
+import dk.dtu.imm.fastmoney.types.CreditCardInfoType.ExpirationDate;
 import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import niceviewclient.BookHotelFault;
-import niceviewclient.BookHotelInputType;
-import niceviewclient.CancelHotelFault;
-import niceviewclient.CreditCardInfoType;
-import niceviewclient.CreditCardInfoType.ExpirationDate;
-import niceviewclient.GetHotelInputType;
-import niceviewclient.GetHotelsOutputType;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.netbeans.j2ee.wsdl.niceview.java.niceview.BookHotelFault;
+import org.netbeans.j2ee.wsdl.niceview.java.niceview.BookHotelInputType;
+import org.netbeans.j2ee.wsdl.niceview.java.niceview.CancelHotelFault;
+import org.netbeans.j2ee.wsdl.niceview.java.niceview.GetHotelInputType;
+import org.netbeans.j2ee.wsdl.niceview.java.niceview.GetHotelsOutputType;
 
 /**
  *
@@ -291,22 +291,22 @@ public class NiceViewTest {
   
     /// Web services references
 
-    private static boolean bookHotel(niceviewclient.BookHotelInputType bookHotelReqest) throws BookHotelFault {
-        niceviewclient.NiceViewService service = new niceviewclient.NiceViewService();
-        niceviewclient.NiceViewPortType port = service.getNiceViewBindingPort();
+    private static boolean bookHotel(org.netbeans.j2ee.wsdl.niceview.java.niceview.BookHotelInputType bookHotelReqest) throws BookHotelFault {
+        org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewService service = new org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewService();
+        org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewPortType port = service.getNiceViewBindingPort();
         return port.bookHotel(bookHotelReqest);
     }
 
     private static void cancelHotel(java.lang.String cancelHotelRequest) throws CancelHotelFault {
-        niceviewclient.NiceViewService service = new niceviewclient.NiceViewService();
-        niceviewclient.NiceViewPortType port = service.getNiceViewBindingPort();
+        org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewService service = new org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewService();
+        org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewPortType port = service.getNiceViewBindingPort();
         port.cancelHotel(cancelHotelRequest);
     }
 
-    private static GetHotelsOutputType getHotels(niceviewclient.GetHotelInputType hotelsRequest) {
-        niceviewclient.NiceViewService service = new niceviewclient.NiceViewService();
-        niceviewclient.NiceViewPortType port = service.getNiceViewBindingPort();
+    private static GetHotelsOutputType getHotels(org.netbeans.j2ee.wsdl.niceview.java.niceview.GetHotelInputType hotelsRequest) {
+        org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewService service = new org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewService();
+        org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewPortType port = service.getNiceViewBindingPort();
         return port.getHotels(hotelsRequest);
     }
-    
+
 }
