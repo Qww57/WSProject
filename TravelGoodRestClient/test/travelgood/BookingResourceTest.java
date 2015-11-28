@@ -28,38 +28,44 @@ public class BookingResourceTest {
         Client client = ClientBuilder.newClient();
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
         Response result = r.request().get(Response.class);
+        System.out.println(result);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         System.out.println("returned ID: " + resultentity.ID);
         assertTrue(0 <= resultentity.ID);
         
         // Searching hotels and flights
-        
-        
+               
         // Adding a booking number to the itinerary
-        Client secondClient = ClientBuilder.newClient();
-        WebTarget r2 = secondClient.target("http://localhost:8080/ws/webresources/itinerary/" + Integer.toString(resultentity.ID));
+        WebTarget r2 = client.target("http://localhost:8080/ws/webresources/itinerary/" + Integer.toString(resultentity.ID));
         
         //TEMP: create input for adding a hotel to the itinerary
         AddToItineraryInputRepresentation inputRepresentation = new AddToItineraryInputRepresentation();
         inputRepresentation.hotel_booking_numbers.add("booking_Hotel_4");
         
         Response secondResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
-        ItineraryOutputRepresentation secondResultEntity = secondResult.readEntity(ItineraryOutputRepresentation.class);
-        
+        ItineraryOutputRepresentation secondResultEntity = secondResult.readEntity(ItineraryOutputRepresentation.class);       
         System.out.println("result: " + secondResultEntity.itinerary.hotels);
         String resultthes = secondResultEntity.itinerary.hotels.get("booking_Hotel_4");
         System.out.println("result: " + resultthes);
         
+        inputRepresentation.hotel_booking_numbers.add("booking_Hotel_5");
+        
+        secondResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        secondResultEntity = secondResult.readEntity(ItineraryOutputRepresentation.class);       
+        System.out.println("result: " + secondResultEntity.itinerary.hotels);
+        resultthes = secondResultEntity.itinerary.hotels.get("booking_Hotel_5");
+        System.out.println("result: " + resultthes);
+        
         // Adding a booking number to the itinerary
-        Client thirdClient = ClientBuilder.newClient();
-        WebTarget r3 = secondClient.target("http://localhost:8080/ws/webresources/itinerary/" + Integer.toString(resultentity.ID));
         BookItineraryInputRepresentation bookInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
         
+        WebTarget r3 = client.target("http://localhost:8070/ws/webresources/booking/" + Integer.toString(resultentity.ID));
         Response thirdResult = r3.request().post(Entity.entity(bookInput, MediaType.APPLICATION_XML), Response.class);
+        System.out.println(thirdResult.toString());
         ItineraryOutputRepresentation thirdResultEntity = thirdResult.readEntity(ItineraryOutputRepresentation.class);
         
         System.out.println("result: " + thirdResultEntity);
-        String bookResult = secondResultEntity.itinerary.hotels.get("booking_Hotel_4");
+        String bookResult = thirdResultEntity.itinerary.hotels.get("booking_Hotel_4");
         System.out.println("result: " + bookResult);
     }
 }
