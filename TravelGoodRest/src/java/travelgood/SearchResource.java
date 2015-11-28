@@ -6,6 +6,7 @@
 package travelgood;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
@@ -16,6 +17,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import travelgood.objects.Itinerary;
 import travelgood.representations.*;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsInputType;
@@ -35,7 +39,9 @@ public class SearchResource {
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response search(SearchInputRepresentation input) {
+    public Response search(SearchInputRepresentation input) throws DatatypeConfigurationException{
+        //starting print
+        System.out.println("Stariting to search now!!");
         List<SearchInputRepresentation.SearchHotelInputRepresentation> hotelsList = input.hotelsList;
         List<SearchInputRepresentation.SearchFlightInputRepresentation> flightsList = input.flightsList;
         //output stuff
@@ -52,8 +58,8 @@ public class SearchResource {
                 inputHotelForNiceView.setCity(hotel.getCity());
                 //gethotel operation of niceview
                 GetHotelsOutputType outputHotelFromNiceView = getHotels(inputHotelForNiceView);
-                SearchOutputRepresentation.SearchHotelOutputRepresentation searchedHotelInformation = new SearchOutputRepresentation().new SearchHotelOutputRepresentation();
-                SearchOutputRepresentation.SearchHotelOutputRepresentation.SearchedHotel searchedHotelItem = searchedHotelInformation.new SearchedHotel();
+                SearchOutputRepresentation.SearchHotelOutputRepresentation searchedHotelInformation = new SearchOutputRepresentation.SearchHotelOutputRepresentation();
+                SearchOutputRepresentation.SearchHotelOutputRepresentation.SearchedHotel searchedHotelItem = new SearchOutputRepresentation.SearchHotelOutputRepresentation.SearchedHotel();
                 searchedHotelItem.setName(outputHotelFromNiceView.getHotelInformations().get(i).getHotel().getName());
                 searchedHotelItem.setAddress(outputHotelFromNiceView.getHotelInformations().get(i).getHotel().getAddress());
                 searchedHotelItem.setCreditCardGuarantee(outputHotelFromNiceView.getHotelInformations().get(i).getHotel().isCreditCardGuarantee());
@@ -67,7 +73,30 @@ public class SearchResource {
             }
         }
         if(flightsList != null) {
-            //TODO
+            Integer j = 0;
+            for (SearchInputRepresentation.SearchFlightInputRepresentation flight : flightsList) {
+                //prepare datafor lameduck
+                GetFlightsInputType inputFlightForLameDuck = new GetFlightsInputType();
+                inputFlightForLameDuck.setDate(flight.getDate());
+                inputFlightForLameDuck.setDestination(flight.getDestination());
+                inputFlightForLameDuck.setStart(flight.getStart());
+                //getflight operation of lameduck
+                GetFlightsOutputType outputFlightFromLameDuck = getFlights(inputFlightForLameDuck);
+                SearchOutputRepresentation.SearchFlightOutputRepresentation searchedFlightInformation = new SearchOutputRepresentation.SearchFlightOutputRepresentation();
+                SearchOutputRepresentation.SearchFlightOutputRepresentation.SearchedFlight searchedFlightItem = new SearchOutputRepresentation.SearchFlightOutputRepresentation.SearchedFlight();
+                searchedFlightItem.setStart(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getStart());
+                searchedFlightItem.setStartDateTime(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getStartDateTime());
+                searchedFlightItem.setDestination(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getDestination());
+                searchedFlightItem.setDestinationDateTime(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getDestinationDateTime());
+                searchedFlightItem.setCarrier(outputFlightFromLameDuck.getFlightInformations().get(j).getFlight().getCarrier());
+                searchedFlightInformation.setFlight(searchedFlightItem);
+                searchedFlightInformation.setAirlineReservationService(outputFlightFromLameDuck.getFlightInformations().get(j).getAirlineReservationService());
+                searchedFlightInformation.setBookingNumber(outputFlightFromLameDuck.getFlightInformations().get(j).getBookingNumber());
+                searchedFlightInformation.setPrice(outputFlightFromLameDuck.getFlightInformations().get(j).getPrice());
+                //add object to output list
+                outputFlightsList.add(searchedFlightInformation);
+                j++;
+            }    
         }
         //prepare output
         outputList.hotelsList = outputHotelsList;
@@ -81,5 +110,11 @@ public class SearchResource {
         org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewService service = new org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewService();
         org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewPortType port = service.getNiceViewBindingPort();
         return port.getHotels(hotelsRequest);
+    }
+
+    private static GetFlightsOutputType getFlights(org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsInputType getFlightsInput) {
+        org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.LameDuckService service = new org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.LameDuckService();
+        org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.LameDuckPortType port = service.getLameDuckBindingPort();
+        return port.getFlights(getFlightsInput);
     }
 }

@@ -9,26 +9,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
  * @author Dani Sanz
  */
+@XmlRootElement
 public class SearchInputRepresentation extends Representation {
     
     public List<SearchHotelInputRepresentation> hotelsList = new ArrayList<SearchHotelInputRepresentation>();
     public List<SearchFlightInputRepresentation> flightsList = new ArrayList<SearchFlightInputRepresentation>();
     
-    public class SearchHotelInputRepresentation {
+    @XmlRootElement
+    public static class SearchHotelInputRepresentation {
         private String city;
         private XMLGregorianCalendar arrivalDate;
         private XMLGregorianCalendar departureDate;
         //constructor
-        public SearchHotelInputRepresentation(String city, XMLGregorianCalendar arrivalDate, XMLGregorianCalendar departureDate) {
-            this.city = city;
-            this.arrivalDate = arrivalDate;
-            this.departureDate = departureDate;
+        public SearchHotelInputRepresentation() {
         }
         //getters and setters
         public void setCity(String city) {
@@ -51,15 +51,13 @@ public class SearchInputRepresentation extends Representation {
         }
     }
     
-    public class SearchFlightInputRepresentation {
+    @XmlRootElement
+    public static class SearchFlightInputRepresentation {
         private String start;
         private String destination;
         private XMLGregorianCalendar date;
         //constructor
-        public SearchFlightInputRepresentation(String start, String destination, XMLGregorianCalendar date) {
-            this.start = start;
-            this.destination = destination;
-            this.date = date;
+        public SearchFlightInputRepresentation() {
         }
         //getters and setters
         public void setStart(String start) {

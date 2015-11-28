@@ -91,9 +91,9 @@ public class Constructors {
         GregorianCalendar gc = new GregorianCalendar(year, month, day);
         DatatypeFactory df = DatatypeFactory.newInstance();
         date = df.newXMLGregorianCalendar(gc);
-        date.setDay(26);
-        date.setMonth(10);
-        date.setYear(2015);
+        date.setDay(day);
+        date.setMonth(month);
+        date.setYear(year);
         
         return date;
     }
