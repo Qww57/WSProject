@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static travelgood.Constructors.CreateDate;
 import travelgood.representations.*;
 
 /**
@@ -95,20 +96,5 @@ public class SearchResourceTest {
         System.out.println("flight 1 booking start: " + searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getFlight().getStart());
         System.out.println("flight 2 number: " + searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getBookingNumber()); 
         System.out.println("flight 2 start: " + searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getFlight().getStart());
-    }
-    
-    public static XMLGregorianCalendar CreateDate(int day, int month, int year) throws DatatypeConfigurationException{
-        XMLGregorianCalendar date;
-        
-        GregorianCalendar gc = new GregorianCalendar(year, month, day);
-        DatatypeFactory df = DatatypeFactory.newInstance();
-        date = df.newXMLGregorianCalendar(gc);
-        date.setDay(day);
-        date.setMonth(month);
-        date.setYear(year);
-        
-        return date;
-    }
-      
-    
+    } 
 }

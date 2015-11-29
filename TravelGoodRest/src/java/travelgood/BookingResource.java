@@ -24,13 +24,7 @@ import javax.ws.rs.core.Response;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.*;
 import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
 import travelgood.objects.Itinerary;
-import travelgood.representations.AddToItineraryInputRepresentation;
-import travelgood.representations.ItineraryOutputRepresentation;
-import travelgood.representations.BookItineraryInputRepresentation;
-import travelgood.representations.BookItineraryOutputRepresentation;
-import travelgood.representations.CancelBookedItineraryInputRepresentation;
-import travelgood.representations.FindBookedItineraryOutputRepresentation;
-import travelgood.representations.FindPlannedItineraryOutputRepresentation;
+import travelgood.representations.*;
 
 /**
  *
@@ -58,7 +52,7 @@ public class BookingResource {
                 builder.rel("http://travelgood.ws/relations/cancelbooked");
                 links.add(builder.build(ID));
                 
-                FindBookedItineraryOutputRepresentation rep = new FindBookedItineraryOutputRepresentation();
+                ItineraryOutputRepresentation rep = new ItineraryOutputRepresentation();
                 rep.itinerary = it;
                 rep.links = links;
                 

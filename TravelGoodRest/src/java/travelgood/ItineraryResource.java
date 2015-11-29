@@ -17,10 +17,7 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import travelgood.objects.Itinerary;
-import travelgood.representations.AddToItineraryInputRepresentation;
-import travelgood.representations.ItineraryOutputRepresentation;
-import travelgood.representations.CreateItineraryRepresentation;
-import travelgood.representations.FindPlannedItineraryOutputRepresentation;
+import travelgood.representations.*;
 
 /**
  *
@@ -83,7 +80,7 @@ public class ItineraryResource {
                     links.add(builder.build(ID));
                 }
                 
-                FindPlannedItineraryOutputRepresentation rep = new FindPlannedItineraryOutputRepresentation();
+                ItineraryOutputRepresentation rep = new ItineraryOutputRepresentation();
                 rep.itinerary = it;
                 rep.links = links;
                 
