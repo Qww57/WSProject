@@ -55,7 +55,6 @@ public class ItineraryResourceTest {
         System.out.println("result: " + secondResultEntity.itinerary.hotels);
         String resultthes = secondResultEntity.itinerary.hotels.get(0);
         System.out.println("result: " + resultthes);
-        
-        
+           
     }
 }
