@@ -112,7 +112,7 @@ public class LameDuckService {
                 String bookingNumber = bookFlightInput.getBookingNumber();
                 System.out.println("BOOKING - Got booking number: " + bookingNumber);
                 FlightType bookedFlight = reversedHM.get(bookingNumber);
-                System.out.println("BOOKING - Got booked Flight: " + bookedFlight.getStartDateTime());
+                System.out.println("BOOKING - Got booked Flight: " + bookedFlight);
 
                 if (bookedFlight != null) {
 
