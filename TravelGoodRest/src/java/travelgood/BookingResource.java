@@ -48,7 +48,7 @@ public class BookingResource {
                 // Create links
                 Response.ResponseBuilder responseBuilder = Response.accepted();
 
-                Link.Builder linkBuilder = Link.fromMethod(ItineraryResource.class, "cancelBookedItinerary");
+                Link.Builder linkBuilder = Link.fromMethod(BookingResource.class, "cancelBookedItinerary");
                 linkBuilder.baseUri(baseURI);
                 linkBuilder.rel(LinkRelatives.CANCEL_BOOKED_ITINERARY);
                 responseBuilder.links(linkBuilder.build(ID));
@@ -165,7 +165,6 @@ public class BookingResource {
     
     @Path("{ID}/cancel")
     @GET
-    @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response cancelBookedItinerary(@PathParam("ID") String ID) {
         try {
@@ -206,9 +205,9 @@ public class BookingResource {
                 // Create links
                 Response.ResponseBuilder responseBuilder = Response.accepted();
 
-                Link.Builder linkBuilder = Link.fromMethod(ItineraryResource.class, "cancelBookedItinerary");
+                Link.Builder linkBuilder = Link.fromMethod(BookingResource.class, "findBookedItinerary");
                 linkBuilder.baseUri(baseURI);
-                linkBuilder.rel(LinkRelatives.CANCEL_BOOKED_ITINERARY);
+                linkBuilder.rel(LinkRelatives.FIND_BOOKED_ITINERARY);
                 responseBuilder.links(linkBuilder.build(ID));
                 
                 ItineraryOutputRepresentation output = new ItineraryOutputRepresentation();

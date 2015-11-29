@@ -9,12 +9,14 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeConfigurationException;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import static travelgood.Constructors.*;
+import travelgood.objects.LinkRelatives;
 import travelgood.representations.*;
 
 /**
@@ -24,7 +26,7 @@ import travelgood.representations.*;
 public class ScenarioTestCases {
     
     @Test
-    public void ScenarioTest_P1() {
+    public void testP1() {
         
         System.out.println("Staringt test P1");
                 
@@ -136,7 +138,7 @@ public class ScenarioTestCases {
     }
     
     @Test
-    public void ScenarioTest_P2() {
+    public void testP2() {
         
         System.out.println("Staringt test P2");
         
@@ -229,14 +231,22 @@ public class ScenarioTestCases {
     }
     
     @Test
-    public void ScenarioTest_B() {
+    public void testB() {
     
     }
     
     
     @Test
-    public void ScenarioTest_C1() {
+    public void testC1() {
         System.out.println("Staringt test C1");
+        
+        // Create an itinerary GET request 
+        Client client = ClientBuilder.newClient();
+        WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
+        Response result = r.request().get(Response.class);
+        CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
+        System.out.println("returned ID: " + resultentity.ID);
+        assertTrue(0 <= resultentity.ID);
                 
         //Searching a list of flights and hotels
         SearchInputRepresentation mySearch = new SearchInputRepresentation();
@@ -256,7 +266,6 @@ public class ScenarioTestCases {
         SearchInputRepresentation.SearchFlightInputRepresentation myFirstFlight = createSearchFlightRep("Copenhagen", "Kuala Lumpur", 26, 2, 2016);
         mySearch.flightsList.add(0, myFirstFlight);
         //search POST request
-        Client client = ClientBuilder.newClient();
         WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
         Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
@@ -267,22 +276,18 @@ public class ScenarioTestCases {
         //get booking numbers
         String bookingNumber_flight1 = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
         String bookingNumber_hotel1 = searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber();
-        String bookingNumber_hotel2 = searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).getBookingNumber();;
+        String bookingNumber_hotel2 = searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).getBookingNumber();
         
-        // Create an itinerary GET request 
-        WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
-        Response result = r.request().get(Response.class);
-        CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
-        System.out.println("returned ID: " + resultentity.ID);
-        assertTrue(0 <= resultentity.ID);
-        
-        // Add 1st flight to itinerary: POST request
-        WebTarget r2 = client.target("http://localhost:8080/ws/webresources/itinerary/" + Integer.toString(resultentity.ID));
+        //add flights and hotels to itinerary
+        //use link to add flights and hotels to itinerary
+        Link addToItineraryLink = result.getLink(LinkRelatives.ADD_TO_ITINERARY);
+        WebTarget r2 = client.target(addToItineraryLink);
+        // Add 1st flight to itinerary: POST request using link
+        System.out.println("Adding one flight"); 
         AddToItineraryInputRepresentation itineraryInputOne = new AddToItineraryInputRepresentation();
         itineraryInputOne.flight_booking_number.add(bookingNumber_flight1);
         Response planResultOne = r2.request().post(Entity.entity(itineraryInputOne, MediaType.APPLICATION_XML), Response.class);
         ItineraryOutputRepresentation planResultEntityOne = planResultOne.readEntity(ItineraryOutputRepresentation.class);
-        System.out.println("Planning the itinerary"); 
         //check size
         assertEquals(1, planResultEntityOne.itinerary.flights.size());
         assertEquals(0, planResultEntityOne.itinerary.hotels.size());
@@ -333,11 +338,48 @@ public class ScenarioTestCases {
         }
         
         //booking the itinerary
+        //use link to add flights and hotels to itinerary
+        Link bookItineraryLink = planResultItinerary.getLink(LinkRelatives.BOOK_ITINERARY);
+        WebTarget r3 = client.target(bookItineraryLink);//adding credit card information
+        BookItineraryInputRepresentation bookItineraryInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
+        Response bookingResult = r3.request().post(Entity.entity(bookItineraryInput, MediaType.APPLICATION_XML), Response.class);
+        ItineraryOutputRepresentation bookingResultEntity = bookingResult.readEntity(ItineraryOutputRepresentation.class);
+        //check size
+        assertEquals(1, bookingResultEntity.itinerary.flights.size());
+        assertEquals(2, bookingResultEntity.itinerary.hotels.size());
+        System.out.println("Get booked hotels: " + bookingResultEntity.itinerary.hotels);
+        System.out.println("Get booked flights: " + bookingResultEntity.itinerary.flights); 
+        // Check that everything is confirmed
+        for(String status : bookingResultEntity.itinerary.hotels.values()){
+            assertEquals("confirmed", status);
+        }
+        for(String status : bookingResultEntity.itinerary.flights.values()){
+            assertEquals("confirmed", status);
+        }
         
+        //cancelling the itinerary
+        //use link to add flights and hotels to itinerary
+        Link cancelItineraryLink = bookingResult.getLink(LinkRelatives.CANCEL_BOOKED_ITINERARY);
+        WebTarget r4 = client.target(cancelItineraryLink);
+        Response resultCancelItinerary = r4.request().get(Response.class);
+        ItineraryOutputRepresentation resultCancelItineraryEntity = resultCancelItinerary.readEntity(ItineraryOutputRepresentation.class);
+        //check size
+        assertEquals(1, resultCancelItineraryEntity.itinerary.flights.size());
+        assertEquals(2, resultCancelItineraryEntity.itinerary.hotels.size());
+        System.out.println("Get booked hotels: " + resultCancelItineraryEntity.itinerary.hotels);
+        System.out.println("Get booked flights: " + resultCancelItineraryEntity.itinerary.flights); 
+        // Check that everything is confirmed
+        for(String status : resultCancelItineraryEntity.itinerary.hotels.values()){
+            assertEquals("cancelled", status);
+        }
+        for(String status : resultCancelItineraryEntity.itinerary.flights.values()){
+            assertEquals("cancelled", status);
+        }
+        System.out.println("Test C1 Finished!");
     }
     
     @Test
-    public void ScenarioTest_C2() {
+    public void testC2() {
     
     }
 }

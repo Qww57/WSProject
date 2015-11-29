@@ -81,7 +81,7 @@ public class ItineraryResource {
                 
                 if (!it.flights.isEmpty() && !it.hotels.isEmpty()) {
                     linkBuilder = Link.fromMethod(BookingResource.class, "bookItinerary");
-                    linkBuilder.baseUri(baseURI);
+                    linkBuilder.baseUri("http://localhost:8080/ws/webresources/booking/");
                     linkBuilder.rel(LinkRelatives.BOOK_ITINERARY);
                     responseBuilder.links(linkBuilder.build(ID));
                 }
@@ -139,7 +139,7 @@ public class ItineraryResource {
                 responseBuilder.links(linkBuilder.build(ID));
                 
                 linkBuilder = Link.fromMethod(BookingResource.class, "bookItinerary");
-                linkBuilder.baseUri(baseURI);
+                linkBuilder.baseUri("http://localhost:8080/ws/webresources/booking/");
                 linkBuilder.rel(LinkRelatives.BOOK_ITINERARY);
                 responseBuilder.links(linkBuilder.build(ID));
                 
