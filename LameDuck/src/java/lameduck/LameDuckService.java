@@ -79,7 +79,7 @@ public class LameDuckService {
             Integer this_day = flightDataBase.get(i).getDestinationDateTime().getDay();
             Integer this_month = flightDataBase.get(i).getDestinationDateTime().getMonth();
             Integer this_year = flightDataBase.get(i).getDestinationDateTime().getYear();
-            if ((start.equals(this_start)) && (destination.equals(this_destination)) && (day.equals(this_day)) && (month.equals(this_month)) && (year.equals(this_year))) {
+            if ((start.equals(this_start)) && (destination.equals(this_destination))) {
                 FlightInformationType this_flight = new FlightInformationType();
                 String bookingNumber = bookingDB.get(flight);
                 this_flight.setBookingNumber(bookingNumber);
@@ -90,10 +90,10 @@ public class LameDuckService {
                 FlightType this_flight_this = flightDataBase.get(i);
                 this_flight.setFlight(this_flight_this);
                 response.getFlightInformations().add(this_flight);
-            }
+            } 
         }
         
-         System.out.println("GETTING FLIGHT - END " + getFlightsInput.getStart());
+         System.out.println("GETTING FLIGHT - END " + getFlightsInput.getStart() + getFlightsInput.getDate());
         
         return response;
     }
@@ -112,7 +112,7 @@ public class LameDuckService {
                 String bookingNumber = bookFlightInput.getBookingNumber();
                 System.out.println("BOOKING - Got booking number: " + bookingNumber);
                 FlightType bookedFlight = reversedHM.get(bookingNumber);
-                System.out.println("BOOKING - Got booked Flight: " + bookedFlight);
+                System.out.println("BOOKING - Got booked Flight: " + bookedFlight.getStartDateTime());
 
                 if (bookedFlight != null) {
 
