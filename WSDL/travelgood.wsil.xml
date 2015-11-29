@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<inspection xmlns="http://schemas.xmlsoap.org/ws/2001/10/inspection/">
+	<service>
+		<name>TravelGoodReservationAgency</name>
+		<abstract>Agency for searching and managing flight and hotel reservations</abstract>
+		<description referencedNamespace="http://schemas.xmlsoap.org/wsdl/" location="http://localhost:9080/service/TravelGood?wsdl"/>
+	</service>
+	<link referencedNamespace="http://schemas.xmlsoap.org/ws/2001/10/inspection/" location="http://localhost:8080/LameDuck/lameduck.wsil"/>
+	<link referencedNamespace="http://schemas.xmlsoap.org/ws/2001/10/inspection/" location="http://localhost:8080/NiceView/niceview.wsil"/>
+</inspection>
