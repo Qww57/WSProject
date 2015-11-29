@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Daniel
  */
 @XmlRootElement
-public class BookItineraryInputRepresentation extends Representation {
+public class BookItineraryInputRepresentation {
     
     public String name;
     public String number;

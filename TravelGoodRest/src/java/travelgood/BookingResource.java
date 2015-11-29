@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.*;
 import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
 import travelgood.objects.Itinerary;
+import travelgood.objects.LinkRelatives;
 import travelgood.representations.*;
 
 /**
@@ -33,7 +34,7 @@ import travelgood.representations.*;
 @Path("booking")
 public class BookingResource {
     
-    private final String baseURI = "http://localhost:8080/ws/webresources";
+    private final String baseURI = "http://localhost:8080/ws/webresources/booking/";
     
     @Path("{ID}")
     @GET
@@ -45,18 +46,17 @@ public class BookingResource {
             if (it != null) {
                 
                 // Create links
-                List<Link> links = new ArrayList<>();
+                Response.ResponseBuilder responseBuilder = Response.accepted();
 
-                Link.Builder builder = Link.fromMethod(ItineraryResource.class, "cancelBookedItinerary");
-                builder.baseUri(baseURI);
-                builder.rel("http://travelgood.ws/relations/cancelbooked");
-                links.add(builder.build(ID));
+                Link.Builder linkBuilder = Link.fromMethod(ItineraryResource.class, "cancelBookedItinerary");
+                linkBuilder.baseUri(baseURI);
+                linkBuilder.rel(LinkRelatives.CANCEL_BOOKED_ITINERARY);
+                responseBuilder.links(linkBuilder.build(ID));
                 
                 ItineraryOutputRepresentation rep = new ItineraryOutputRepresentation();
                 rep.itinerary = it;
-                rep.links = links;
                 
-                return Response.accepted().entity(rep).build();
+                return responseBuilder.entity(rep).build();
             }
             else {
                 return Response.status(Response.Status.NOT_FOUND).
@@ -128,28 +128,22 @@ public class BookingResource {
                     Database.moveItineraryToBooked(parsedID);
 
                     // Create links
-                    List<Link> links = new ArrayList<>();
+                    Response.ResponseBuilder responseBuilder = Response.ok();
 
-                    Link.Builder builder = Link.fromMethod(BookingResource.class, "cancelBookedItinerary");
-                    builder.baseUri(baseURI);
-                    builder.rel("http://travelgood.ws/relations/cancelbooked");
-                    links.add(builder.build(ID));
+                    Link.Builder linkBuilder = Link.fromMethod(BookingResource.class, "cancelBookedItinerary");
+                    linkBuilder.baseUri(baseURI);
+                    linkBuilder.rel(LinkRelatives.CANCEL_BOOKED_ITINERARY);
+                    responseBuilder.links(linkBuilder.build(ID));
 
-                    builder = Link.fromMethod(BookingResource.class, "findBookedItinerary");
-                    builder.baseUri(baseURI);
-                    builder.rel("http://travelgood.ws/relations/findbooked");
-                    links.add(builder.build(ID));
-
-                    /* BookItineraryOutputRepresentation rep = new BookItineraryOutputRepresentation();
-                    rep.confirmation = true;
-                    rep.links = links; */
+                    linkBuilder = Link.fromMethod(BookingResource.class, "findBookedItinerary");
+                    linkBuilder.baseUri(baseURI);
+                    linkBuilder.rel(LinkRelatives.FIND_BOOKED_ITINERARY);
+                    responseBuilder.links(linkBuilder.build(ID));
                     
                     ItineraryOutputRepresentation output = new ItineraryOutputRepresentation();
                     output.itinerary = it;
-                    output.links = links;
                     
-                    return Response.ok().entity(output).build();
-                    //return Response.ok().entity(rep).build();
+                    return responseBuilder.entity(output).build();
                 }
                 else {
                     return Response.status(Response.Status.NOT_FOUND).
@@ -169,8 +163,8 @@ public class BookingResource {
         }
     }
     
-    @Path("{ID}/status")
-    @PUT
+    @Path("{ID}/cancel")
+    @GET
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response cancelBookedItinerary(@PathParam("ID") String ID) {
@@ -210,19 +204,17 @@ public class BookingResource {
                 }
 
                 // Create links
-                List<Link> links = new ArrayList<>();
+                Response.ResponseBuilder responseBuilder = Response.accepted();
 
-                Link.Builder builder = Link.fromMethod(ItineraryResource.class, "cancelBookedItinerary");
-                builder.baseUri(baseURI);
-                builder.rel("http://travelgood.ws/relations/cancelbooked");
-                links.add(builder.build(ID));
+                Link.Builder linkBuilder = Link.fromMethod(ItineraryResource.class, "cancelBookedItinerary");
+                linkBuilder.baseUri(baseURI);
+                linkBuilder.rel(LinkRelatives.CANCEL_BOOKED_ITINERARY);
+                responseBuilder.links(linkBuilder.build(ID));
                 
                 ItineraryOutputRepresentation output = new ItineraryOutputRepresentation();
                 output.itinerary = it;
-                output.links = links;
 
-                return Response.accepted().entity(output).build();
-                //return Response.serverError().build();
+                return responseBuilder.entity(output).build();
             }
             else {
                 return Response.status(Response.Status.NOT_FOUND).

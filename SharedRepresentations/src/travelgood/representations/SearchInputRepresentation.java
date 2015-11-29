@@ -17,7 +17,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * @author Dani Sanz
  */
 @XmlRootElement
-public class SearchInputRepresentation extends Representation {
+public class SearchInputRepresentation {
     
     public List<SearchHotelInputRepresentation> hotelsList = new ArrayList<SearchHotelInputRepresentation>();
     public List<SearchFlightInputRepresentation> flightsList = new ArrayList<SearchFlightInputRepresentation>();

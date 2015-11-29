@@ -29,8 +29,6 @@ import org.netbeans.j2ee.wsdl.niceview.java.niceview.HotelInformationType;
 @Path("search")
 public class SearchResource {
     
-    private final String baseURI = "http://localhost:8080/ws/webresources";
-    
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)

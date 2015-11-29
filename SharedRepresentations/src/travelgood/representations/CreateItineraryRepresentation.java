@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Daniel
  */
 @XmlRootElement
-public class CreateItineraryRepresentation extends Representation {
+public class CreateItineraryRepresentation {
 
     public int ID;
 

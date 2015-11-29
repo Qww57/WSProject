@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Daniel
  */
 @XmlRootElement
-public class AddToItineraryInputRepresentation extends Representation {
+public class AddToItineraryInputRepresentation {
     
     public List<String> hotel_booking_numbers = new ArrayList<String>();
     public List<String> flight_booking_number = new ArrayList<String>();

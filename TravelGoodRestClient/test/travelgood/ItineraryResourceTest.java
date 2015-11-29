@@ -11,6 +11,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.junit.After;
@@ -20,6 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import travelgood.objects.Itinerary;
+import travelgood.objects.LinkRelatives;
 import travelgood.representations.*;
 
 /**
@@ -56,5 +58,33 @@ public class ItineraryResourceTest {
         String resultthes = secondResultEntity.itinerary.hotels.get(0);
         System.out.println("result: " + resultthes);
            
+    }
+    
+    @Test
+    public void cancelEmptyPlannedItinerary() {
+        
+        // Create a new itinerary
+        Client client = ClientBuilder.newClient();
+        WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
+        Response result = r.request().get(Response.class);
+        CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
+        
+        // Get links from the response
+        Link cancelItineraryLink = result.getLink(LinkRelatives.CANCEL_PLANNED_ITINERARY);
+        Link findPlannedItineraryLink = result.getLink(LinkRelatives.FIND_PLANNED_ITINERARY);
+        
+        // Use link to call operation
+        Client secondClient = ClientBuilder.newClient();
+        WebTarget r2 = secondClient.target(cancelItineraryLink);
+        Response result2 = r2.request().get(Response.class);
+        
+        assertEquals(Response.Status.OK.getStatusCode(), result2.getStatus());
+        
+        // Verify itinerary has been cancelled
+        Client thirdclient = ClientBuilder.newClient();
+        WebTarget r3 = thirdclient.target(findPlannedItineraryLink);
+        Response result3 = r3.request().get(Response.class);
+        
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), result3.getStatus());
     }
 }
