@@ -160,7 +160,7 @@ public class ScenarioTestCases {
         AddFlight(input, flight2);
         
         // Create one hotel request
-        String city = "Error City";
+        String city = "Error city";
         XMLGregorianCalendar date2 = CreateDate(26, 10, 2015);
         XMLGregorianCalendar date3 = CreateDate(30, 10, 2015);
         GetHotelInputType hotel = CreateGetHotelInputType(city, date2, date3);
@@ -169,34 +169,47 @@ public class ScenarioTestCases {
         // Make the request
         GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         
-        String bookingNumber = output.getHotelsList().get(0).getHotelInformations().get(0).getBookingNumber();
-        String bookingNumber2 = output.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
+        String bookingNumber1 = output.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
+        String bookingNumber2 = output.getHotelsList().get(0).getHotelInformations().get(0).getBookingNumber();
         String bookingNumber3 = output.getFlightsList().get(1).getFlightInformations().get(0).getBookingNumber();
         
         // Plan itinerary using the ID number
         PlanInputType plan = new PlanInputType();
-        plan.getHotelsBookingNumber().add(bookingNumber);
+        plan.getFlightsBookingNumber().add(bookingNumber1);
         plan.getHotelsBookingNumber().add(bookingNumber2);
-        plan.getHotelsBookingNumber().add(bookingNumber3);
+        plan.getFlightsBookingNumber().add(bookingNumber3);
 
         ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Booking
-        CreditCardInfoType creditCard = new CreditCardInfoType(); 
-        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard); 
+        CreditCardInfoType creditCard = CreateCreditCard("Bruhn Brigitte", "50408821", 2, 10);
+        ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard);
         
-        String status = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
-        System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(0).getStatus());
+        String status = bookOutput.getFlightsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
         assertEquals("confirmed", status);
         
-        String status2 = bookOutput.getFlightsItineraryInformation().get(0).getStatus();
-        System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(1).getStatus());
+        String status2 = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status2);
         assertEquals("confirmed", status2);
         
         String status3 = bookOutput.getFlightsItineraryInformation().get(1).getStatus();
-        System.out.println("Get status: " +status3);
+        System.out.println("Get status: " + status3);
         assertEquals("confirmed", status3);
         
-        // Cancel
+        // Cancelling
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID);            
+            
+        status = cancelOutput.getFlightsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " + status);
+        assertEquals("cancelled", status);
+
+        status2 = cancelOutput.getHotelsItineraryInformation().get(0).getStatus();
+        System.out.println("Get status: " +status2);
+        assertEquals("confirmed", status2);
+            
+        status3 = cancelOutput.getFlightsItineraryInformation().get(1).getStatus();
+        System.out.println("Get status: " + status3);
+        assertEquals("cancelled", status3);
     }
 }
