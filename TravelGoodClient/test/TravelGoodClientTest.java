@@ -947,7 +947,13 @@ public class TravelGoodClientTest {
         assertEquals("unconfirmed", status2);
     }
     
-    @Test // One of the scenario B
+    /*
+     * Scenario B:
+     * Planing an itinerary with many three booking, getting the their status as unconfirmed
+     * booking them. The second one should fail and then we have to check the status.
+     */
+    
+    @Test 
     public void bookManyFlightsAndOneHotelwithOneFlightFail() throws DatatypeConfigurationException{
         System.out.println("Test starts - bookManyFlights");
         
@@ -955,9 +961,8 @@ public class TravelGoodClientTest {
         String receivedItinID = createItinerary();
         System.out.println("Itinerary created with following ID: " + receivedItinID);
         
+        //Creating a get request with many flights and one hotel
         GetInputType input = new GetInputType();
-        
-        //Create  flight request
         XMLGregorianCalendar date = CreateDate(26, 10, 2015);
         GetFlightsInputType flight1 = CreateGetFlightsInputType(date, "Copenhagen", "London");
         GetFlightsInputType flight2 = CreateGetFlightsInputType(date, "London", "New York");
@@ -970,36 +975,31 @@ public class TravelGoodClientTest {
         GetHotelInputType hotel = CreateGetHotelInputType(city, date1, date2);
         AddHotel(input, hotel);
         
-        // Make the request
+        // Making the get request
         GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         String resultStart = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();
         assertEquals("Copenhagen", resultStart);
         System.out.println(resultStart);
         String resultStart1 = output.getFlightsList().get(1).getFlightInformations().get(0).getFlight().getStart();
         assertEquals("London", resultStart1);
-        System.out.println(resultStart1);
-        
+        System.out.println(resultStart1);      
         String resultCity = output.getHotelsList().get(0).getHotelInformations().get(0).getHotel().getAddress();
         assertEquals(city, resultCity);
         System.out.println(resultCity);
         
         String flightBookingNumber = output.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
         String flightBookingNumber1 = output.getFlightsList().get(1).getFlightInformations().get(0).getBookingNumber();
-        System.out.println("we have flight booking number"+flightBookingNumber);
-        
-        System.out.println("flight lis size "+ output.getFlightsList().size());
-        
         String hotelBookingNumber = output.getHotelsList().get(0).getHotelInformations().get(0).getBookingNumber();
-        System.out.println("we have hotel booking number "+ hotelBookingNumber);
-        // Plan itinerary using the ID number
+               
+        // Plan itinerary using the ID number with a wrong booking number for the second flight
         PlanInputType plan = new PlanInputType();
         plan.getFlightsBookingNumber().add(flightBookingNumber);
         plan.getFlightsBookingNumber().add("hello");
         plan.getHotelsBookingNumber().add(hotelBookingNumber);
-        System.out.println("added all");
         ItineraryListType planOutput = planFlightsAndHotels(plan, receivedItinID);
         
         // Getting the status as unconfirmed
+        System.out.println("Planning: ");
         String status = planOutput.getFlightsItineraryInformation().get(0).getStatus();
         System.out.println("Flight status: " + status);
         assertEquals("unconfirmed", status);
@@ -1013,6 +1013,7 @@ public class TravelGoodClientTest {
         assertEquals("unconfirmed", hotelStatus);
         
         // Booking the flight but the second one should fail
+        System.out.println("Booking: ");
         CreditCardInfoType creditCard = CreateCreditCard("Bruhn Brigitte", "50408821", 2, 10);
         ItineraryListType bookOutput = bookItinerary(receivedItinID, creditCard);
         status = bookOutput.getFlightsItineraryInformation().get(0).getStatus();
@@ -1021,9 +1022,7 @@ public class TravelGoodClientTest {
         
         status1 = bookOutput.getFlightsItineraryInformation().get(1).getStatus();
         System.out.println("Failed book flight status: " + status1);
-        assertEquals("unconfirmed", status1);
-        
-        
+        assertEquals("unconfirmed", status1);         
     }
     
     @Test 
@@ -1095,17 +1094,17 @@ public class TravelGoodClientTest {
         // should be booked and then cancelled
         status = bookOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(0).getStatus());
-        //assertEquals("cancelled", status);
+        assertEquals("cancelled", status);
         
         // Should be booked and then fail at cancelling in compensation
         status2 = bookOutput.getHotelsItineraryInformation().get(1).getStatus();
         System.out.println("Get status: " + bookOutput.getHotelsItineraryInformation().get(1).getStatus());
-        //assertEquals("confirmed", status2);
+        assertEquals("confirmed", status2);
         
         // should be booked and then cancelled
         status3 = bookOutput.getHotelsItineraryInformation().get(2).getStatus();
         System.out.println("Get status: " +status3);
-        //assertEquals("cancelled", status3);
+        assertEquals("cancelled", status3);
         
         // should fail at booking
         status4 = bookOutput.getHotelsItineraryInformation().get(3).getStatus();
