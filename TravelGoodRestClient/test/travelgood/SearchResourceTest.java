@@ -41,6 +41,8 @@ public class SearchResourceTest {
         Response searchEmptyResult = resourceEmpty.request().post(Entity.entity(myEmptySearch, MediaType.APPLICATION_XML), Response.class);
         SearchOutputRepresentation searchEmptyResultEntity = searchEmptyResult.readEntity(SearchOutputRepresentation.class);
         //check that lists are empty
+        assertEquals(0, searchEmptyResultEntity.hotelsList.size());
+        assertEquals(0, searchEmptyResultEntity.flightsList.size());
         System.out.println("hotels list length: " + searchEmptyResultEntity.hotelsList.size());
         System.out.println("flights list length: " + searchEmptyResultEntity.flightsList.size());
     }
@@ -79,22 +81,30 @@ public class SearchResourceTest {
         Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
         //hotel result
+        assertEquals(2, searchResultEntity.hotelsList.size());
         System.out.println("hotels list length: " + searchResultEntity.hotelsList.size());
+        assertEquals(2, searchResultEntity.hotelsList.get(0).hotelsInformationList.size());
         System.out.println("number of hotels for 1st option: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.size());
+        assertEquals("Hotel de France", searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).gethotel().getName());
         System.out.println("hotel 0.0 name: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).gethotel().getName());
         System.out.println("hotel 0.0 price: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getPrice());
         System.out.println("hotel 0.0 booking number: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber());
+        assertEquals("NY Hotel", searchResultEntity.hotelsList.get(0).hotelsInformationList.get(1).gethotel().getName());
         System.out.println("hotel 0.1 name: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(1).gethotel().getName());
         System.out.println("hotel 0.1 price: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(1).getPrice());
         System.out.println("hotel 0.1 booking number: " + searchResultEntity.hotelsList.get(0).hotelsInformationList.get(1).getBookingNumber());
+        assertEquals("Milan Hotel", searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).gethotel().getName());
         System.out.println("hotel 1.0 name: " + searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).gethotel().getName());
         System.out.println("hotel 1.0 price: " + searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).getPrice());
         System.out.println("hotel 1.0 booking number: " + searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).getBookingNumber());
         //flight result
+        assertEquals(2, searchResultEntity.flightsList.size());
         System.out.println("flights list length: " + searchResultEntity.flightsList.size());
-        System.out.println("flight 1 booking number: " + searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber());
+        assertEquals("Barcelona", searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getFlight().getStart());
         System.out.println("flight 1 booking start: " + searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getFlight().getStart());
-        System.out.println("flight 2 number: " + searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getBookingNumber()); 
+        System.out.println("flight 1 booking number: " + searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber());
+        assertEquals("Copenhagen", searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getFlight().getStart());
         System.out.println("flight 2 start: " + searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getFlight().getStart());
+        System.out.println("flight 2 booking number: " + searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getBookingNumber()); 
     } 
 }
