@@ -135,6 +135,26 @@ public class ScenarioTestCases {
         for(String status : planResultEntity.itinerary.flights.values()){
             assertEquals("unconfirmed", status);
         }
+        
+        // Booking the itinerary
+        BookItineraryInputRepresentation bookInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
+        
+        WebTarget r3 = client.target("http://localhost:8080/ws/webresources/booking/" + Integer.toString(resultentity.ID));
+        Response bookOutput = r3.request().post(Entity.entity(bookInput, MediaType.APPLICATION_XML), Response.class);
+        System.out.println(bookOutput.toString());
+        ItineraryOutputRepresentation bookOutputEntity = bookOutput.readEntity(ItineraryOutputRepresentation.class);
+        System.out.println("Booking the itinerary"); 
+        System.out.println("Get planned hotels: " + bookOutputEntity.itinerary.hotels);
+        System.out.println("Get planned flights: " + bookOutputEntity.itinerary.flights);        
+        
+         // Check that everything is confirmed
+        for(String status : bookOutputEntity.itinerary.hotels.values()){
+            assertEquals("confirmed", status);
+        }
+        
+        for(String status : bookOutputEntity.itinerary.flights.values()){
+            assertEquals("confirmed", status);
+        }
     }
     
     @Test
