@@ -19,7 +19,7 @@ import travelgood.representations.*;
 
 /**
  *
- * @author Quentin
+ * @author Quentin, Daniel Sanz
  */
 public class ScenarioTestCases {
     
@@ -236,7 +236,104 @@ public class ScenarioTestCases {
     
     @Test
     public void ScenarioTest_C1() {
-    
+        System.out.println("Staringt test C1");
+                
+        //Searching a list of flights and hotels
+        SearchInputRepresentation mySearch = new SearchInputRepresentation();
+        //1st hotel to be searched
+        SearchInputRepresentation.SearchHotelInputRepresentation myFisrtHotel = new SearchInputRepresentation.SearchHotelInputRepresentation();
+        myFisrtHotel.setArrivalDate(CreateDate(30, 1, 2016));
+        myFisrtHotel.setDepartureDate(CreateDate(4, 2, 2016));
+        myFisrtHotel.setCity("London");
+        mySearch.hotelsList.add(0, myFisrtHotel);
+        //2nd hotel to be searched
+        SearchInputRepresentation.SearchHotelInputRepresentation mySecondHotel = new SearchInputRepresentation.SearchHotelInputRepresentation();
+        mySecondHotel.setArrivalDate(CreateDate(4, 2, 2016));
+        mySecondHotel.setDepartureDate(CreateDate(8, 2, 2016));
+        mySecondHotel.setCity("Paris");      
+        mySearch.hotelsList.add(1, mySecondHotel);
+        //1st flight to be searched    
+        SearchInputRepresentation.SearchFlightInputRepresentation myFirstFlight = createSearchFlightRep("Copenhagen", "Kuala Lumpur", 26, 2, 2016);
+        mySearch.flightsList.add(0, myFirstFlight);
+        //search POST request
+        Client client = ClientBuilder.newClient();
+        WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
+        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
+        
+        //check that search contains 1 flight and 2 hotels
+        assertEquals(2, searchResultEntity.hotelsList.size());
+        assertEquals(1, searchResultEntity.flightsList.size());
+        //get booking numbers
+        String bookingNumber_flight1 = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
+        String bookingNumber_hotel1 = searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber();
+        String bookingNumber_hotel2 = searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).getBookingNumber();;
+        
+        // Create an itinerary GET request 
+        WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
+        Response result = r.request().get(Response.class);
+        CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
+        System.out.println("returned ID: " + resultentity.ID);
+        assertTrue(0 <= resultentity.ID);
+        
+        // Add 1st flight to itinerary: POST request
+        WebTarget r2 = client.target("http://localhost:8080/ws/webresources/itinerary/" + Integer.toString(resultentity.ID));
+        AddToItineraryInputRepresentation itineraryInputOne = new AddToItineraryInputRepresentation();
+        itineraryInputOne.flight_booking_number.add(bookingNumber_flight1);
+        Response planResultOne = r2.request().post(Entity.entity(itineraryInputOne, MediaType.APPLICATION_XML), Response.class);
+        ItineraryOutputRepresentation planResultEntityOne = planResultOne.readEntity(ItineraryOutputRepresentation.class);
+        System.out.println("Planning the itinerary"); 
+        //check size
+        assertEquals(1, planResultEntityOne.itinerary.flights.size());
+        assertEquals(0, planResultEntityOne.itinerary.hotels.size());
+        System.out.println("Planned hotels: " + planResultEntityOne.itinerary.hotels);
+        System.out.println("Planned flights: " + planResultEntityOne.itinerary.flights);
+        System.out.println(" -- ");
+        // Add 1st hotel
+        System.out.println("Adding one new hotel");
+        AddToItineraryInputRepresentation itineraryInputTwo = new AddToItineraryInputRepresentation();
+        itineraryInputTwo.hotel_booking_numbers.add(bookingNumber_hotel1);        
+        Response planResultTwo = r2.request().post(Entity.entity(itineraryInputTwo, MediaType.APPLICATION_XML), Response.class);
+        ItineraryOutputRepresentation planResultEntityTwo = planResultTwo.readEntity(ItineraryOutputRepresentation.class);  
+        //check size
+        assertEquals(1, planResultEntityTwo.itinerary.flights.size());
+        assertEquals(1, planResultEntityTwo.itinerary.hotels.size());
+        System.out.println("Planned hotels: " + planResultEntityTwo.itinerary.hotels);
+        System.out.println("Planned flights: " + planResultEntityTwo.itinerary.flights);
+        System.out.println(" -- ");
+        // Add 2nd hotel 
+        System.out.println("Adding 2nd hotel");
+        AddToItineraryInputRepresentation itineraryInputThree = new AddToItineraryInputRepresentation();      
+        itineraryInputThree.hotel_booking_numbers.add(bookingNumber_hotel2);
+        Response planResultThree = r2.request().post(Entity.entity(itineraryInputThree, MediaType.APPLICATION_XML), Response.class);
+        ItineraryOutputRepresentation planResultEntityThree = planResultThree.readEntity(ItineraryOutputRepresentation.class);      
+        //check size
+        assertEquals(1, planResultEntityThree.itinerary.flights.size());
+        assertEquals(2, planResultEntityThree.itinerary.hotels.size());
+        System.out.println("Planned hotels: " + planResultEntityThree.itinerary.hotels);
+        System.out.println("Planned flights: " + planResultEntityThree.itinerary.flights);
+        System.out.println(" -- ");      
+        
+        // Request for the itinerary
+        Response planResultItinerary = r2.request().get(Response.class);
+        ItineraryOutputRepresentation planResultItineraryEntity = planResultItinerary.readEntity(ItineraryOutputRepresentation.class);
+        System.out.println("Getting the itinerary"); 
+        //check size
+        assertEquals(1, planResultItineraryEntity.itinerary.flights.size());
+        assertEquals(2, planResultItineraryEntity.itinerary.hotels.size());
+        System.out.println("Get planned hotels: " + planResultItineraryEntity.itinerary.hotels);
+        System.out.println("Get planned flights: " + planResultItineraryEntity.itinerary.flights);  
+        
+        // Check that everything is unconfirmed
+        for(String status : planResultItineraryEntity.itinerary.hotels.values()){
+            assertEquals("unconfirmed", status);
+        }
+        for(String status : planResultItineraryEntity.itinerary.flights.values()){
+            assertEquals("unconfirmed", status);
+        }
+        
+        //booking the itinerary
+        
     }
     
     @Test
