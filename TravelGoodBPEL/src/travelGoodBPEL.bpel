@@ -299,14 +299,18 @@
                                                                                                                                                         </sxed:editor>
                                                                                                                                         </to>
                                                                                                                         </copy>
-                                                                                                                        <copy>
-                                                                                                                                <from>$GetFlightsOut.getFlightsOutput/FlightInformations/Flight/StartDateTime</from>
-                                                                                                                                        <to>$bookingNumberDate/flightBookingNumberDate[$GetFlightCounter]/dateFlight
-                                                                                                <sxed:editor>
-                                                                                                                                                                <sxed:predicate path="$bookingNumberDate/flightBookingNumberDate[$GetFlightCounter]" source="to"/>
-                                                                                                                                                        </sxed:editor>
-                                                                                                                                        </to>
-                                                                                                                        </copy>
+                                                                                                                 <copy>
+                                                                                                                          <from>$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]/date
+                                                                                                                                   <sxed:editor>
+                                                                                                                                            <sxed:predicate path="$GetFlightsAndHotelsIn.part1/FlightRequests/FlightsList[$GetFlightCounter]" source="from"/>
+                                                                                                                                   </sxed:editor>
+                                                                                                                          </from>
+                                                                                                                          <to>$bookingNumberDate/flightBookingNumberDate[$GetFlightCounter]/dateFlight
+                                                                                                                                   <sxed:editor>
+                                                                                                                                            <sxed:predicate path="$bookingNumberDate/flightBookingNumberDate[$GetFlightCounter]" source="to"/>
+                                                                                                                                   </sxed:editor>
+                                                                                                                          </to>
+                                                                                                                 </copy>
                                                                                                         </assign>
                                                                                                         <assign name="Assign6">
                                                                                                                 <copy>

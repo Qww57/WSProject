@@ -38,7 +38,7 @@ public class TravelGoodOperations {
         return port.planFlightsAndHotels(part1, part2);
     }
 
-    public static ItineraryListType cancelItinerary(java.lang.String part1, org.netbeans.j2ee.wsdl.niceview.java.niceview.CreditCardInfoType part2) {
+    public static ItineraryListType cancelItinerary(java.lang.String part1) {
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService service = new org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLService();
         org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.TravelGoodWSDLPortType port = service.getTravelGoodWSDLPortTypeBindingPort();
         return port.cancelItinerary(part1);

@@ -21,8 +21,9 @@ import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.*;
  */
 public class TravelGoodClientTest {
     
-    public TravelGoodClientTest() {
-    }
+     public TravelGoodClientTest() {
+        }
+   
 
     /* Create Itinerery */
     
@@ -68,10 +69,10 @@ public class TravelGoodClientTest {
         GetInputType input = new GetInputType();
         
         //Create one flight request
-        XMLGregorianCalendar date = CreateDate(26, 11, 2015);
+        XMLGregorianCalendar date = CreateDate(26, 10, 2015);
         GetFlightsInputType flight = CreateGetFlightsInputType(date, "Copenhagen", "London");
         AddFlight(input, flight);
-       
+       System.out.println("we added");
         GetOutputType output = getFlightsAndHotels(input, receivedItinID);
         String resultStart = output.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart();
         assertEquals("Copenhagen", resultStart);
@@ -90,7 +91,7 @@ public class TravelGoodClientTest {
         GetInputType input = new GetInputType();
         
         //Create one flight request
-        XMLGregorianCalendar date = CreateDate(26, 11, 2015);
+        XMLGregorianCalendar date = CreateDate(26, 10, 2015);
         GetFlightsInputType flight = CreateGetFlightsInputType(date, "Copenhagen", "London");
         AddFlight(input, flight);
         
@@ -275,7 +276,7 @@ public class TravelGoodClientTest {
         GetInputType input = new GetInputType();
         
         //Create one flight request
-        XMLGregorianCalendar date = CreateDate(26, 11, 2015);
+        XMLGregorianCalendar date = CreateDate(26, 10, 2015);
         GetFlightsInputType flight = CreateGetFlightsInputType(date, "Copenhagen", "London");
         AddFlight(input, flight);
         
@@ -515,7 +516,7 @@ public class TravelGoodClientTest {
         GetInputType input = new GetInputType();
         
         //Create one flight request
-        XMLGregorianCalendar date = CreateDate(26, 11, 2015);
+        XMLGregorianCalendar date = CreateDate(26, 10, 2015);
         GetFlightsInputType flight = CreateGetFlightsInputType(date, "Copenhagen", "London");
         AddFlight(input, flight);
         
@@ -705,7 +706,7 @@ public class TravelGoodClientTest {
         System.out.println("booking passed!");
         
         //cancelling
-        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID);
         System.out.println("cancelling performed!");
         //hotel testing
         String cancelOutputHotelBookingNumber = cancelOutput.getHotelsItineraryInformation().get(0).getBookingNumber();
@@ -1163,7 +1164,7 @@ public class TravelGoodClientTest {
         
         
         // Cancelling of the hotel
-        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);            
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID);            
             
         status = cancelOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + cancelOutput.getHotelsItineraryInformation().get(0).getStatus());
@@ -1254,7 +1255,7 @@ public class TravelGoodClientTest {
         System.out.println("booking done");
         
         // Cancelling of the hotel
-        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);            
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID);            
             
         status = cancelOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + status);
@@ -1353,7 +1354,7 @@ public class TravelGoodClientTest {
         System.out.println("booking done");
         
         // Cancelling of the hotel
-        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);            
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID);            
             
         status = cancelOutput.getHotelsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + status);
@@ -1412,7 +1413,7 @@ public class TravelGoodClientTest {
         
         
         // Cancelling of the flight
-        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);            
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID);            
             
         status = cancelOutput.getFlightsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + cancelOutput.getFlightsItineraryInformation().get(0).getStatus());
@@ -1497,7 +1498,7 @@ public class TravelGoodClientTest {
         System.out.println("Get status: " + status2);
         assertEquals("confirmed", status2);
         
-        ItineraryListType cancelOutput = cancelItinerary(receivedItinID, creditCard);            
+        ItineraryListType cancelOutput = cancelItinerary(receivedItinID);            
             
         status = cancelOutput.getFlightsItineraryInformation().get(0).getStatus();
         System.out.println("Get status: " + cancelOutput.getFlightsItineraryInformation().get(0).getStatus());
@@ -1666,7 +1667,7 @@ public class TravelGoodClientTest {
         System.out.println("booking passed!");
         
         //cancelling stuff
-        ItineraryListType cancelledItinerary = cancelItinerary(receivedItinID, AnnesCreditCardInfo);
+        ItineraryListType cancelledItinerary = cancelItinerary(receivedItinID);
         System.out.println("Cancelling performed correctly");
         //check itinerary length
         Integer cancelledItinerarySize = cancelledItinerary.getHotelsItineraryInformation().size();
