@@ -19,8 +19,8 @@ public class Itinerary {
     
     public int ID;
     // Booking number, status
-    public final LinkedHashMap<String, String> hotels = new LinkedHashMap<>();
-    public final LinkedHashMap<String, String> flights = new LinkedHashMap<>();
+    public final HashMap<String, String> hotels = new LinkedHashMap<>();
+    public final HashMap<String, String> flights = new LinkedHashMap<>();
     
     public void addHotel(String bookingnumber) {
         hotels.put(bookingnumber, "unconfirmed");
@@ -29,4 +29,5 @@ public class Itinerary {
     public void addFlight(String bookingnumber) {
         flights.put(bookingnumber, "unconfirmed");
     }
+    
 }
