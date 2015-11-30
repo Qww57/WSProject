@@ -258,7 +258,7 @@ public class BookingResource {
         // Cancel hotels
         for (String bookingNumber : it.hotels.keySet()) {                      
      
-            String bookingStatus = bookingStatus = it.flights.get(bookingNumber);
+            String bookingStatus = bookingStatus = it.hotels.get(bookingNumber);
             if(bookingStatus == "confirmed"){
                 try {
                     cancelHotel(bookingNumber);
