@@ -7,7 +7,7 @@ package travelgood.objects;
 
 /**
  *
- * @author Daniel
+ * @author Daniel Brand
  */
 public class LinkRelatives {
     // /itinerary

@@ -51,8 +51,10 @@
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
     <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
-    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
-    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
     <system systemId="http://10.16.188.163:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/10.16.188.163_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
     <system systemId="http://10.16.188.163:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/10.16.188.163_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
+    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
+    <system systemId="http://localhost:9080/service/TravelGood?wsdl" uri="xml-resources/web-service-references/TravelGood/wsdl/localhost_9080/service/TravelGood.wsdl"/>
+    <system systemId="http://52d3c167.dynamic-ip.k-net.dk:9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/52d3c167.dynamic-ip.k-net.dk_9080/TravelGood-sun-http-binding/TravelGoodBPEL/LameDuckAndNiceView.xsd"/>
+    <system systemId="http://52d3c167.dynamic-ip.k-net.dk:9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd" uri="xml-resources/web-service-references/TravelGood/wsdl/52d3c167.dynamic-ip.k-net.dk_9080/TravelGood-sun-http-binding/TravelGoodBPEL/BankServiceTypes.xsd"/>
 </catalog>

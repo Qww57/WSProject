@@ -1,3 +1,5 @@
+<!-- Authors: Ali C, Daniel Sanz, Daniel Brand -->
+
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions name="LameDuck" targetNamespace="http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck"
     xmlns="http://schemas.xmlsoap.org/wsdl/"

@@ -17,7 +17,7 @@ import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.FlightType;
 
 /**
  *
- * @author Daniel
+ * @author Ali C, Daniel Brand, Raj, Rustam
  */
 public class DataBase {
     

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Daniel
+ * @author Daniel Brand
  */
 @XmlRootElement
 public class AddToItineraryInputRepresentation {

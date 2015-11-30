@@ -18,7 +18,7 @@ import travelgood.representations.*;
 
 /**
  *
- * @author Quentin
+ * @author Quentin, Ali, Daniel Brand
  */
 public class BookingResourceTest {
         

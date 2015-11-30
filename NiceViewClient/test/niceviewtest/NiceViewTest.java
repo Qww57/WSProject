@@ -21,7 +21,7 @@ import org.netbeans.j2ee.wsdl.niceview.java.niceview.GetHotelsOutputType;
 
 /**
  *
- * @author Quentin
+ * @author Quentin, Raj, Rustam
  */
 public class NiceViewTest {
     

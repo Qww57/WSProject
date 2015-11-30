@@ -10,7 +10,7 @@ import travelgood.objects.Itinerary;
 
 /**
  *
- * @author Daniel
+ * @author Daniel Brand
  */
 @XmlRootElement
 public class ItineraryOutputRepresentation {

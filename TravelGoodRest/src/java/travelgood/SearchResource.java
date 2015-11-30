@@ -24,7 +24,7 @@ import org.netbeans.j2ee.wsdl.niceview.java.niceview.HotelInformationType;
 
 /**
  *
- * @author Daniel & Dani Sanz
+ * @author Daniel Brand, Dani Sanz, Raj
  */
 @Path("search")
 public class SearchResource {

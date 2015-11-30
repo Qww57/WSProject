@@ -12,7 +12,7 @@ import travelgood.objects.Itinerary;
 
 /**
  *
- * @author Daniel
+ * @author Daniel Sanz, Daniel Brand, Raj, Rustam
  */
 public class Database {
     

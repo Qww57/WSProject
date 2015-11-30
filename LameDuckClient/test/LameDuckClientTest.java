@@ -15,7 +15,7 @@ import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.*;
 
 /**
  *
- * @author Ehsan
+ * @author Ali, Daniel Brand, Daniel Sanz, Raj, Rust
  */
 public class LameDuckClientTest {
     

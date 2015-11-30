@@ -1,7 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
  */
 package lameduck;
 
@@ -27,7 +25,7 @@ import org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.GetFlightsOutputTyp
 
 /**
  *
- * @author Daniel
+ * @author Ali C, Daniel Sanz, Daniel Brand
  */
 @WebService(serviceName = "LameDuckService", portName = "LameDuckBindingPort", endpointInterface = "org.netbeans.j2ee.wsdl.lameduckws.lameduckws.lameduck.LameDuckPortType", targetNamespace = "http://j2ee.netbeans.org/wsdl/LameDuckWS/LameDuckWS/LameDuck", wsdlLocation = "WEB-INF/wsdl/LameDuckService/LameDuck.wsdl")
 @BindingType(value = "http://java.sun.com/xml/ns/jaxws/2003/05/soap/bindings/HTTP/")

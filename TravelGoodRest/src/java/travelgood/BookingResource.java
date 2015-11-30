@@ -24,7 +24,7 @@ import travelgood.representations.*;
 
 /**
  *
- * @author Daniel Brand
+ * @author Quentin, Daniel Brand, Rustam
  */
 @Path("booking")
 public class BookingResource {

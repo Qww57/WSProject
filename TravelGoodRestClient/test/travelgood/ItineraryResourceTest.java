@@ -19,7 +19,7 @@ import travelgood.representations.*;
 
 /**
  *
- * @author Daniel
+ * @author Daniel Brand
  */
 public class ItineraryResourceTest {
 

@@ -15,7 +15,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  *
- * @author dsanz006
+ * @author Daniel Sanz
  */
 @XmlRootElement
 public class SearchOutputRepresentation {

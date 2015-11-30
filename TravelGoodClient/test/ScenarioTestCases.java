@@ -16,7 +16,7 @@ import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.*;
 
 /**
  *
- * @author Quentin, Daniel Sanz
+ * @author Quentin, Daniel Sanz, Ali 
  */
 public class ScenarioTestCases {
     

@@ -21,7 +21,7 @@ import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
 
 /**
  *
- * @author Quentin
+ * @author Quentin, Ali C, Raj, Rustam
  */
 
 @WebService(serviceName = "NiceViewService", portName = "NiceViewBindingPort", endpointInterface = "org.netbeans.j2ee.wsdl.niceview.java.niceview.NiceViewPortType", targetNamespace = "http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView", wsdlLocation = "WEB-INF/wsdl/NiceViewService/NiceView.wsdl")

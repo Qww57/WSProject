@@ -15,7 +15,7 @@ import org.netbeans.j2ee.wsdl.niceview.java.niceview.HotelType;
 
 /**
  *
- * @author Quentin
+ * @author Quentin, Raj, Rustam
  */
 public class DataBase {
     

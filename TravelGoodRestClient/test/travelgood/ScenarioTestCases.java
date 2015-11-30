@@ -20,7 +20,7 @@ import travelgood.representations.*;
 
 /**
  *
- * @author Quentin, Daniel Sanz
+ * @author Quentin, Daniel Sanz, Ali
  */
 public class ScenarioTestCases {
     

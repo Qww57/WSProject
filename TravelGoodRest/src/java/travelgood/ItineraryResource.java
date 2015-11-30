@@ -21,7 +21,7 @@ import travelgood.representations.*;
 
 /**
  *
- * @author Daniel Brand
+ * @author Daniel Brand, Ali C
  */
 @Path("itinerary")
 public class ItineraryResource {
