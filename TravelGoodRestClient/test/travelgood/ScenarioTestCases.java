@@ -26,94 +26,115 @@ import travelgood.representations.*;
 public class ScenarioTestCases {
     
     @Test
-    public void testP1() {
-        
+    public void testP1() { 
         System.out.println("Staringt test P1");
                 
-        // Get a list of flights and hotels
-        SearchInputRepresentation mySearch = new SearchInputRepresentation();
-        
+        // Creating inputs for the get request    
         SearchInputRepresentation.SearchHotelInputRepresentation myFisrtHotel = new SearchInputRepresentation.SearchHotelInputRepresentation();
         myFisrtHotel.setArrivalDate(CreateDate(26, 10, 2015));
         myFisrtHotel.setDepartureDate(CreateDate(29, 10, 2015));
         myFisrtHotel.setCity("Paris");
-        mySearch.hotelsList.add(0, myFisrtHotel);
-        
+             
         SearchInputRepresentation.SearchHotelInputRepresentation mySecondHotel = new SearchInputRepresentation.SearchHotelInputRepresentation();
         mySecondHotel.setArrivalDate(CreateDate(12, 11, 2015));
         mySecondHotel.setDepartureDate(CreateDate(18, 11, 2015));
         mySecondHotel.setCity("Milan");      
-        mySearch.hotelsList.add(1, mySecondHotel);
-              
-        SearchInputRepresentation.SearchFlightInputRepresentation myFirstFlight = createSearchFlightRep("Barcelona", "New York", 26, 12, 2015);
-        mySearch.flightsList.add(0, myFirstFlight);
-        
-        SearchInputRepresentation.SearchFlightInputRepresentation mySecondFlight = createSearchFlightRep("Copenhagen", "London", 26, 10, 2015);
-        mySearch.flightsList.add(1, mySecondFlight);
-        
-        SearchInputRepresentation.SearchFlightInputRepresentation thirdFlight = createSearchFlightRep("Copenhagen", "Kuala Lumpur", 26, 2, 2016);
-        mySearch.flightsList.add(2, thirdFlight);
-        
+               
+        SearchInputRepresentation.SearchFlightInputRepresentation myFirstFlight = createSearchFlightRep("Barcelona", "New York", 26, 12, 2015);      
+        SearchInputRepresentation.SearchFlightInputRepresentation mySecondFlight = createSearchFlightRep("Copenhagen", "London", 26, 10, 2015);             
+        SearchInputRepresentation.SearchFlightInputRepresentation myThirdFlight = createSearchFlightRep("Copenhagen", "Kuala Lumpur", 26, 2, 2016);
+           
+        // Create an itinerary and add one flight     
         Client client = ClientBuilder.newClient();
-        WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
-        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
-        SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
-        
-        String bookingNumber_flight1 = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
-        String bookingNumber_flight2 = searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getBookingNumber();
-        String bookingNumber_flight3 = searchResultEntity.flightsList.get(2).flightsInformationList.get(0).getBookingNumber();
-        String bookingNumber_hotel1 = searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber();
-        String bookingNumber_hotel2 = searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).getBookingNumber();;
-        
-        // Create an itinerary and add one flight  
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
         Response result = r.request().get(Response.class);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         System.out.println("returned ID: " + resultentity.ID);
         assertTrue(0 <= resultentity.ID);
         
-        // Adding the lists of hotels and flights to the itinerary
-        WebTarget r2 = client.target("http://localhost:8080/ws/webresources/itinerary/" + Integer.toString(resultentity.ID));
+        // Getting a first flight and adding it to the plan
+        System.out.println("Adding one flight");
+        SearchInputRepresentation mySearch = new SearchInputRepresentation();  
+        mySearch.flightsList.add(0, myFirstFlight);
+        
+        WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
+        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
+        String bookingNumber_flight = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
+        
+        Link addToItineraryLink = result.getLink(LinkRelatives.ADD_TO_ITINERARY);
+        WebTarget r2 = client.target(addToItineraryLink);
         AddToItineraryInputRepresentation inputRepresentation = new AddToItineraryInputRepresentation();
-        inputRepresentation.flight_booking_number.add(bookingNumber_flight1);
+        inputRepresentation.flight_booking_number.add(bookingNumber_flight);
         
         Response planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
         ItineraryOutputRepresentation planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
-        System.out.println("Planning the itinerary"); 
+      
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
         System.out.println("Planned flights: " + planResultEntity.itinerary.flights);
         System.out.println(" -- ");
         
         // Add an hotel
-        inputRepresentation.hotel_booking_numbers.add(bookingNumber_hotel1);        
+        System.out.println("Adding one new hotel");
+        mySearch = new SearchInputRepresentation();  
+        mySearch.hotelsList.add(0, myFisrtHotel);
+        
+        searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
+        String bookingNumber_hotel = searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber();
+            
+        inputRepresentation.hotel_booking_numbers.add(bookingNumber_hotel);        
         planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);  
-        System.out.println("Adding one new hotel");
+        
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
         System.out.println("Planned flights: " + planResultEntity.itinerary.flights);
         System.out.println(" -- ");
         
         // Add another flight
-        inputRepresentation.flight_booking_number.add(bookingNumber_flight2);
+        System.out.println("Adding one new flight");
+        mySearch = new SearchInputRepresentation();  
+        mySearch.flightsList.add(0, mySecondFlight);
+        
+        searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
+        bookingNumber_flight = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
+        
+        inputRepresentation.flight_booking_number.add(bookingNumber_flight);
         planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
-        System.out.println("Adding one new flight");
+       
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
         System.out.println("Planned flights: " + planResultEntity.itinerary.flights);
         System.out.println(" -- ");        
         
         // Add a third flight 
-        inputRepresentation.flight_booking_number.add(bookingNumber_flight3);
+        System.out.println("Adding one new flight");
+        mySearch = new SearchInputRepresentation();  
+        mySearch.flightsList.add(0, myThirdFlight);
+        
+        searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
+        bookingNumber_flight = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
+        
+        inputRepresentation.flight_booking_number.add(bookingNumber_flight);
         planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
-        System.out.println("Adding one new flight");
+
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
         System.out.println("Planned flights: " + planResultEntity.itinerary.flights);
         System.out.println(" -- ");
         
-        // Add another hotel 
+        // Add another hotel
         System.out.println("Adding one new hotel");
-        inputRepresentation.hotel_booking_numbers.add(bookingNumber_hotel2);
+        mySearch = new SearchInputRepresentation();  
+        mySearch.hotelsList.add(0, mySecondHotel);
+        
+        searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
+        bookingNumber_hotel= searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber();
+        
+        inputRepresentation.hotel_booking_numbers.add(bookingNumber_hotel);
         planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);      
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
@@ -139,7 +160,8 @@ public class ScenarioTestCases {
         // Booking the itinerary
         BookItineraryInputRepresentation bookInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
         
-        WebTarget r3 = client.target("http://localhost:8080/ws/webresources/booking/" + Integer.toString(resultentity.ID));
+        Link bookItineraryLink = planResult.getLink(LinkRelatives.BOOK_ITINERARY);
+        WebTarget r3 = client.target(bookItineraryLink);
         Response bookOutput = r3.request().post(Entity.entity(bookInput, MediaType.APPLICATION_XML), Response.class);
         System.out.println(bookOutput.toString());
         ItineraryOutputRepresentation bookOutputEntity = bookOutput.readEntity(ItineraryOutputRepresentation.class);
@@ -158,8 +180,7 @@ public class ScenarioTestCases {
     }
     
     @Test
-    public void testP2() {
-        
+    public void testP2() {     
         System.out.println("Staringt test P2");
         
         // Create an itinerary and add one flight  
@@ -195,13 +216,16 @@ public class ScenarioTestCases {
         Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
         
+        // Getting the booking numbers
         String bookingNumber_flight1 = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
         String bookingNumber_flight2 = searchResultEntity.flightsList.get(1).flightsInformationList.get(0).getBookingNumber();
         String bookingNumber_flight3 = searchResultEntity.flightsList.get(2).flightsInformationList.get(0).getBookingNumber();
         String bookingNumber_hotel1 = searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber();
         String bookingNumber_hotel2 = searchResultEntity.hotelsList.get(1).hotelsInformationList.get(0).getBookingNumber();;
         
-        WebTarget r2 = client.target("http://localhost:8080/ws/webresources/itinerary/" + Integer.toString(resultentity.ID));
+        // Adding the booking numbers to the plan
+        Link addToItineraryLink = result.getLink(LinkRelatives.ADD_TO_ITINERARY);
+        WebTarget r2 = client.target(addToItineraryLink);
         AddToItineraryInputRepresentation inputRepresentation = new AddToItineraryInputRepresentation();
         inputRepresentation.flight_booking_number.add(bookingNumber_flight1);
         inputRepresentation.flight_booking_number.add(bookingNumber_flight2);
@@ -215,13 +239,12 @@ public class ScenarioTestCases {
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
         System.out.println("Planned flights: " + planResultEntity.itinerary.flights);
         
-        // Request for the itinerary
+        // Request to get the planned itinerary
         planResult = r2.request().get(Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
         System.out.println("Getting the itinerary");    
         System.out.println("Get planned hotels: " + planResultEntity.itinerary.hotels);
-        System.out.println("Get planned flights: " + planResultEntity.itinerary.flights);
-        
+        System.out.println("Get planned flights: " + planResultEntity.itinerary.flights);       
         
         // Check that everything is unconfirmed
         for(String status : planResultEntity.itinerary.hotels.values()){
