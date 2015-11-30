@@ -45,6 +45,9 @@ public class ScenarioTestCases {
         PlanInputType planFlightInputOne = new PlanInputType();
         planFlightInputOne.getFlightsBookingNumber().add(flightOneBookingNumber);
         ItineraryListType planFlightOutputOne = planFlightsAndHotels(planFlightInputOne, receivedItinID);
+        System.out.println("flights list size: " + planFlightOutputOne.getFlightsItineraryInformation().size());
+        System.out.println("hotels list size: " + planFlightOutputOne.getHotelsItineraryInformation().size());
+        System.out.println("hotel content" + planFlightOutputOne.getHotelsItineraryInformation().get(0).getBookingNumber());
         assertEquals(1, planFlightOutputOne.getFlightsItineraryInformation().size());
         
         //Creating a get request with one hotel
@@ -62,7 +65,7 @@ public class ScenarioTestCases {
         ItineraryListType planHotelOutputOne = planFlightsAndHotels(planHotelInputOne, receivedItinID);
         System.out.println("flights list size: " + planHotelOutputOne.getFlightsItineraryInformation().size());
         System.out.println("hotels list size: " + planHotelOutputOne.getHotelsItineraryInformation().size());
-        assertEquals(1, planHotelOutputOne.getFlightsItineraryInformation().size());
+        assertEquals(1, planHotelOutputOne.getHotelsItineraryInformation().size());
         
         //Creating a get request with second flight
         GetInputType inputFlightTwo = new GetInputType();
@@ -114,7 +117,7 @@ public class ScenarioTestCases {
         PlanInputType planHotelInputTwo = new PlanInputType();
         planHotelInputTwo.getHotelsBookingNumber().add(hotelTwoBookingNumber);
         ItineraryListType planHotelOutputTwo = planFlightsAndHotels(planHotelInputTwo, receivedItinID);
-        assertEquals(2, planHotelOutputTwo.getFlightsItineraryInformation().size());
+        assertEquals(2, planHotelOutputTwo.getHotelsItineraryInformation().size());
         
         
         
