@@ -254,8 +254,7 @@ public class ScenarioTestCases {
     public void testB() {
     
     }
-    
-    
+        
     @Test
     public void testC1() {
         System.out.println("Staringt test C1");

@@ -100,12 +100,12 @@ public class BookingResource {
                         
                         try {
                             bookFlight(bookFlightInput);
+                             it.flights.put(bookingNumber, "confirmed");
                         } catch (BookFlightFault ex) {
                             System.out.println(ex.getFaultInfo());
                             bookingCompensationLoop(parsedID, it);
                         }
-                        
-                        it.flights.put(bookingNumber, "confirmed");
+                                         
                     }
                     // Book hotels
                     for (String bookingNumber : it.hotels.keySet()) {
@@ -116,12 +116,11 @@ public class BookingResource {
                         
                         try {
                             bookHotel(bookHotelInput);
+                            it.hotels.put(bookingNumber, "confirmed");
                         } catch (BookHotelFault ex) {
                             System.out.println(ex.getFaultInfo());
                             bookingCompensationLoop(parsedID, it);
-                        }
-                        
-                        it.hotels.put(bookingNumber, "confirmed");
+                        }                      
                     }
                     
                     // Move itinerary to booked database
