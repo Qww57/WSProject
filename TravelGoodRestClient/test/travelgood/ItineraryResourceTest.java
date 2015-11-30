@@ -32,9 +32,6 @@ public class ItineraryResourceTest {
 
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
     
     @Test
     public void createItineraryTest() {
@@ -56,8 +53,7 @@ public class ItineraryResourceTest {
         
         System.out.println("result: " + secondResultEntity.itinerary.hotels);
         String resultthes = secondResultEntity.itinerary.hotels.get(0);
-        System.out.println("result: " + resultthes);
-           
+        System.out.println("result: " + resultthes);          
     }
     
     @Test

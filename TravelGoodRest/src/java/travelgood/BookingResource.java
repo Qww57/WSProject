@@ -80,8 +80,7 @@ public class BookingResource {
                 int parsedID = Integer.parseInt(ID);
                 Itinerary it = Database.getPlannedItinerary(parsedID);
                 if (it != null) {
-                    // Book flights
-                    
+                                   
                     ExpirationDate expDate = new ExpirationDate();                                             
                     expDate.setMonth(input.expirationMonth);
                     expDate.setYear(input.expirationYear);
@@ -92,36 +91,45 @@ public class BookingResource {
                     
                     Database.storeCreditCard(parsedID, creditCard);
                     
-                    for (String bookingNumber : it.flights.keySet()) {
-                                                                                                                                         
-                        BookFlightInputType bookFlightInput = new BookFlightInputType();
-                        bookFlightInput.setBookingNumber(bookingNumber);
-                        bookFlightInput.setCreditCard(creditCard);
-                        
-                        try {
-                            bookFlight(bookFlightInput);
-                             it.flights.put(bookingNumber, "confirmed");
-                        } catch (BookFlightFault ex) {
-                            System.out.println(ex.getFaultInfo());
-                            bookingCompensationLoop(parsedID, it);
-                        }
-                                         
-                    }
-                    // Book hotels
+                    boolean booking = true;
+                    BookFlightInputType bookFlightInput = new BookFlightInputType();
+                    BookHotelInputType bookHotelInput = new BookHotelInputType();
+                    
+                    // Book hotels                
                     for (String bookingNumber : it.hotels.keySet()) {
                                               
-                        BookHotelInputType bookHotelInput = new BookHotelInputType();
                         bookHotelInput.setBookingNumber(bookingNumber);
                         bookHotelInput.setCreditCard(creditCard);
                         
-                        try {
-                            bookHotel(bookHotelInput);
-                            it.hotels.put(bookingNumber, "confirmed");
-                        } catch (BookHotelFault ex) {
-                            System.out.println(ex.getFaultInfo());
-                            bookingCompensationLoop(parsedID, it);
+                        if (booking == true){
+                            try {
+                                bookHotel(bookHotelInput);
+                                it.hotels.put(bookingNumber, "confirmed");
+                            } catch (BookHotelFault ex) {
+                                System.out.println(ex.getFaultInfo());
+                                bookingCompensationLoop(parsedID, it);
+                                booking = false;
+                            }
                         }                      
                     }
+                    
+                    // Booking flight first
+                    for (String bookingNumber : it.flights.keySet()) {
+                                                                                                                                         
+                        bookFlightInput.setBookingNumber(bookingNumber);
+                        bookFlightInput.setCreditCard(creditCard);
+                        
+                        if (booking == true){
+                            try {
+                                bookFlight(bookFlightInput);
+                                 it.flights.put(bookingNumber, "confirmed");
+                            } catch (BookFlightFault ex) {
+                                System.out.println(ex.getFaultInfo());
+                                bookingCompensationLoop(parsedID, it);
+                                booking = false;
+                            }
+                        }                       
+                    }                                     
                     
                     // Move itinerary to booked database
                     Database.moveItineraryToBooked(parsedID);

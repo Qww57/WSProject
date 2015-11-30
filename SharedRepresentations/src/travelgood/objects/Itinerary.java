@@ -6,6 +6,7 @@
 package travelgood.objects;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -18,8 +19,8 @@ public class Itinerary {
     
     public int ID;
     // Booking number, status
-    public final Map<String, String> hotels = new HashMap<>();
-    public final Map<String, String> flights = new HashMap<>();
+    public final LinkedHashMap<String, String> hotels = new LinkedHashMap<>();
+    public final LinkedHashMap<String, String> flights = new LinkedHashMap<>();
     
     public void addHotel(String bookingnumber) {
         hotels.put(bookingnumber, "unconfirmed");

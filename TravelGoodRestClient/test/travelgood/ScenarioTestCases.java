@@ -252,7 +252,99 @@ public class ScenarioTestCases {
     
     @Test
     public void testB() {
-    
+        System.out.println("Staringt test B");
+        
+        // Create an itinerary 
+        Client client = ClientBuilder.newClient();
+        WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
+        Response result = r.request().get(Response.class);
+        CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
+        System.out.println("returned ID: " + resultentity.ID);
+        assertTrue(0 <= resultentity.ID);
+                
+        //Creating a list of flights and hotels
+        SearchInputRepresentation mySearch = new SearchInputRepresentation();
+
+        SearchInputRepresentation.SearchHotelInputRepresentation myFisrtHotel = new SearchInputRepresentation.SearchHotelInputRepresentation();
+        myFisrtHotel.setArrivalDate(CreateDate(30, 1, 2016));
+        myFisrtHotel.setDepartureDate(CreateDate(4, 2, 2016));
+        myFisrtHotel.setCity("London");       
+ 
+        SearchInputRepresentation.SearchHotelInputRepresentation mySecondHotel = new SearchInputRepresentation.SearchHotelInputRepresentation();
+        mySecondHotel.setArrivalDate(CreateDate(4, 2, 2016));
+        mySecondHotel.setDepartureDate(CreateDate(8, 2, 2016));
+        mySecondHotel.setCity("Paris");             
+        
+        SearchInputRepresentation.SearchFlightInputRepresentation myFirstFlight = createSearchFlightRep("Copenhagen", "Kuala Lumpur", 26, 2, 2016);
+              
+        // Adding them to the request list
+        mySearch.hotelsList.add(0, myFisrtHotel);
+        mySearch.hotelsList.add(1, mySecondHotel);
+        mySearch.flightsList.add(0, myFirstFlight);
+        
+        // Getting the booking numbers
+        WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
+        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
+        
+        assertEquals(2, searchResultEntity.hotelsList.size());
+        assertEquals(1, searchResultEntity.flightsList.size());
+        
+        String bookingNumber_hotel1 = searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber();
+        String bookingNumber_hotel2 = "hello";
+        String bookingNumber_flight1 = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
+       
+        // Add flights and hotels to itinerary
+        AddToItineraryInputRepresentation itineraryInputOne = new AddToItineraryInputRepresentation();      
+        itineraryInputOne.hotel_booking_numbers.add(0, bookingNumber_hotel1);
+        itineraryInputOne.hotel_booking_numbers.add(1, bookingNumber_hotel2);
+        itineraryInputOne.flight_booking_number.add(0, bookingNumber_flight1);
+        
+        // Making the planning request
+        Link addToItineraryLink = result.getLink(LinkRelatives.ADD_TO_ITINERARY);
+        WebTarget r2 = client.target(addToItineraryLink);
+        Response planResultOne = r2.request().post(Entity.entity(itineraryInputOne, MediaType.APPLICATION_XML), Response.class);
+        ItineraryOutputRepresentation planResultEntityOne = planResultOne.readEntity(ItineraryOutputRepresentation.class);
+        
+        System.out.println("Planned hotels: " + planResultEntityOne.itinerary.hotels);
+        System.out.println("Planned flights: " + planResultEntityOne.itinerary.flights);
+        System.out.println(" -- ");
+        
+        // Request for the itinerary
+        Response planResultItinerary = r2.request().get(Response.class);
+        ItineraryOutputRepresentation planResultItineraryEntity = planResultItinerary.readEntity(ItineraryOutputRepresentation.class);
+        System.out.println("Getting the itinerary");     
+        System.out.println("Get planned hotels: " + planResultItineraryEntity.itinerary.hotels);
+        System.out.println("Get planned flights: " + planResultItineraryEntity.itinerary.flights);  
+        
+        // Check that everything is unconfirmed
+        for(String status : planResultItineraryEntity.itinerary.hotels.values()){
+            assertEquals("unconfirmed", status);
+        }
+        for(String status : planResultItineraryEntity.itinerary.flights.values()){
+            assertEquals("unconfirmed", status);
+        }
+        
+        // Booking the itinerary
+        Link bookItineraryLink = planResultItinerary.getLink(LinkRelatives.BOOK_ITINERARY);
+        WebTarget r3 = client.target(bookItineraryLink);
+        BookItineraryInputRepresentation bookItineraryInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
+        Response bookingResult = r3.request().post(Entity.entity(bookItineraryInput, MediaType.APPLICATION_XML), Response.class);
+        
+        ItineraryOutputRepresentation bookingResultEntity = bookingResult.readEntity(ItineraryOutputRepresentation.class);
+        System.out.println("Getting the booked itinerary");  
+        System.out.println("Get booked hotels: " + bookingResultEntity.itinerary.hotels);
+        System.out.println("Get booked flights: " + bookingResultEntity.itinerary.flights); 
+        
+        // Check that everything is right     
+        String status1 = bookingResultEntity.itinerary.hotels.get(bookingNumber_hotel1);
+        assertEquals("cancelled", status1);
+        
+        String status2 = bookingResultEntity.itinerary.hotels.get(bookingNumber_hotel2);
+        assertEquals("unconfirmed", status2);
+        
+        String status3 = bookingResultEntity.itinerary.flights.get(bookingNumber_flight1);
+        assertEquals("unconfirmed", status3); 
     }
         
     @Test
