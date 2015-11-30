@@ -1,0 +1,45 @@
+This document explains how to build and deploy TravelGood correctly, both the BPEL and REST implementations. 
+Follow the following steps:
+
+1)Add all Projects to OpenESB
+
+2)LameDuck: -Clean And Build
+            -Deploy
+
+(optional step, if one wants to run unit tests for LameDuck)
+2.1)LameDuckClient: -New…-> Web Service Client…-> WSDL URL: http://localhost:8080/LameDuck/LameDuckService?wsdl 
+                    -Clean And Build
+	            -Test
+
+3)NiceView: -Clean And Build
+            -Deploy
+
+(optional step, if one wants to run unit tests for NiceView)
+3.1)LameDuckClient: -New…-> Web Service Client…-> WSDL URL: http://localhost:8080/NiceView/NiceViewService?wsdl
+                    -Clean And Build
+	            -Test
+
+4) TravelGood BPEL:
+	4.1)TravelGoodBPEL: -Clean And Build
+	4.2)TravelGood:     -Clean And Build
+			     -Deploy (using OpenESB Standalone server)
+
+5) TravelGood BPEL client tests:
+	5.1)TravelGoodClient: -New…-> Web Service Client…-> WSDL URL: http://localhost:9080/service/TravelGood?wsdl
+			       -Clean And Build
+
+		5.1.1) Test Packages -> ScenarioTestCases.java: these are the required tests. All 5 tests pass
+		5.2.2) Test Packages -> TravelGoodClientTest.java: these are our self-made tests for debugging. All 27 tests pass
+
+6) TravelGood REST:
+	6.1)SharedRepresentations: -Clean And Build
+	6.2)TravelGoodRest:  -Clean And Build 
+			      -Deploy
+
+7) TravelGood REST client tests:
+	7.1)TravelGoodRestClient: -Clean And Build
+		7.1.1) Test Packages -> travelgood -> ScenarioTestCases.java: these are the required tests. All 5 tests pass
+		7.2.2) Test Packages -> travel good : the rest of the tests are self-made. All of them pass
+
+Project Repository on GitHub:
+	https://github.com/Qww57/WSProject
