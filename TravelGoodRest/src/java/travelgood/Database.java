@@ -17,14 +17,17 @@ import travelgood.objects.Itinerary;
 public class Database {
     
     private static int count = 0;
+    
+    // Hashmap using ID and other information
     private static final HashMap<Integer, Itinerary> plannedItineraries = new HashMap<>();
     private static final HashMap<Integer, Itinerary> bookedItineraries = new HashMap<>();
     private static final HashMap<Integer, CreditCardInfoType> bookingCreditCard = new HashMap<>();
+    private static final HashMap<Integer, XMLGregorianCalendar> earliestDate = new HashMap<>();
     
-    //added for dates:
+    // Hashmap using booking numbers and dates
     private static final HashMap<String, XMLGregorianCalendar> hotelsDates = new HashMap<>();
     private static final HashMap<String, XMLGregorianCalendar> flightsDates = new HashMap<>();
-    
+      
     public static int createItinerary() {
         Itinerary it = new Itinerary();
         it.ID = count;
@@ -65,6 +68,7 @@ public class Database {
     public static void addHotelDate(String bookingnumber, XMLGregorianCalendar date) {
         hotelsDates.put(bookingnumber, date);
     }
+    
     public static XMLGregorianCalendar getHotelDate(String bookingNumber) {
         return hotelsDates.get(bookingNumber);
     }
@@ -72,7 +76,16 @@ public class Database {
     public static void addFlightDate(String bookingnumber, XMLGregorianCalendar date) {
         flightsDates.put(bookingnumber, date);
     }
+    
     public static XMLGregorianCalendar getFlightDate(String bookingNumber) {
         return flightsDates.get(bookingNumber);
+    }
+    
+    public static void setEarliestDate(Integer ID, XMLGregorianCalendar date) {
+        earliestDate.put(ID, date);
+    }
+    
+    public static XMLGregorianCalendar getEarliestDate(Integer ID) {
+        return earliestDate.get(ID);
     }
 }
