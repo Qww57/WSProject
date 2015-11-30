@@ -20,7 +20,9 @@
         <partnerLink name="NiceView" xmlns:tns="http://j2ee.netbeans.org/wsdl/NiceView/java/NiceView" partnerLinkType="tns:NiceView" partnerRole="NiceViewPortTypeRole"/>
     </partnerLinks>
     <variables>
-         <variable name="CancelItineraryIn1" messageType="ns1:cancelItineraryRequest"/>
+        <variable name="flightItineraryIsEmpty" type="xs:boolean"/>
+        <variable name="hotelItineraryIsEmpty" type="xs:boolean"/>
+        <variable name="CancelItineraryIn1" messageType="ns1:cancelItineraryRequest"/>
          <variable name="GetItineraryOut2" messageType="ns1:getItineraryResponse"/>
             <variable name="GetItineraryIn2" messageType="ns1:getItineraryRequest"/>
             <variable name="GetItineraryOut1" messageType="ns1:getItineraryResponse"/>
@@ -135,6 +137,14 @@
                                     <from>false()</from>
                                     <to variable="processFinished"/>
                             </copy>
+                        <copy>
+                            <from>true()</from>
+                            <to variable="flightItineraryIsEmpty"/>
+                        </copy>
+                        <copy>
+                            <from>true()</from>
+                            <to variable="hotelItineraryIsEmpty"/>
+                        </copy>
                     </assign>
                     <reply name="Reply1" partnerLink="PartnerLink3" operation="createItinerary" portType="ns1:TravelGoodWSDLPortType" variable="CreateItineraryOut">
                             <correlations>
@@ -341,46 +351,58 @@
                                     <correlation set="ItineraryCorrelation" initiate="no"/>
                                 </correlations>
                                 <sequence name="planFlightsAndHotelsLogic">
-                                     <assign name="Assign28">
-                                          <copy>
-                                               <from>'empty'</from>
-                                               <to variable="itineraryList"/>
-                                          </copy>
-                                     </assign>
                                      <if name="If5">
                                                 <condition>not($itineraryFinished)</condition>
                                                 <sequence name="Sequence23">
-                                                     <sequence name="HotelsItinerary">
-                                                          <if name="IfHotelsItineraryIsEmpty">
-                                                                <condition>1 = $itineraryListHotelCounter and $itineraryList != 'empty'</condition>
-                                                                <assign name="ItineraryHotelCountersInit">
-                                                                              <copy>
-                                                                                        <from>1</from>
-                                                                                             <to variable="planHotelsCounter"/>
-                                                                                   </copy>
-                                                                         </assign>
-                                                               <elseif>
-                                                                    <condition>$itineraryList = 'empty'</condition>
-                                                                    <assign name="Assign29">
-                                                                         <copy>
-                                                                              <from>1</from>
-                                                                              <to variable="planHotelsCounter"/>
-                                                                         </copy>
-                                                                    </assign>
-                                                               </elseif>
-                                                               <else>
-                                                                              <assign name="ItineraryHotelCountersReset">
-                                                                                        <copy>
-                                                                                                  <from>1</from>
-                                                                                                       <to variable="planHotelsCounter"/>
-                                                                                             </copy>
-                                                                                             <copy>
-                                                                                                  <from>1 + count($itineraryList/HotelsItineraryInformation)</from>
-                                                                                                       <to variable="itineraryListHotelCounter"/>
-                                                                                             </copy>
-                                                                                   </assign>
-                                                                         </else>
-                                                               </if>
+                                                    <if name="IfHotelsItineraryIsEmpty">
+                                                        <condition>$hotelItineraryIsEmpty</condition>
+                                                        <if name="IfplanHoteIsInIsEmpty">
+                                                            <condition>0 = count($PlanFlightsAndHotelsIn.part1/HotelsBookingNumber)</condition>
+                                                            <assign name="stillNoHotels">
+                                                                <copy>
+                                                                    <from>true()</from>
+                                                                    <to variable="hotelItineraryIsEmpty"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from>1</from>
+                                                                    <to variable="planHotelsCounter"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from>1</from>
+                                                                    <to variable="itineraryListHotelCounter"/>
+                                                                </copy>
+                                                            </assign>
+                                                            <else>
+                                                                <assign name="hotelsAdded">
+                                                                    <copy>
+                                                                        <from>false()</from>
+                                                                        <to variable="hotelItineraryIsEmpty"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from>1</from>
+                                                                        <to variable="itineraryListHotelCounter"/>
+                                                                    </copy>
+                                                                    <copy>
+                                                                        <from>1</from>
+                                                                        <to variable="planHotelsCounter"/>
+                                                                    </copy>
+                                                                </assign>
+                                                            </else>
+                                                        </if>
+                                                        <else>
+                                                            <assign name="updateHotelCounters">
+                                                                <copy>
+                                                                    <from>1 + count($itineraryList/HotelsItineraryInformation)</from>
+                                                                    <to variable="itineraryListHotelCounter"/>
+                                                                </copy>
+                                                                <copy>
+                                                                    <from>1</from>
+                                                                    <to variable="planHotelsCounter"/>
+                                                                </copy>
+                                                            </assign>
+                                                        </else>
+                                                    </if>
+                                                    <sequence name="HotelsItinerary">
                                                                <forEach name="addHotelsToItinerary" parallel="no" counterName="ForEach3Counter">
                                                                     <startCounterValue>1</startCounterValue>
                                                                          <finalCounterValue>count($PlanFlightsAndHotelsIn.part1/HotelsBookingNumber)</finalCounterValue>
@@ -419,59 +441,80 @@
                                                                                    <to variable="planHotelsCounter"/>
                                                                          </copy>
                                                                </assign>
-                                                               <forEach name="itineraryHotelsToOutput" parallel="no" counterName="ForEach5Counter">
-                                                                    <startCounterValue>1</startCounterValue>
-                                                                         <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
-                                                                         <scope name="Scope5">
-                                                                              <sequence name="Sequence5">
-                                                                                        <assign name="addHotelToPlanOutput">
-                                                                                                  <copy>
-                                                                                                            <from>$itineraryList/HotelsItineraryInformation[$planHotelsCounter]</from>
-                                                                                                                 <to>$PlanFlightsAndHotelsOut.part1/HotelsItineraryInformation[$planHotelsCounter]</to>
-                                                                                                       </copy>
-                                                                                             </assign>
-                                                                                             <assign name="incrHotelCounter">
-                                                                                                  <copy>
-                                                                                                            <from>1 + $planHotelsCounter</from>
-                                                                                                                 <to variable="planHotelsCounter"/>
-                                                                                                       </copy>
-                                                                                             </assign>
-                                                                                   </sequence>
-                                                                         </scope>
-                                                               </forEach>
+                                                        <if name="IfThereAreHotelsInItinerary">
+                                                            <condition>not($hotelItineraryIsEmpty)</condition>
+                                                            <forEach name="itineraryHotelsToOutput" parallel="no" counterName="ForEach5Counter">
+                                                                <startCounterValue>1</startCounterValue>
+                                                                    <finalCounterValue>count($itineraryList/HotelsItineraryInformation)</finalCounterValue>
+                                                                    <scope name="Scope5">
+                                                                        <sequence name="Sequence5">
+                                                                                <assign name="addHotelToPlanOutput">
+                                                                                        <copy>
+                                                                                                <from>$itineraryList/HotelsItineraryInformation[$planHotelsCounter]</from>
+                                                                                                    <to>$PlanFlightsAndHotelsOut.part1/HotelsItineraryInformation[$planHotelsCounter]</to>
+                                                                                            </copy>
+                                                                                    </assign>
+                                                                                    <assign name="incrHotelCounter">
+                                                                                        <copy>
+                                                                                                <from>1 + $planHotelsCounter</from>
+                                                                                                    <to variable="planHotelsCounter"/>
+                                                                                            </copy>
+                                                                                    </assign>
+                                                                            </sequence>
+                                                                    </scope>
+                                                            </forEach>
+                                                        </if>
                                                      </sequence>
                                                      <sequence name="FlightsItinerary">
-                                                          <if name="IfFlightsItineraryIsEmpty">
-                                                                <condition>1 = $itineraryListFlightCounter and $itineraryList != 'empty'</condition>
-                                                                <assign name="ItineraryFlightsCountersInit">
-                                                                              <copy>
-                                                                                        <from>1</from>
-                                                                                             <to variable="planFlightCounter"/>
-                                                                                   </copy>
-                                                                         </assign>
-                                                               <elseif>
-                                                                    <condition>$itineraryList = 'empty'</condition>
-                                                                    <assign name="Assign30">
-                                                                         <copy>
-                                                                              <from>1</from>
-                                                                              <to variable="planFlightCounter"/>
-                                                                         </copy>
-                                                                    </assign>
-                                                               </elseif>
-                                                               <else>
-                                                                              <assign name="ItineraryFlightCountersReset">
-                                                                                        <copy>
-                                                                                                  <from>1</from>
-                                                                                                       <to variable="planFlightCounter"/>
-                                                                                             </copy>
-                                                                                             <copy>
-                                                                                                  <from>1 + count($itineraryList/FlightsItineraryInformation)</from>
-                                                                                                       <to variable="itineraryListFlightCounter"/>
-                                                                                             </copy>
-                                                                                   </assign>
+                                                         <if name="IfFlightsItineraryIsEmpty">
+                                                             <condition>$flightItineraryIsEmpty</condition>
+                                                             <if name="IfplanFlightssInIsEmpty">
+                                                                 <condition>0 = count($PlanFlightsAndHotelsIn.part1/FlightsBookingNumber)</condition>
+                                                                 <assign name="stillNoFlights">
+                                                                     <copy>
+                                                                         <from>true()</from>
+                                                                         <to variable="flightItineraryIsEmpty"/>
+                                                                     </copy>
+                                                                     <copy>
+                                                                         <from>1</from>
+                                                                         <to variable="itineraryListFlightCounter"/>
+                                                                     </copy>
+                                                                     <copy>
+                                                                         <from>1</from>
+                                                                         <to variable="planFlightCounter"/>
+                                                                     </copy>
+                                                                 </assign>
+                                                                         <else>
+                                                                             <assign name="flightsAdded">
+                                                                                 <copy>
+                                                                                     <from>1</from>
+                                                                                     <to variable="itineraryListFlightCounter"/>
+                                                                                 </copy>
+                                                                                 <copy>
+                                                                                     <from>1</from>
+                                                                                     <to variable="planFlightCounter"/>
+                                                                                 </copy>
+                                                                                 <copy>
+                                                                                     <from>false()</from>
+                                                                                     <to variable="flightItineraryIsEmpty"/>
+                                                                                 </copy>
+                                                                             </assign>
                                                                          </else>
-                                                               </if>
-                                                               <forEach name="addFlightsToItinerary" parallel="no" counterName="ForEach4Counter">
+                                                                 </if>
+                                                                 <else>
+                                                                     <assign name="updateFlightCounters">
+                                                                         <copy>
+                                                                             <from>1</from>
+                                                                             <to variable="planFlightCounter"/>
+                                                                         </copy>
+                                                                         <copy>
+                                                                             <from>1 + count($itineraryList/FlightsItineraryInformation)</from>
+                                                                             <to variable="itineraryListFlightCounter"/>
+                                                                         </copy>
+                                                                     </assign>
+                                                                 </else>
+                                                         </if>
+                                                         <forEach name="addFlightsToItinerary" parallel="no" counterName="ForEach4Counter">
                                                                     <startCounterValue>1</startCounterValue>
                                                                          <finalCounterValue>count($PlanFlightsAndHotelsIn.part1/FlightsBookingNumber)</finalCounterValue>
                                                                          <scope name="Scope4">
@@ -509,26 +552,29 @@
                                                                                    <to variable="planFlightCounter"/>
                                                                          </copy>
                                                                </assign>
-                                                               <forEach name="itineraryFlightsToOutput" parallel="no" counterName="ForEach6Counter">
-                                                                    <startCounterValue>1</startCounterValue>
-                                                                         <finalCounterValue>count($itineraryList/FlightsItineraryInformation)</finalCounterValue>
-                                                                         <scope name="Scope6">
-                                                                              <sequence name="Sequence6">
-                                                                                        <assign name="addFlightToPlanOutput">
-                                                                                                  <copy>
-                                                                                                            <from>$itineraryList/FlightsItineraryInformation[$planFlightCounter]</from>
-                                                                                                                 <to>$PlanFlightsAndHotelsOut.part1/FlightsItineraryInformation[$planFlightCounter]</to>
-                                                                                                       </copy>
-                                                                                             </assign>
-                                                                                             <assign name="incrFlightCounter">
-                                                                                                  <copy>
-                                                                                                            <from>1 + $planFlightCounter</from>
-                                                                                                                 <to variable="planFlightCounter"/>
-                                                                                                       </copy>
-                                                                                             </assign>
-                                                                                   </sequence>
-                                                                         </scope>
-                                                               </forEach>
+                                                         <if name="IfThereAreFlightsInItinerary">
+                                                             <condition>not($flightItineraryIsEmpty)</condition>
+                                                             <forEach name="itineraryFlightsToOutput" parallel="no" counterName="ForEach6Counter">
+                                                                 <startCounterValue>1</startCounterValue>
+                                                                     <finalCounterValue>count($itineraryList/FlightsItineraryInformation)</finalCounterValue>
+                                                                     <scope name="Scope6">
+                                                                         <sequence name="Sequence6">
+                                                                                 <assign name="addFlightToPlanOutput">
+                                                                                         <copy>
+                                                                                                 <from>$itineraryList/FlightsItineraryInformation[$planFlightCounter]</from>
+                                                                                                     <to>$PlanFlightsAndHotelsOut.part1/FlightsItineraryInformation[$planFlightCounter]</to>
+                                                                                             </copy>
+                                                                                     </assign>
+                                                                                     <assign name="incrFlightCounter">
+                                                                                         <copy>
+                                                                                                 <from>1 + $planFlightCounter</from>
+                                                                                                     <to variable="planFlightCounter"/>
+                                                                                             </copy>
+                                                                                     </assign>
+                                                                             </sequence>
+                                                                     </scope>
+                                                             </forEach>
+                                                         </if>
                                                      </sequence>
                                                         <reply name="ReplyPlanFlightsAndHotels" partnerLink="PartnerLink3" operation="PlanFlightsAndHotels" portType="ns1:TravelGoodWSDLPortType" variable="PlanFlightsAndHotelsOut"/>
                                                         <assign name="notBookedYet2">

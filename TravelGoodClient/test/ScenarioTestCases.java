@@ -10,6 +10,7 @@ import static ConstructorPackage.TravelGoodOperations.*;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.netbeans.j2ee.wsdl.niceview.java.niceview.*;
 import org.netbeans.j2ee.wsdl.travelgoodbpel.src.travelgoodwsdl.*;
 
@@ -40,14 +41,10 @@ public class ScenarioTestCases {
         assertEquals(1, outputFlightOne.getFlightsList().size());
         assertEquals("Copenhagen", outputFlightOne.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart());
         String flightOneBookingNumber = outputFlightOne.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
-        System.out.println(flightOneBookingNumber);
         //Add flight one to itinerary
         PlanInputType planFlightInputOne = new PlanInputType();
         planFlightInputOne.getFlightsBookingNumber().add(flightOneBookingNumber);
         ItineraryListType planFlightOutputOne = planFlightsAndHotels(planFlightInputOne, receivedItinID);
-        System.out.println("flights list size: " + planFlightOutputOne.getFlightsItineraryInformation().size());
-        System.out.println("hotels list size: " + planFlightOutputOne.getHotelsItineraryInformation().size());
-        System.out.println("hotel content" + planFlightOutputOne.getHotelsItineraryInformation().get(0).getBookingNumber());
         assertEquals(1, planFlightOutputOne.getFlightsItineraryInformation().size());
         
         //Creating a get request with one hotel
@@ -63,8 +60,6 @@ public class ScenarioTestCases {
         PlanInputType planHotelInputOne = new PlanInputType();
         planHotelInputOne.getHotelsBookingNumber().add(hotelOneBookingNumber);
         ItineraryListType planHotelOutputOne = planFlightsAndHotels(planHotelInputOne, receivedItinID);
-        System.out.println("flights list size: " + planHotelOutputOne.getFlightsItineraryInformation().size());
-        System.out.println("hotels list size: " + planHotelOutputOne.getHotelsItineraryInformation().size());
         assertEquals(1, planHotelOutputOne.getHotelsItineraryInformation().size());
         
         //Creating a get request with second flight
@@ -76,15 +71,10 @@ public class ScenarioTestCases {
         assertEquals(1, outputFlightTwo.getFlightsList().size());
         assertEquals("London", outputFlightTwo.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart());
         String flightTwoBookingNumber = outputFlightTwo.getFlightsList().get(0).getFlightInformations().get(0).getBookingNumber();
-        System.out.println(flightTwoBookingNumber);
         //Add flight two to itinerary
         PlanInputType planFlightInputTwo = new PlanInputType();
         planFlightInputTwo.getFlightsBookingNumber().add(flightTwoBookingNumber);
         ItineraryListType planFlightOutputTwo = planFlightsAndHotels(planFlightInputTwo, receivedItinID);
-        //temp
-        System.out.println("flights list size: " + planFlightOutputTwo.getFlightsItineraryInformation().size());
-        System.out.println("hotels list size: " + planFlightOutputTwo.getHotelsItineraryInformation().size());
-        System.out.println("flight booking number on itinerary: " + planFlightOutputTwo.getFlightsItineraryInformation().get(0).getBookingNumber());
         assertEquals(2, planFlightOutputTwo.getFlightsItineraryInformation().size());
         
         //Creating a get request with third flight
@@ -100,8 +90,6 @@ public class ScenarioTestCases {
         PlanInputType planFlightInputThree = new PlanInputType();
         planFlightInputThree.getFlightsBookingNumber().add(flightThreeBookingNumber);
         ItineraryListType planFlightOutputThree = planFlightsAndHotels(planFlightInputThree, receivedItinID);
-        //temp
-        System.out.println("size flight 3: " + planFlightOutputThree.getFlightsItineraryInformation().size());
         assertEquals(3, planFlightOutputThree.getFlightsItineraryInformation().size());
         
         //Creating a get request with second hotel
@@ -119,16 +107,82 @@ public class ScenarioTestCases {
         ItineraryListType planHotelOutputTwo = planFlightsAndHotels(planHotelInputTwo, receivedItinID);
         assertEquals(2, planHotelOutputTwo.getHotelsItineraryInformation().size());
         
+        //check that the state of all is unconfirmed
+        ItineraryListType currentItinerary = getItinerary(receivedItinID);
+        System.out.println("Current Itinerary: Amount of flights: " + currentItinerary.getFlightsItineraryInformation().size());
+        System.out.println("Current Itinerary: Amount of hotels: " + currentItinerary.getHotelsItineraryInformation().size());
+        //check status
+        for(ItineraryInformation flight : currentItinerary.getFlightsItineraryInformation()) {
+            assertEquals(flight.getStatus(), "unconfirmed");
+        }
+        for(ItineraryInformation hotel : currentItinerary.getHotelsItineraryInformation()) {
+            assertEquals(hotel.getStatus(), "unconfirmed");
+        }
         
+        //book itinerary
+        System.out.println("Booking itinerary: ");
+        CreditCardInfoType creditCard = CreateCreditCard("Bruhn Brigitte", "50408821", 2, 10);
+        ItineraryListType bookedItinerary = bookItinerary(receivedItinID, creditCard);
+        System.out.println("Booked Itinerary: Amount of flights: " + bookedItinerary.getFlightsItineraryInformation().size());
+        System.out.println("Booked Itinerary: Amount of hotels: " + bookedItinerary.getHotelsItineraryInformation().size());
         
+        //check status of each one after booking
+        for(ItineraryInformation flight : bookedItinerary.getFlightsItineraryInformation()) {
+            assertEquals(flight.getStatus(), "confirmed");
+        }
+        for(ItineraryInformation hotel : bookedItinerary.getHotelsItineraryInformation()) {
+            assertEquals(hotel.getStatus(), "confirmed");
+        }
         
-
-    
+        System.out.println("Test P1 finished!");
     }
     
     @Test
-    public void testP2() {
-    
+    public void testP2() throws DatatypeConfigurationException {
+        System.out.println("Test P2 Starts");
+        
+        //Create the itinerary 
+        String receivedItinID = createItinerary();
+        System.out.println("Itinerary created with following ID: " + receivedItinID);
+        
+        //Creating a get request with one flight
+        GetInputType inputFlighs = new GetInputType();
+        GetFlightsInputType flight1 = CreateGetFlightsInputType(CreateDate(26, 10, 2015), "Copenhagen", "London");
+        GetFlightsInputType flight2 = CreateGetFlightsInputType(CreateDate(26, 2, 2016), "Copenhagen", "Kuala Lumpur");
+        GetFlightsInputType flight3 = CreateGetFlightsInputType(CreateDate(26, 12, 2015), "Barcelona", "New York");
+        AddFlight(inputFlighs, flight1);
+        AddFlight(inputFlighs, flight2);
+        AddFlight(inputFlighs, flight3);
+        
+        //search operation
+        GetOutputType outputFlightList = getFlightsAndHotels(inputFlighs, receivedItinID);
+        //check size and starting cities
+        assertEquals(3, outputFlightList.getFlightsList().size());
+        assertEquals("Copenhagen", outputFlightList.getFlightsList().get(0).getFlightInformations().get(0).getFlight().getStart());
+        assertEquals("Copenhagen", outputFlightList.getFlightsList().get(1).getFlightInformations().get(0).getFlight().getStart());
+        assertEquals("Barcelona", outputFlightList.getFlightsList().get(2).getFlightInformations().get(0).getFlight().getStart());
+        //store booking number of one of them: the second one
+        String flightBookingNumber = outputFlightList.getFlightsList().get(1).getFlightInformations().get(0).getBookingNumber();
+        
+        //Add flight one to itinerary
+        System.out.println("flight 2 will be added to itinerary");
+        PlanInputType planFlightInput = new PlanInputType();
+        planFlightInput.getFlightsBookingNumber().add(flightBookingNumber);
+        ItineraryListType planFlightOutput = planFlightsAndHotels(planFlightInput, receivedItinID);
+        //check size
+        assertEquals(1, planFlightOutput.getFlightsItineraryInformation().size());
+        //check unconfirmed
+        assertEquals("unconfirmed", planFlightOutput.getFlightsItineraryInformation().get(0).getStatus());
+        System.out.println("booking number of planned flight: " + planFlightOutput.getFlightsItineraryInformation().get(0).getBookingNumber());
+        
+        //cancel planning
+        System.out.println("Planning to be cancelled");
+        Boolean isItineraryCancelled = cancelPlanning(receivedItinID);
+        //check that returned cancelled itinerary is empty
+        assertTrue(isItineraryCancelled);
+        
+        System.out.println("Test P2 Finished!");
+        
     }
     
      /*
