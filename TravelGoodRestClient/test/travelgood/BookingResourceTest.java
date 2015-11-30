@@ -22,12 +22,14 @@ import travelgood.representations.*;
  */
 public class BookingResourceTest {
         
+    private final String MIMEType = MediaType.APPLICATION_XML; // MediaType.APPLICATION_JSON also supported
+    
     @Test
     public void bookOneHotelTest(){
         // Creating an itinerary
         Client client = ClientBuilder.newClient();
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
-        Response result = r.request().get(Response.class);
+        Response result = r.request().accept(MIMEType).get(Response.class);
         System.out.println(result);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         System.out.println("returned ID: " + resultentity.ID);
@@ -42,7 +44,7 @@ public class BookingResourceTest {
         AddToItineraryInputRepresentation inputRepresentation = new AddToItineraryInputRepresentation();
         inputRepresentation.hotel_booking_numbers.add("booking_Hotel_4");
         
-        Response secondResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        Response secondResult = r2.request().accept(MIMEType).post(Entity.entity(inputRepresentation, MIMEType), Response.class);
         ItineraryOutputRepresentation secondResultEntity = secondResult.readEntity(ItineraryOutputRepresentation.class);       
         System.out.println("result: " + secondResultEntity.itinerary.hotels);
         String resultthes = secondResultEntity.itinerary.hotels.get("booking_Hotel_4");
@@ -50,7 +52,7 @@ public class BookingResourceTest {
         
         inputRepresentation.hotel_booking_numbers.add("booking_Hotel_5");
         
-        secondResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        secondResult = r2.request().accept(MIMEType).post(Entity.entity(inputRepresentation, MIMEType), Response.class);
         secondResultEntity = secondResult.readEntity(ItineraryOutputRepresentation.class);       
         System.out.println("result: " + secondResultEntity.itinerary.hotels);
         resultthes = secondResultEntity.itinerary.hotels.get("booking_Hotel_5");
@@ -60,7 +62,7 @@ public class BookingResourceTest {
         BookItineraryInputRepresentation bookInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
         
         WebTarget r3 = client.target("http://localhost:8080/ws/webresources/booking/" + Integer.toString(resultentity.ID));
-        Response thirdResult = r3.request().post(Entity.entity(bookInput, MediaType.APPLICATION_XML), Response.class);
+        Response thirdResult = r3.request().accept(MIMEType).post(Entity.entity(bookInput, MIMEType), Response.class);
         System.out.println(thirdResult.toString());
         ItineraryOutputRepresentation thirdResultEntity = thirdResult.readEntity(ItineraryOutputRepresentation.class);
         

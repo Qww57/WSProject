@@ -7,15 +7,10 @@ package travelgood;
 
 import dk.dtu.imm.fastmoney.types.CreditCardInfoType;
 import dk.dtu.imm.fastmoney.types.CreditCardInfoType.ExpirationDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Link;
@@ -38,7 +33,7 @@ public class BookingResource {
     
     @Path("{ID}")
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response findBookedItinerary(@PathParam("ID") String ID) {
          try {
             int parsedID = Integer.parseInt(ID);
@@ -72,8 +67,8 @@ public class BookingResource {
     
     @Path("{ID}")
     @POST
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response bookItinerary(@PathParam("ID") String ID, BookItineraryInputRepresentation input) {
         if (input != null) {
             try {
@@ -172,7 +167,7 @@ public class BookingResource {
     
     @Path("{ID}/cancel")
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response cancelBookedItinerary(@PathParam("ID") String ID) {
         try {
             int parsedID = Integer.parseInt(ID);
@@ -240,8 +235,8 @@ public class BookingResource {
         // Cancel flights
         for (String bookingNumber : it.flights.keySet()) {                       
 
-            String bookingStatus = bookingStatus = it.flights.get(bookingNumber);
-            if(bookingStatus == "confirmed"){
+            String bookingStatus = it.flights.get(bookingNumber);
+            if(bookingStatus.equals("confirmed")){
                 CancelFlightInputType cancelFlightInput = new CancelFlightInputType();
                 cancelFlightInput.setBookingNumber(bookingNumber);
                 cancelFlightInput.setCreditCard(creditCard);
@@ -258,8 +253,8 @@ public class BookingResource {
         // Cancel hotels
         for (String bookingNumber : it.hotels.keySet()) {                      
      
-            String bookingStatus = bookingStatus = it.hotels.get(bookingNumber);
-            if(bookingStatus == "confirmed"){
+            String bookingStatus = it.hotels.get(bookingNumber);
+            if(bookingStatus.equals("confirmed")){
                 try {
                     cancelHotel(bookingNumber);
                     it.hotels.replace(bookingNumber, "cancelled");

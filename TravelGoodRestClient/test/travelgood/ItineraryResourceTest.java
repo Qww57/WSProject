@@ -5,8 +5,6 @@
  */
 package travelgood;
 
-import java.util.List;
-import java.util.ArrayList;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -14,13 +12,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import travelgood.objects.Itinerary;
 import travelgood.objects.LinkRelatives;
 import travelgood.representations.*;
 
@@ -30,14 +23,13 @@ import travelgood.representations.*;
  */
 public class ItineraryResourceTest {
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
+    private final String MIMEType = MediaType.APPLICATION_XML; // MediaType.APPLICATION_JSON also supported
     
     @Test
     public void createItineraryTest() {
         Client client = ClientBuilder.newClient();
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
-        Response result = r.request().get(Response.class);
+        Response result = r.request().accept(MIMEType).get(Response.class);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         System.out.println("returned ID: " + resultentity.ID);
         assertTrue(0 <= resultentity.ID);
@@ -48,7 +40,7 @@ public class ItineraryResourceTest {
         AddToItineraryInputRepresentation inputRepresentation = new AddToItineraryInputRepresentation();
         inputRepresentation.hotel_booking_numbers.add("thisBN");
         
-        Response secondResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        Response secondResult = r2.request().accept(MIMEType).post(Entity.entity(inputRepresentation, MIMEType), Response.class);
         ItineraryOutputRepresentation secondResultEntity = secondResult.readEntity(ItineraryOutputRepresentation.class);
         
         System.out.println("result: " + secondResultEntity.itinerary.hotels);
@@ -62,7 +54,7 @@ public class ItineraryResourceTest {
         // Create a new itinerary
         Client client = ClientBuilder.newClient();
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
-        Response result = r.request().get(Response.class);
+        Response result = r.request().accept(MIMEType).get(Response.class);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         
         // Get links from the response
@@ -72,14 +64,14 @@ public class ItineraryResourceTest {
         // Use link to call operation
         Client secondClient = ClientBuilder.newClient();
         WebTarget r2 = secondClient.target(cancelItineraryLink);
-        Response result2 = r2.request().get(Response.class);
+        Response result2 = r2.request().accept(MIMEType).get(Response.class);
         
         assertEquals(Response.Status.OK.getStatusCode(), result2.getStatus());
         
         // Verify itinerary has been cancelled
         Client thirdclient = ClientBuilder.newClient();
         WebTarget r3 = thirdclient.target(findPlannedItineraryLink);
-        Response result3 = r3.request().get(Response.class);
+        Response result3 = r3.request().accept(MIMEType).get(Response.class);
         
         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), result3.getStatus());
     }

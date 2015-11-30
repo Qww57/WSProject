@@ -30,8 +30,8 @@ import org.netbeans.j2ee.wsdl.niceview.java.niceview.HotelInformationType;
 public class SearchResource {
     
     @POST
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response search(SearchInputRepresentation input) throws DatatypeConfigurationException{
         //starting print
         System.out.println("Stariting to search now!!");

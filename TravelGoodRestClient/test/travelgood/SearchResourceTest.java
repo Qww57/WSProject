@@ -6,7 +6,6 @@
 
 package travelgood;
 
-import java.util.GregorianCalendar;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -14,12 +13,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static travelgood.Constructors.CreateDate;
@@ -31,6 +24,8 @@ import travelgood.representations.*;
  */
 public class SearchResourceTest {
     
+    private final String MIMEType = MediaType.APPLICATION_XML; // MediaType.APPLICATION_JSON also supported
+    
     @Test
     public void searchEmpty() throws DatatypeConfigurationException {
         //input stuff for searching flights and hotels
@@ -38,7 +33,7 @@ public class SearchResourceTest {
         //build client and make post request
         Client clientEmpty = ClientBuilder.newClient();
         WebTarget resourceEmpty = clientEmpty.target("http://localhost:8080/ws/webresources/search");
-        Response searchEmptyResult = resourceEmpty.request().post(Entity.entity(myEmptySearch, MediaType.APPLICATION_XML), Response.class);
+        Response searchEmptyResult = resourceEmpty.request().accept(MIMEType).post(Entity.entity(myEmptySearch, MIMEType), Response.class);
         SearchOutputRepresentation searchEmptyResultEntity = searchEmptyResult.readEntity(SearchOutputRepresentation.class);
         //check that lists are empty
         assertEquals(0, searchEmptyResultEntity.hotelsList.size());
@@ -78,7 +73,7 @@ public class SearchResourceTest {
         //build client and make post request
         Client client = ClientBuilder.newClient();
         WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
-        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        Response searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
         //hotel result
         assertEquals(2, searchResultEntity.hotelsList.size());

@@ -5,8 +5,6 @@
  */
 package travelgood;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
@@ -31,7 +29,7 @@ public class ItineraryResource {
     private final String baseURI = "http://localhost:8080/ws/webresources/itinerary/";
     
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response createItinerary() {
         int ID = Database.createItinerary();
         
@@ -59,7 +57,7 @@ public class ItineraryResource {
     
     @Path("{ID}")
     @GET
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response findPlannedItinerary(@PathParam("ID") String ID) {
         try {
             int parsedID = Integer.parseInt(ID);
@@ -105,8 +103,8 @@ public class ItineraryResource {
     
     @Path("{ID}")
     @POST
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response addToItinerary(@PathParam("ID") String ID, AddToItineraryInputRepresentation input) {
         if (input != null) {
             try {
@@ -169,8 +167,8 @@ public class ItineraryResource {
     
     @Path("{ID}/cancel")
     @GET
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response cancelPlannedItinerary(@PathParam("ID") String ID) {
         try {
             boolean success = Database.cancelPlannedItinerary(Integer.parseInt(ID));

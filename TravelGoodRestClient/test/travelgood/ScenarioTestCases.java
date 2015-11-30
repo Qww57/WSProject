@@ -12,7 +12,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.datatype.DatatypeConfigurationException;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import static travelgood.Constructors.*;
@@ -24,6 +23,8 @@ import travelgood.representations.*;
  * @author Quentin, Daniel Sanz
  */
 public class ScenarioTestCases {
+    
+    private final String MIMEType = MediaType.APPLICATION_XML; // MediaType.APPLICATION_JSON also supported
     
     @Test
     public void testP1() { 
@@ -47,7 +48,7 @@ public class ScenarioTestCases {
         // Create an itinerary and add one flight     
         Client client = ClientBuilder.newClient();
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
-        Response result = r.request().get(Response.class);
+        Response result = r.request().accept(MIMEType).get(Response.class);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         System.out.println("returned ID: " + resultentity.ID);
         assertTrue(0 <= resultentity.ID);
@@ -58,7 +59,7 @@ public class ScenarioTestCases {
         mySearch.flightsList.add(0, myFirstFlight);
         
         WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
-        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        Response searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
         String bookingNumber_flight = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
         
@@ -67,7 +68,7 @@ public class ScenarioTestCases {
         AddToItineraryInputRepresentation inputRepresentation = new AddToItineraryInputRepresentation();
         inputRepresentation.flight_booking_number.add(bookingNumber_flight);
         
-        Response planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        Response planResult = r2.request().accept(MIMEType).post(Entity.entity(inputRepresentation, MIMEType), Response.class);
         ItineraryOutputRepresentation planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
       
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
@@ -79,12 +80,12 @@ public class ScenarioTestCases {
         mySearch = new SearchInputRepresentation();  
         mySearch.hotelsList.add(0, myFisrtHotel);
         
-        searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
         String bookingNumber_hotel = searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber();
             
         inputRepresentation.hotel_booking_numbers.add(bookingNumber_hotel);        
-        planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        planResult = r2.request().accept(MIMEType).post(Entity.entity(inputRepresentation, MIMEType), Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);  
         
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
@@ -96,12 +97,12 @@ public class ScenarioTestCases {
         mySearch = new SearchInputRepresentation();  
         mySearch.flightsList.add(0, mySecondFlight);
         
-        searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
         bookingNumber_flight = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
         
         inputRepresentation.flight_booking_number.add(bookingNumber_flight);
-        planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        planResult = r2.request().accept(MIMEType).post(Entity.entity(inputRepresentation, MIMEType), Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
        
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
@@ -113,12 +114,12 @@ public class ScenarioTestCases {
         mySearch = new SearchInputRepresentation();  
         mySearch.flightsList.add(0, myThirdFlight);
         
-        searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
         bookingNumber_flight = searchResultEntity.flightsList.get(0).flightsInformationList.get(0).getBookingNumber();
         
         inputRepresentation.flight_booking_number.add(bookingNumber_flight);
-        planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        planResult = r2.request().accept(MIMEType).post(Entity.entity(inputRepresentation, MIMEType), Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
 
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
@@ -130,19 +131,19 @@ public class ScenarioTestCases {
         mySearch = new SearchInputRepresentation();  
         mySearch.hotelsList.add(0, mySecondHotel);
         
-        searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);      
         bookingNumber_hotel= searchResultEntity.hotelsList.get(0).hotelsInformationList.get(0).getBookingNumber();
         
         inputRepresentation.hotel_booking_numbers.add(bookingNumber_hotel);
-        planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        planResult = r2.request().accept(MIMEType).post(Entity.entity(inputRepresentation, MIMEType), Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);      
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
         System.out.println("Planned flights: " + planResultEntity.itinerary.flights);
         System.out.println(" -- ");      
         
         // Request for the itinerary
-        planResult = r2.request().get(Response.class);
+        planResult = r2.request().accept(MIMEType).get(Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
         System.out.println("Getting the itinerary"); 
         System.out.println("Get planned hotels: " + planResultEntity.itinerary.hotels);
@@ -162,7 +163,7 @@ public class ScenarioTestCases {
         
         Link bookItineraryLink = planResult.getLink(LinkRelatives.BOOK_ITINERARY);
         WebTarget r3 = client.target(bookItineraryLink);
-        Response bookOutput = r3.request().post(Entity.entity(bookInput, MediaType.APPLICATION_XML), Response.class);
+        Response bookOutput = r3.request().accept(MIMEType).post(Entity.entity(bookInput, MIMEType), Response.class);
         System.out.println(bookOutput.toString());
         ItineraryOutputRepresentation bookOutputEntity = bookOutput.readEntity(ItineraryOutputRepresentation.class);
         System.out.println("Booking the itinerary"); 
@@ -186,7 +187,7 @@ public class ScenarioTestCases {
         // Create an itinerary and add one flight  
         Client client = ClientBuilder.newClient();
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
-        Response result = r.request().get(Response.class);
+        Response result = r.request().accept(MIMEType).get(Response.class);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         System.out.println("returned ID: " + resultentity.ID);
               
@@ -213,7 +214,7 @@ public class ScenarioTestCases {
         mySearch.hotelsList.add(1, mySecondHotel);
        
         WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
-        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        Response searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
         
         // Getting the booking numbers
@@ -233,14 +234,14 @@ public class ScenarioTestCases {
         inputRepresentation.hotel_booking_numbers.add(bookingNumber_hotel1);
         inputRepresentation.hotel_booking_numbers.add(bookingNumber_hotel2);
              
-        Response planResult = r2.request().post(Entity.entity(inputRepresentation, MediaType.APPLICATION_XML), Response.class);
+        Response planResult = r2.request().accept(MIMEType).post(Entity.entity(inputRepresentation, MIMEType), Response.class);
         ItineraryOutputRepresentation planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
         System.out.println("Planning the itinerary");  
         System.out.println("Planned hotels: " + planResultEntity.itinerary.hotels);
         System.out.println("Planned flights: " + planResultEntity.itinerary.flights);
         
         // Request to get the planned itinerary
-        planResult = r2.request().get(Response.class);
+        planResult = r2.request().accept(MIMEType).get(Response.class);
         planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
         System.out.println("Getting the itinerary");    
         System.out.println("Get planned hotels: " + planResultEntity.itinerary.hotels);
@@ -258,13 +259,13 @@ public class ScenarioTestCases {
         // Cancel the planning 
         inputRepresentation.flight_booking_number.add(bookingNumber_flight1);
         r2 = client.target("http://localhost:8080/ws/webresources/itinerary/" + Integer.toString(resultentity.ID) + "/cancel");
-        Response cancelResult = r2.request().get(Response.class);
+        Response cancelResult = r2.request().accept(MIMEType).get(Response.class);
         System.out.println(cancelResult);
         
         // Check that everything is cancelled by trying to get the itinerary and getting an error
         boolean requestHasFailed = false;
         try {
-            planResult = r2.request().get(Response.class);
+            planResult = r2.request().accept(MIMEType).get(Response.class);
             planResultEntity = planResult.readEntity(ItineraryOutputRepresentation.class);
         } catch (Exception e){
             System.out.println(e.fillInStackTrace());
@@ -280,7 +281,7 @@ public class ScenarioTestCases {
         // Create an itinerary 
         Client client = ClientBuilder.newClient();
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
-        Response result = r.request().get(Response.class);
+        Response result = r.request().accept(MIMEType).get(Response.class);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         System.out.println("returned ID: " + resultentity.ID);
         assertTrue(0 <= resultentity.ID);
@@ -307,7 +308,7 @@ public class ScenarioTestCases {
         
         // Getting the booking numbers
         WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
-        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        Response searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
         
         assertEquals(2, searchResultEntity.hotelsList.size());
@@ -326,7 +327,7 @@ public class ScenarioTestCases {
         // Making the planning request
         Link addToItineraryLink = result.getLink(LinkRelatives.ADD_TO_ITINERARY);
         WebTarget r2 = client.target(addToItineraryLink);
-        Response planResultOne = r2.request().post(Entity.entity(itineraryInputOne, MediaType.APPLICATION_XML), Response.class);
+        Response planResultOne = r2.request().accept(MIMEType).post(Entity.entity(itineraryInputOne, MIMEType), Response.class);
         ItineraryOutputRepresentation planResultEntityOne = planResultOne.readEntity(ItineraryOutputRepresentation.class);
         
         System.out.println("Planned hotels: " + planResultEntityOne.itinerary.hotels);
@@ -334,7 +335,7 @@ public class ScenarioTestCases {
         System.out.println(" -- ");
         
         // Request for the itinerary
-        Response planResultItinerary = r2.request().get(Response.class);
+        Response planResultItinerary = r2.request().accept(MIMEType).get(Response.class);
         ItineraryOutputRepresentation planResultItineraryEntity = planResultItinerary.readEntity(ItineraryOutputRepresentation.class);
         System.out.println("Getting the itinerary");     
         System.out.println("Get planned hotels: " + planResultItineraryEntity.itinerary.hotels);
@@ -352,7 +353,7 @@ public class ScenarioTestCases {
         Link bookItineraryLink = planResultItinerary.getLink(LinkRelatives.BOOK_ITINERARY);
         WebTarget r3 = client.target(bookItineraryLink);
         BookItineraryInputRepresentation bookItineraryInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
-        Response bookingResult = r3.request().post(Entity.entity(bookItineraryInput, MediaType.APPLICATION_XML), Response.class);
+        Response bookingResult = r3.request().accept(MIMEType).post(Entity.entity(bookItineraryInput, MIMEType), Response.class);
         
         ItineraryOutputRepresentation bookingResultEntity = bookingResult.readEntity(ItineraryOutputRepresentation.class);
         System.out.println("Getting the booked itinerary");  
@@ -377,7 +378,7 @@ public class ScenarioTestCases {
         // Create an itinerary GET request 
         Client client = ClientBuilder.newClient();
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
-        Response result = r.request().get(Response.class);
+        Response result = r.request().accept(MIMEType).get(Response.class);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         System.out.println("returned ID: " + resultentity.ID);
         assertTrue(0 <= resultentity.ID);
@@ -401,7 +402,7 @@ public class ScenarioTestCases {
         mySearch.flightsList.add(0, myFirstFlight);
         //search POST request
         WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
-        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        Response searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);
         
         //check that search contains 1 flight and 2 hotels
@@ -420,7 +421,7 @@ public class ScenarioTestCases {
         System.out.println("Adding one flight"); 
         AddToItineraryInputRepresentation itineraryInputOne = new AddToItineraryInputRepresentation();
         itineraryInputOne.flight_booking_number.add(bookingNumber_flight1);
-        Response planResultOne = r2.request().post(Entity.entity(itineraryInputOne, MediaType.APPLICATION_XML), Response.class);
+        Response planResultOne = r2.request().accept(MIMEType).post(Entity.entity(itineraryInputOne, MIMEType), Response.class);
         ItineraryOutputRepresentation planResultEntityOne = planResultOne.readEntity(ItineraryOutputRepresentation.class);
         //check size
         assertEquals(1, planResultEntityOne.itinerary.flights.size());
@@ -432,7 +433,7 @@ public class ScenarioTestCases {
         System.out.println("Adding one new hotel");
         AddToItineraryInputRepresentation itineraryInputTwo = new AddToItineraryInputRepresentation();
         itineraryInputTwo.hotel_booking_numbers.add(bookingNumber_hotel1);        
-        Response planResultTwo = r2.request().post(Entity.entity(itineraryInputTwo, MediaType.APPLICATION_XML), Response.class);
+        Response planResultTwo = r2.request().accept(MIMEType).post(Entity.entity(itineraryInputTwo, MIMEType), Response.class);
         ItineraryOutputRepresentation planResultEntityTwo = planResultTwo.readEntity(ItineraryOutputRepresentation.class);  
         //check size
         assertEquals(1, planResultEntityTwo.itinerary.flights.size());
@@ -444,7 +445,7 @@ public class ScenarioTestCases {
         System.out.println("Adding 2nd hotel");
         AddToItineraryInputRepresentation itineraryInputThree = new AddToItineraryInputRepresentation();      
         itineraryInputThree.hotel_booking_numbers.add(bookingNumber_hotel2);
-        Response planResultThree = r2.request().post(Entity.entity(itineraryInputThree, MediaType.APPLICATION_XML), Response.class);
+        Response planResultThree = r2.request().accept(MIMEType).post(Entity.entity(itineraryInputThree, MIMEType), Response.class);
         ItineraryOutputRepresentation planResultEntityThree = planResultThree.readEntity(ItineraryOutputRepresentation.class);      
         //check size
         assertEquals(1, planResultEntityThree.itinerary.flights.size());
@@ -454,7 +455,7 @@ public class ScenarioTestCases {
         System.out.println(" -- ");      
         
         // Request for the itinerary
-        Response planResultItinerary = r2.request().get(Response.class);
+        Response planResultItinerary = r2.request().accept(MIMEType).get(Response.class);
         ItineraryOutputRepresentation planResultItineraryEntity = planResultItinerary.readEntity(ItineraryOutputRepresentation.class);
         System.out.println("Getting the itinerary"); 
         //check size
@@ -476,7 +477,7 @@ public class ScenarioTestCases {
         Link bookItineraryLink = planResultItinerary.getLink(LinkRelatives.BOOK_ITINERARY);
         WebTarget r3 = client.target(bookItineraryLink);//adding credit card information
         BookItineraryInputRepresentation bookItineraryInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
-        Response bookingResult = r3.request().post(Entity.entity(bookItineraryInput, MediaType.APPLICATION_XML), Response.class);
+        Response bookingResult = r3.request().accept(MIMEType).post(Entity.entity(bookItineraryInput, MIMEType), Response.class);
         ItineraryOutputRepresentation bookingResultEntity = bookingResult.readEntity(ItineraryOutputRepresentation.class);
         //check size
         assertEquals(1, bookingResultEntity.itinerary.flights.size());
@@ -495,7 +496,7 @@ public class ScenarioTestCases {
         //use link to add flights and hotels to itinerary
         Link cancelItineraryLink = bookingResult.getLink(LinkRelatives.CANCEL_BOOKED_ITINERARY);
         WebTarget r4 = client.target(cancelItineraryLink);
-        Response resultCancelItinerary = r4.request().get(Response.class);
+        Response resultCancelItinerary = r4.request().accept(MIMEType).get(Response.class);
         ItineraryOutputRepresentation resultCancelItineraryEntity = resultCancelItinerary.readEntity(ItineraryOutputRepresentation.class);
         //check size
         assertEquals(1, resultCancelItineraryEntity.itinerary.flights.size());
@@ -519,7 +520,7 @@ public class ScenarioTestCases {
         // Create an itinerary - GET request 
         Client client = ClientBuilder.newClient();
         WebTarget r = client.target("http://localhost:8080/ws/webresources/itinerary");
-        Response result = r.request().get(Response.class);
+        Response result = r.request().accept(MIMEType).get(Response.class);
         CreateItineraryRepresentation resultentity = result.readEntity(CreateItineraryRepresentation.class);
         System.out.println("returned ID: " + resultentity.ID);
         assertTrue(0 <= resultentity.ID);
@@ -545,7 +546,7 @@ public class ScenarioTestCases {
         
         // Get flights and hotels POST request
         WebTarget resource = client.target("http://localhost:8080/ws/webresources/search");
-        Response searchResult = resource.request().post(Entity.entity(mySearch, MediaType.APPLICATION_XML), Response.class);
+        Response searchResult = resource.request().accept(MIMEType).post(Entity.entity(mySearch, MIMEType), Response.class);
         SearchOutputRepresentation searchResultEntity = searchResult.readEntity(SearchOutputRepresentation.class);   
         
         // Get booking numbers
@@ -563,7 +564,7 @@ public class ScenarioTestCases {
         itineraryInputOne.hotel_booking_numbers.add(bookingNumber_hotel1);
         itineraryInputOne.hotel_booking_numbers.add(bookingNumber_hotel2);
         
-        Response planResultOne = r2.request().post(Entity.entity(itineraryInputOne, MediaType.APPLICATION_XML), Response.class);
+        Response planResultOne = r2.request().accept(MIMEType).post(Entity.entity(itineraryInputOne, MIMEType), Response.class);
         ItineraryOutputRepresentation planResultEntity = planResultOne.readEntity(ItineraryOutputRepresentation.class);
         
         System.out.println("Adding one flight"); 
@@ -571,7 +572,7 @@ public class ScenarioTestCases {
         System.out.println("Get planned flights: " + planResultEntity.itinerary.flights);  
     
         // Request for the itinerary
-        Response planResultItinerary = r2.request().get(Response.class);
+        Response planResultItinerary = r2.request().accept(MIMEType).get(Response.class);
         ItineraryOutputRepresentation planResultItineraryEntity = planResultItinerary.readEntity(ItineraryOutputRepresentation.class);
         System.out.println("Getting the itinerary"); 
         System.out.println("Get planned hotels: " + planResultItineraryEntity.itinerary.hotels);
@@ -590,7 +591,7 @@ public class ScenarioTestCases {
         Link bookItineraryLink = planResultItinerary.getLink(LinkRelatives.BOOK_ITINERARY);
         WebTarget r3 = client.target(bookItineraryLink);
         BookItineraryInputRepresentation bookItineraryInput = createBookItineraryInputRepresentation("Thor-Jensen Claus", "50408825", 5, 9);
-        Response bookingResult = r3.request().post(Entity.entity(bookItineraryInput, MediaType.APPLICATION_XML), Response.class);
+        Response bookingResult = r3.request().accept(MIMEType).post(Entity.entity(bookItineraryInput, MIMEType), Response.class);
         ItineraryOutputRepresentation bookingResultEntity = bookingResult.readEntity(ItineraryOutputRepresentation.class);
         
         //check size
@@ -611,7 +612,7 @@ public class ScenarioTestCases {
         //use link to add flights and hotels to itinerary
         Link cancelItineraryLink = bookingResult.getLink(LinkRelatives.CANCEL_BOOKED_ITINERARY);
         WebTarget r4 = client.target(cancelItineraryLink);
-        Response resultCancelItinerary = r4.request().get(Response.class);
+        Response resultCancelItinerary = r4.request().accept(MIMEType).get(Response.class);
         ItineraryOutputRepresentation resultCancelItineraryEntity = resultCancelItinerary.readEntity(ItineraryOutputRepresentation.class);
         
         //check size
